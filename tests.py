@@ -38,7 +38,7 @@ class TestPymesync(unittest.TestCase):
         json_content = json.dumps(content)
 
         # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.Mock()
+        requests.post = mock.create_autospec(requests.post)
 
         # Send it
         ts.send_time(params)
@@ -47,8 +47,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with('http://ts.example.com/v1/times',
                                          json=json_content)
 
-    def test_send_time_catch_HTTPError(self):
-        """Tests TimeSync.send_time with HTTPError"""
+    def test_send_time_catch_request_error(self):
+        """Tests TimeSync.send_time with request error"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -68,37 +68,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.Mock(return_value=requests.exceptions.HTTPError)
-
-        self.assertEquals(ts.send_time(params), errno.ENETDOWN)
-
-    def test_send_time_catch_ConnectionError(self):
-        """Tests TimeSync.send_time with HTTPError"""
-        # Parameters to be sent to TimeSync
-        params = {
-            "duration": 12,
-            "project": "ganeti-web-manager",
-            "user": "example-user",
-            "activities": ["documenting"],
-            "notes": "Worked on docs",
-            "issue_uri": "https://github.com/",
-            "date_worked": 2014-04-17,
-        }
-
-        # Test baseurl
-        baseurl = 'http://ts.example.com'
-        # Instantiate timesync class
-        ts = pymesync.TimeSync(baseurl,
-                               password="password",
-                               user="example-user",
-                               auth_type="password")
-
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.Mock(
-            return_value=requests.exceptions.ConnectionError)
-
-        self.assertEquals(ts.send_time(params), errno.ENETUNREACH)
+        self.assertRaises(Exception, ts.send_time(params))
 
     def test_auth(self):
         """Tests TimeSync._auth function"""

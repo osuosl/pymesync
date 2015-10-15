@@ -49,12 +49,9 @@ class TimeSync(object):
             # Success!
             response = requests.post(url, json=json_content)
             return response
-        except requests.exceptions.HTTPError:
-            # TimeSync error
-            return errno.ENETDOWN
-        except requests.exceptions.ConnectionError:
-            # Cannot reach server
-            return errno.ENETUNREACH
+        except requests.exceptions.RequestException as e:
+            # Unknown request error
+            return e
 
     def _auth(self):
         """Returns auth object to be send to TimeSync"""
