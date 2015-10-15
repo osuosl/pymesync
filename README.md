@@ -1,1 +1,3 @@
-# python-timesync
+# pymesync
+
+Python module for TimeSync

@@ -1,5 +1,5 @@
 import unittest
-import timesync
+import pymesync
 import urllib2
 import httplib
 import mock
@@ -7,14 +7,14 @@ import requests
 import json
 import errno
 
-class TestTimeSync(unittest.TestCase):
+class TestPymesync(unittest.TestCase):
 
     def test_send_time_valid(self):
         """Tests TimeSync.send_time with valid data"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
-            "project": "ganet_web_manager",
+            "project": "ganeti-web-manager",
             "user": "example-user",
             "activities": ["documenting"],
             "notes":"Worked on docs",
@@ -25,7 +25,7 @@ class TestTimeSync(unittest.TestCase):
         # Test baseurl
         baseurl = 'http://ts.example.com'
         # Instantiate timesync class
-        ts = timesync.TimeSync(baseurl,
+        ts = pymesync.TimeSync(baseurl,
                                password="password",
                                user="example-user",
                                auth_type="password")
@@ -37,7 +37,6 @@ class TestTimeSync(unittest.TestCase):
         }
         # Convert to json for test
         json_content = json.dumps(content)
-        json_content = str.encode(json_content)
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.Mock()
@@ -47,7 +46,7 @@ class TestTimeSync(unittest.TestCase):
 
         # Test it
         requests.post.assert_called_with('http://ts.example.com/v1/times',
-                                         data=json_content)
+                                         json=json_content)
 
     def test_send_time_catch_HTTPError(self):
         """Tests TimeSync.send_time with HTTPError"""
@@ -65,7 +64,7 @@ class TestTimeSync(unittest.TestCase):
         # Test baseurl
         baseurl = 'http://ts.example.com'
         # Instantiate timesync class
-        ts = timesync.TimeSync(baseurl,
+        ts = pymesync.TimeSync(baseurl,
                                password="password",
                                user="example-user",
                                auth_type="password")
@@ -80,7 +79,7 @@ class TestTimeSync(unittest.TestCase):
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
-            "project": "ganet_web_manager",
+            "project": "ganeti-web-manager",
             "user": "example-user",
             "activities": ["documenting"],
             "notes":"Worked on docs",
@@ -91,7 +90,7 @@ class TestTimeSync(unittest.TestCase):
         # Test baseurl
         baseurl = 'http://ts.example.com'
         # Instantiate timesync class
-        ts = timesync.TimeSync(baseurl,
+        ts = pymesync.TimeSync(baseurl,
                                password="password",
                                user="example-user",
                                auth_type="password")
@@ -107,7 +106,7 @@ class TestTimeSync(unittest.TestCase):
         # Test baseurl
         baseurl = 'http://ts.example.com'
         # Instantiate timesync class
-        ts = timesync.TimeSync(baseurl,
+        ts = pymesync.TimeSync(baseurl,
                                password="password",
                                user="example-user",
                                auth_type="password")
