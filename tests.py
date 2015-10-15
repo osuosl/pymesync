@@ -102,6 +102,23 @@ class TestTimeSync(unittest.TestCase):
 
         self.assertEquals(ts.send_time(params), errno.ENETUNREACH)
 
+    def test_auth(self):
+        """Tests TimeSync._auth function"""
+        # Test baseurl
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = timesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Create auth block to test _auth
+        auth = { 'type': "password",
+                 'username': "example-user",
+                 'password': "password", }
+
+        self.assertEquals(ts._auth(), auth)
+
 
 
 if __name__ == '__main__':
