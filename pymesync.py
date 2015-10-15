@@ -7,8 +7,6 @@ Allows for interactions with the TimeSync API
 import errno
 import json
 import requests
-from sys import stderr
-import urllib, urllib2
 
 
 class TimeSync(object):
@@ -51,15 +49,15 @@ class TimeSync(object):
             # Success!
             response = requests.post(url, json=json_content)
             return response
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError:
             # TimeSync error
             return errno.ENETDOWN
-        except requests.exceptions.ConnectionError as e:
+        except requests.exceptions.ConnectionError:
             # Cannot reach server
             return errno.ENETUNREACH
 
     def _auth(self):
         """Returns auth object to be send to TimeSync"""
-        return { 'type': self.auth_type,
-                 'username': self.user,
-                 'password': self.password, }
+        return {'type': self.auth_type,
+                'username': self.user,
+                'password': self.password, }

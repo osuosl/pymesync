@@ -1,11 +1,10 @@
 import unittest
 import pymesync
-import urllib2
-import httplib
 import mock
 import requests
 import json
 import errno
+
 
 class TestPymesync(unittest.TestCase):
 
@@ -17,9 +16,9 @@ class TestPymesync(unittest.TestCase):
             "project": "ganeti-web-manager",
             "user": "example-user",
             "activities": ["documenting"],
-            "notes":"Worked on docs",
-            "issue_uri":"https://github.com/",
-            "date_worked":2014-04-17,
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": 2014-04-17,
         }
 
         # Test baseurl
@@ -56,9 +55,9 @@ class TestPymesync(unittest.TestCase):
             "project": "ganet_web_manager",
             "user": "example-user",
             "activities": ["documenting"],
-            "notes":"Worked on docs",
-            "issue_uri":"https://github.com/",
-            "date_worked":2014-04-17,
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": 2014-04-17,
         }
 
         # Test baseurl
@@ -82,9 +81,9 @@ class TestPymesync(unittest.TestCase):
             "project": "ganeti-web-manager",
             "user": "example-user",
             "activities": ["documenting"],
-            "notes":"Worked on docs",
-            "issue_uri":"https://github.com/",
-            "date_worked":2014-04-17,
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": 2014-04-17,
         }
 
         # Test baseurl
@@ -112,12 +111,11 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         # Create auth block to test _auth
-        auth = { 'type': "password",
-                 'username': "example-user",
-                 'password': "password", }
+        auth = {'type': "password",
+                'username': "example-user",
+                'password': "password", }
 
         self.assertEquals(ts._auth(), auth)
-
 
 
 if __name__ == '__main__':
