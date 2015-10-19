@@ -15,11 +15,12 @@ setup(
     name='pymesync',
     version='0.0.1',
     install_requires=dependencies,
-    author=u'OSU Open Source Lab',
+    author='OSU Open Source Lab',
     author_email='support@osuosl.org',
     packages=find_packages(),
     url='https://github.com/osuosl/pymesync',
     license='Apache Version 2.0',
-    description="pymesync - python module for TimeSync API",
-    long_description=open('README.md').read()
+    description="pymesync - python module for the OSUOSL TimeSync API",
+    long_description=
+        "pymesync - Python module for interacting with the OSUOSL TimeSync API"
 )

@@ -17,32 +17,33 @@ class TimeSync(object):
         self.password = password
         self.auth_type = auth_type
 
-    def send_time(self, post_request):
+    def send_time(self, parameter_dict):
         """
-        send_time(post_request)
+        send_time(parameter_dict)
 
         Sends a POST request in a JSON body to TimeSync, returns that body if
-        successful or an error
+        successful or an error if not.
+        parameter_dict - python dict containing time info.
         """
 
         values = {
             'auth': self._auth(),
             'object': {
-                'duration': post_request['duration'],
-                'user': post_request['user'],
-                'project': post_request['project'],
-                'activities': post_request['activities'],
-                'date_worked': post_request['date_worked'],
-                'notes': post_request['notes'],
-                'issue_uri': post_request['issue_uri'],
+                'duration': parameter_dict['duration'],
+                'user': parameter_dict['user'],
+                'project': parameter_dict['project'],
+                'activities': parameter_dict['activities'],
+                'date_worked': parameter_dict['date_worked'],
+                'notes': parameter_dict['notes'],
+                'issue_uri': parameter_dict['issue_uri'],
             }
         }
 
-        # Convert post_request to JSON object
+        # Convert parameter_dict to JSON object
         json_content = json.dumps(values)
 
         # Construct url to post to
-        url = "{}/v1/times".format(self.baseurl)
+        url = "{0}/{1}/times".format(self.baseurl, self.api_version())
 
         # Attempt to POST to TimeSync
         try:
@@ -58,3 +59,14 @@ class TimeSync(object):
         return {'type': self.auth_type,
                 'username': self.user,
                 'password': self.password, }
+
+    def api_version(self):
+        """
+        Queries API to find and return API version
+
+        Currently this is hardcoded to API v1 since no others exist. When v2 is
+        released, this will be updated to query the API and discover which
+        version is being used.
+        """
+
+        return 'v1'
