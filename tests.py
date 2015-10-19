@@ -3,7 +3,6 @@ import pymesync
 import mock
 import requests
 import json
-import errno
 
 
 class TestPymesync(unittest.TestCase):

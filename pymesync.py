@@ -4,7 +4,6 @@ pymesync - Python TimeSync Module
 Allows for interactions with the TimeSync API
 - timesync.send_time(baseurl) -- Sends time to baseurl (TimeSync)
 """
-import errno
 import json
 import requests
 
