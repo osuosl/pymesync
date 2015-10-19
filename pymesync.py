@@ -67,5 +67,4 @@ class TimeSync(object):
         released, this will be updated to query the API and discover which
         version is being used.
         """
-
         return 'v1'
