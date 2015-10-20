@@ -27,22 +27,14 @@ class TimeSync(object):
 
         values = {
             'auth': self._auth(),
-            'object': {
-                'duration': parameter_dict['duration'],
-                'user': parameter_dict['user'],
-                'project': parameter_dict['project'],
-                'activities': parameter_dict['activities'],
-                'date_worked': parameter_dict['date_worked'],
-                'notes': parameter_dict['notes'],
-                'issue_uri': parameter_dict['issue_uri'],
-            }
+            'object': parameter_dict,
         }
 
         # Convert parameter_dict to JSON object
         json_content = json.dumps(values)
 
         # Construct url to post to
-        url = "{0}/{1}/times".format(self.baseurl, self.api_version())
+        url = "{0}/{1}/times".format(self.baseurl, self._api_version())
 
         # Attempt to POST to TimeSync
         try:
@@ -59,7 +51,7 @@ class TimeSync(object):
                 'username': self.user,
                 'password': self.password, }
 
-    def api_version(self):
+    def _api_version(self):
         """
         Queries API to find and return API version
 
