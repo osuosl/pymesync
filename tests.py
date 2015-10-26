@@ -86,6 +86,25 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts._auth(), auth)
 
+    def test_get_time_for_user(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.get = mock.create_autospec(requests.get)
+
+        # Send it
+        ts.get_times(user=ts.user)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/times/?user=:example_user')
+
 
 if __name__ == '__main__':
     unittest.main()
