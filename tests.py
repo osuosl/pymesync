@@ -99,7 +99,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(user=ts.user)
+        ts.get_times(user=[ts.user])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -118,7 +118,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(project="gwm")
+        ts.get_times(project=["gwm"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -137,7 +137,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(activity="dev")
+        ts.get_times(activity=["dev"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -156,7 +156,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(start="2015-07-23")
+        ts.get_times(start=["2015-07-23"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -175,7 +175,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(end="2015-07-23")
+        ts.get_times(end=["2015-07-23"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -194,7 +194,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(revisions="true")
+        ts.get_times(revisions=["true"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
@@ -214,12 +214,35 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_times(project="gwm", activity="dev")
+        ts.get_times(project=["gwm"], activity=["dev"])
 
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple paramaters are sorted alphabetically
         requests.get.assert_called_with(
             'http://ts.example.com/v1/times?activity=dev?project=gwm')
+
+    def test_get_time_for_activity_x3(self):
+        """Tests TimeSync.get_times with project and activity query
+        parameters"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_times(activity=["dev", "rev", "hd"])
+
+        # Test that requests.get was called with baseurl and correct parameters
+        # Multiple paramaters are sorted alphabetically
+        requests.get.assert_called_with("http://ts.example.com/v1/times"
+                                        + "?activity=dev"
+                                        + "?activity=rev"
+                                        + "?activity=hd")
 
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no paramaters"""
@@ -250,7 +273,7 @@ class TestPymesync(unittest.TestCase):
 
         # Should return the error
         self.assertEquals("Error, invalid query: bad",
-                          ts.get_times(bad="query"))
+                          ts.get_times(bad=["query"]))
 
 
 if __name__ == '__main__':
