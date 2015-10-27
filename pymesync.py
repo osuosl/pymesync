@@ -27,7 +27,6 @@ class TimeSync(object):
         successful or an error if not.
         parameter_dict - python dict containing time info.
         """
-
         values = {
             'auth': self._auth(),
             'object': parameter_dict,
