@@ -1,0 +1,13 @@
+language: python
+
+python:
+  - "2.7"
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+
+script:
+  - python tests.py
+  - flake8 pymesync.py
+  - flake8 tests.py
