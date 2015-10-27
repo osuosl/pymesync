@@ -6,6 +6,7 @@ Allows for interactions with the TimeSync API
 """
 import json
 import requests
+import operator
 
 
 class TimeSync(object):
@@ -15,6 +16,8 @@ class TimeSync(object):
         self.user = user
         self.password = password
         self.auth_type = auth_type
+        self.valid_get_queries = ["user", "project", "activity",
+                                  "start", "end", "revisions"]
 
     def send_time(self, parameter_dict):
         """
@@ -42,7 +45,39 @@ class TimeSync(object):
             response = requests.post(url, json=json_content)
             return response
         except requests.exceptions.RequestException as e:
-            # Unknown request error
+            # Request error
+            return e
+
+    def get_times(self, **queries):
+        """
+        get_times([queries])
+
+        Returns JSON times objects filtered by supplied parameters
+        """
+        query_str = ""  # Remains empty if no queries passed
+        if queries is not None:
+            # Sort them into an alphabetized list for easier testing
+            sorted_queries = sorted(queries.items(),
+                                    key=operator.itemgetter(0))
+            for query, param in sorted_queries:
+                if query in self.valid_get_queries:
+                    for slug in param:
+                        query_str += "?{0}={1}".format(query, slug)
+                else:
+                    return "Error, invalid query: {}".format(query)
+
+        # Construct query url
+        url = "{0}/{1}/times{2}".format(self.baseurl,
+                                        self._api_version(),
+                                        query_str)
+
+        # Attempt to GET times
+        try:
+            # Success!
+            response = requests.get(url)
+            return response
+        except requests.exceptions.RequestException as e:
+            # Request Error
             return e
 
     def _auth(self):
