@@ -57,9 +57,8 @@ class TimeSync(object):
         query_str = ""  # Remains empty if no queries passed
         if queries is not None:
             # Sort them into an alphabetized list for easier testing
-            sorted_queries = sorted(queries.items(),
-                                    key=operator.itemgetter(0))
-            for query, param in sorted_queries:
+            sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
+            for query, param in sorted_qs:
                 if query in self.valid_get_queries:
                     for slug in param:
                         query_str += "?{0}={1}".format(query, slug)
