@@ -95,7 +95,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -114,7 +114,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -133,7 +133,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -152,7 +152,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -171,7 +171,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -190,7 +190,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -210,7 +210,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
@@ -230,7 +230,7 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
         # Send it
