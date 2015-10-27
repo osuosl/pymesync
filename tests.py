@@ -219,7 +219,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple paramaters are sorted alphabetically
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?activity=dev?project=gwm')
+            'http://ts.example.com/v1/times?activity=dev&project=gwm')
 
     def test_get_time_for_activity_x3(self):
         """Tests TimeSync.get_times with project and activity query
@@ -241,8 +241,8 @@ class TestPymesync(unittest.TestCase):
         # Multiple paramaters are sorted alphabetically
         requests.get.assert_called_with("http://ts.example.com/v1/times"
                                         + "?activity=dev"
-                                        + "?activity=rev"
-                                        + "?activity=hd")
+                                        + "&activity=rev"
+                                        + "&activity=hd")
 
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no paramaters"""
