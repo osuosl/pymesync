@@ -53,21 +53,26 @@ class TimeSync(object):
 
         Returns JSON times objects filtered by supplied parameters
         """
-        query_str = ""  # Remains empty if no queries passed
-        if queries is not None:
+        query_list = []  # Remains empty if no queries passed
+        query_string = ""
+        if queries:
             # Sort them into an alphabetized list for easier testing
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:
                 if query in self.valid_get_queries:
                     for slug in param:
-                        query_str += "?{0}={1}".format(query, slug)
+                        query_list.append("{0}={1}".format(query, slug))
                 else:
                     return "Error, invalid query: {}".format(query)
+
+            query_string = "?{}".format(query_list[0])
+            for string in query_list[1:]:
+                query_string += "&{}".format(string)
 
         # Construct query url
         url = "{0}/{1}/times{2}".format(self.baseurl,
                                         self._api_version(),
-                                        query_str)
+                                        query_string)
 
         # Attempt to GET times
         try:
