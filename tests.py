@@ -103,7 +103,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?user=:example-user')
+            'http://ts.example.com/v1/times?user=example-user')
 
     def test_get_time_for_proj(self):
         """Tests TimeSync.get_times with project query parameter"""
@@ -122,7 +122,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?project=:gwm')
+            'http://ts.example.com/v1/times?project=gwm')
 
     def test_get_time_for_activity(self):
         """Tests TimeSync.get_times with activity query parameter"""
@@ -141,7 +141,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?activity=:dev')
+            'http://ts.example.com/v1/times?activity=dev')
 
     def test_get_time_for_start_date(self):
         """Tests TimeSync.get_times with start date query parameter"""
@@ -160,7 +160,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?start=:2015-07-23')
+            'http://ts.example.com/v1/times?start=2015-07-23')
 
     def test_get_time_for_end_date(self):
         """Tests TimeSync.get_times with end date query parameter"""
@@ -179,7 +179,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?end=:2015-07-23')
+            'http://ts.example.com/v1/times?end=2015-07-23')
 
     def test_get_time_for_revisions(self):
         """Tests TimeSync.get_times with revisions query parameter"""
@@ -198,7 +198,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?revisions=:true')
+            'http://ts.example.com/v1/times?revisions=true')
 
     def test_get_time_for_proj_and_activity(self):
         """Tests TimeSync.get_times with project and activity query
@@ -219,7 +219,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple paramaters are sorted alphabetically
         requests.get.assert_called_with(
-            'http://ts.example.com/v1/times?activity=:dev?project=:gwm')
+            'http://ts.example.com/v1/times?activity=dev?project=gwm')
 
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no paramaters"""
