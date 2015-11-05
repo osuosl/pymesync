@@ -275,6 +275,99 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals("Error, invalid query: bad",
                           ts.get_times(bad=["query"]))
 
+    def test_get_projects(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_projects()
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with('http://ts.example.com/v1/projects')
+
+    def test_get_projects_slug(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_projects(slug='gwm')
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with('http://ts.example.com/v1/projects/gwm')
+
+    def test_get_projects_revisions(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_projects(revisions='true')
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/projects?revisions=true')
+
+    def test_get_projects_slug_revisions(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_projects(slug='gwm', revisions='true')
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/projects/gwm?revisions=true')
+
+    def test_get_projects_include_deleted(self):
+        """Tests TimeSync.get_times with username query parameter"""
+        baseurl = 'http://ts.example.com'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_projects(include_deleted='true')
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/projects?include_deleted=true')
+
 
 if __name__ == '__main__':
     unittest.main()
