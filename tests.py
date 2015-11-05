@@ -382,12 +382,11 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
 
-        # Send it
-        ts.get_projects(slug='gwm', include_deleted='true')
-
-        # Test that requests.get was not called, can't combine slug and
+        # Test that error message is returned, can't combine slug and
         # include_deleted
-        self.assertFalse(requests.get.assert_called())
+        self.assertEquals(ts.get_projects(slug='gwm', include_deleted='true'),
+                          "Error: invalid combination of slug and "
+                          + "include_deleted")
 
     def test_get_projects_include_deleted_revisions(self):
         """Tests TimeSync.get_projects with revisions and include_deleted
