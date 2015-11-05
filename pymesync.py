@@ -85,31 +85,40 @@ class TimeSync(object):
 
     def get_projects(self, **kwargs):
         """
-        get_times([kwargs])
+        get_times(kwargs)
 
-        Returns JSON times objects filtered by supplied parameters
+        Returns JSON projects objects filtered by supplied parameters
+        Optional parameters:
+        slug='<slug>'
+        include_deleted=<boolean>
+        revisions=<boolean>
+
+        Does not accept a slug and include_deleted, but does accept any other
+        combination.
         """
         query_string = ""
+        query_list = []
         if kwargs:
             # The following combination is not allowed
             if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
                 return "Error: invalid combination of slug and include_deleted"
-            # slug goes first
+            # slug goes first, then delete it so it doesn't show up after the ?
             elif 'slug' in kwargs.keys():
                 query_string = "/{}".format(kwargs['slug'])
+                del(kwargs['slug'])
 
-            # Put include_deleted first for easier testing
-            if 'include_deleted' in kwargs.keys():
-                query_string += "?{0}={1}".format('include_deleted',
-                                                  kwargs['include_deleted'])
-                # If we got include_deleted, this needs to have an &
-                if 'revisions' in kwargs.keys():
-                    query_string += "&{0}={1}".format('revisions',
-                                                      kwargs['revisions'])
-            # If not, it needs a ?
-            elif 'revisions' in kwargs.keys():
-                query_string += "?{0}={1}".format('revisions',
-                                                  kwargs['revisions'])
+            # Convert True and False booleans to TimeSync compatible strings
+            for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
+                if v == True:
+                    kwargs[k] = 'true'
+                elif v == False:
+                    kwargs[k] = 'false'
+                query_list.append("{0}={1}".format(k, kwargs[k]))
+
+            # Check for items in query_list after slug was removed, create
+            # query string
+            if query_list:
+                query_string += "?{}".format("&".join(query_list))
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/{1}/projects{2}".format(self.baseurl,
