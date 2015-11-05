@@ -309,7 +309,8 @@ class TestPymesync(unittest.TestCase):
         ts.get_projects(slug='gwm')
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with('http://ts.example.com/v1/projects/gwm')
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/projects/gwm')
 
     def test_get_projects_revisions(self):
         """Tests TimeSync.get_projects with revisions query"""
@@ -390,7 +391,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_get_projects_include_deleted_revisions(self):
         """Tests TimeSync.get_projects with revisions and include_deleted
-        queries, which is not allowed"""
+        queries"""
         baseurl = 'http://ts.example.com'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
@@ -406,7 +407,9 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was not called, can't combine revisions and
         # include_deleted
-        self.assertFalse(requests.get.assert_called())
+        requests.get.assert_called_with("http://ts.example.com/v1/projects"
+                                        + "?include_deleted=true"
+                                        + "&revisions=true")
 
 
 if __name__ == '__main__':
