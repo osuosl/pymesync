@@ -325,7 +325,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_projects(revisions='true')
+        ts.get_projects(revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(
@@ -344,7 +344,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_projects(slug='gwm', revisions='true')
+        ts.get_projects(slug='gwm', revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(
@@ -363,7 +363,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_projects(include_deleted='true')
+        ts.get_projects(include_deleted=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(
@@ -384,7 +384,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
-        self.assertEquals(ts.get_projects(slug='gwm', include_deleted='true'),
+        self.assertEquals(ts.get_projects(slug='gwm', include_deleted=True),
                           "Error: invalid combination of slug and "
                           + "include_deleted")
 
@@ -402,7 +402,7 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock('requests.get')
 
         # Send it
-        ts.get_projects(revisions='true', include_deleted='true')
+        ts.get_projects(revisions=True, include_deleted=True)
 
         # Test that requests.get was called with correct paramaters
         requests.get.assert_called_with("http://ts.example.com/v1/projects"
