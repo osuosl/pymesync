@@ -109,9 +109,9 @@ class TimeSync(object):
 
             # Convert True and False booleans to TimeSync compatible strings
             for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
-                if v == True:
+                if v is True:
                     kwargs[k] = 'true'
-                elif v == False:
+                elif v is False:
                     kwargs[k] = 'false'
                 query_list.append("{0}={1}".format(k, kwargs[k]))
 
