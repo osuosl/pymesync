@@ -405,8 +405,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         ts.get_projects(revisions='true', include_deleted='true')
 
-        # Test that requests.get was not called, can't combine revisions and
-        # include_deleted
+        # Test that requests.get was called with correct paramaters
         requests.get.assert_called_with("http://ts.example.com/v1/projects"
                                         + "?include_deleted=true"
                                         + "&revisions=true")
