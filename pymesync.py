@@ -42,7 +42,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=json_content)
-            return response
+            return self._json_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return e
@@ -78,7 +78,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return response
+            return self._json_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return e
@@ -129,7 +129,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return response
+            return self._json_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return e
@@ -149,3 +149,13 @@ class TimeSync(object):
         version is being used.
         """
         return 'v1'
+
+    def _json_to_python(self, json_object):
+        """Convert json object to native python list of objects"""
+        # return json.loads(json_object)
+        python_object = json.loads(json_object)
+
+        if not isinstance(python_object, list):
+            python_object = [python_object]
+
+        return python_object
