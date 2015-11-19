@@ -586,41 +586,61 @@ class TestPymesync(unittest.TestCase):
 
         json_object = '[\
             {\
-                "uri": "https://code.osuosl.org/projects/ganeti-webmgr",\
-                "name": "Ganeti Web Manager"\
-            },\
-            {\
-                "slugs": ["ganeti", "gwm"],\
-                "owner": "example-user"\
-            },\
-            {\
-                "uuid": "a034806c-00db-4fe1-8de8-514575f31bfb",\
-                "revision": 4\
-            },\
-            {\
-                "created_at": "2014-07-17",\
+                "name": "Documentation",\
+                "slugs": ["docs", "doc"],\
+                "uuid": "adf036f5-3d49-4a84-bef9-0sdb46380bbf",\
+                "revision": 1,\
+                "created_at": "2014-04-17",\
                 "deleted_at": null,\
-                "updated_at": "2014-07-20"\
+                "updated_at": null\
+            },\
+            {\
+                "name": "Coding",\
+                "slugs": ["coding", "code", "prog"],\
+                "uuid": "adf036f5-3d79-4a84-bef9-062b46320bbf",\
+                "revision": 1,\
+                "created_at": "2014-04-17",\
+                "deleted_at": null,\
+                "updated_at": null\
+            },\
+            {\
+                "name": "Research",\
+                "slugs": ["research", "res"],\
+                "uuid": "adf036s5-3d49-4a84-bef9-062b46380bbf",\
+                "revision": 1,\
+                "created_at": "2014-04-17",\
+                "deleted_at": null,\
+                "updated_at": null\
             }\
         ]'
 
         python_object = [
             {
-                u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr',
-                u'name': u'Ganeti Web Manager'
-            },
-            {
-                u'owner': u'example-user',
-                u'slugs': [u'ganeti', u'gwm']
-            },
-            {
-                u'uuid': u'a034806c-00db-4fe1-8de8-514575f31bfb',
-                u'revision': 4
-            },
-            {
-                u'created_at': u'2014-07-17',
+                u'uuid': u'adf036f5-3d49-4a84-bef9-0sdb46380bbf',
+                u'created_at': u'2014-04-17',
+                u'updated_at': None,
+                u'name': u'Documentation',
                 u'deleted_at': None,
-                u'updated_at': u'2014-07-20'
+                u'slugs': [u'docs', u'doc'],
+                u'revision': 1
+            },
+            {
+                u'uuid': u'adf036f5-3d79-4a84-bef9-062b46320bbf',
+                u'created_at': u'2014-04-17',
+                u'updated_at': None,
+                u'name': u'Coding',
+                u'deleted_at': None,
+                u'slugs': [u'coding', u'code', u'prog'],
+                u'revision': 1
+            },
+            {
+                u'uuid': u'adf036s5-3d49-4a84-bef9-062b46380bbf',
+                u'created_at': u'2014-04-17',
+                u'updated_at': None,
+                u'name': u'Research',
+                u'deleted_at': None,
+                u'slugs': [u'research', u'res'],
+                u'revision': 1
             }
         ]
 
