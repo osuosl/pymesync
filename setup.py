@@ -22,5 +22,5 @@ setup(
     license='Apache Version 2.0',
     description="pymesync - python module for the OSUOSL TimeSync API",
     long_description="pymesync - Python module for interacting with the "
-                     "OSUOSL TimeSync API"
+                     + "OSUOSL TimeSync API"
 )
