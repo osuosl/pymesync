@@ -38,6 +38,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.send_time(params)
@@ -97,6 +100,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(user=[ts.user])
@@ -116,6 +122,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(project=["gwm"])
@@ -135,6 +144,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(activity=["dev"])
@@ -154,6 +166,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(start=["2015-07-23"])
@@ -173,6 +188,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(end=["2015-07-23"])
@@ -192,6 +210,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(revisions=["true"])
@@ -212,6 +233,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(project=["gwm"], activity=["dev"])
@@ -233,6 +257,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times(activity=["dev", "rev", "hd"])
@@ -255,6 +282,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_times()
@@ -286,6 +316,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects()
@@ -304,6 +337,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects(slug='gwm')
@@ -323,6 +359,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects(revisions=True)
@@ -342,6 +381,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects(slug='gwm', revisions=True)
@@ -361,6 +403,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects(include_deleted=True)
@@ -381,6 +426,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
@@ -400,6 +448,9 @@ class TestPymesync(unittest.TestCase):
 
         # Mock requests.get
         requests.get = mock.Mock('requests.get')
+        # Mock json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back
+        json.loads = mock.Mock('json.loads')
 
         # Send it
         ts.get_projects(revisions=True, include_deleted=True)
