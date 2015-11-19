@@ -1,7 +1,6 @@
 import unittest
 import pymesync
 import mock
-from mock import patch
 import requests
 import json
 
@@ -13,7 +12,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
@@ -99,7 +98,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -126,7 +125,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -153,7 +152,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -180,7 +179,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -207,7 +206,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -234,7 +233,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -262,7 +261,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -291,7 +290,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -321,7 +320,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -360,7 +359,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -386,7 +385,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -413,7 +412,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -440,7 +439,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -467,7 +466,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
@@ -514,7 +513,7 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = patch('json.loads')
+        patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
         baseurl = 'http://ts.example.com'
