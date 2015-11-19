@@ -47,17 +47,17 @@ class TimeSync(object):
             # Request error
             return e
 
-    def get_times(self, **queries):
+    def get_times(self, **kwargs):
         """
-        get_times([queries])
+        get_times([kwargs])
 
         Returns JSON times objects filtered by supplied parameters
         """
-        query_list = []  # Remains empty if no queries passed
+        query_list = []  # Remains empty if no kwargs passed
         query_string = ""
-        if queries:
+        if kwargs:
             # Sort them into an alphabetized list for easier testing
-            sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
+            sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:
                 if query in self.valid_get_queries:
                     for slug in param:
@@ -75,6 +75,57 @@ class TimeSync(object):
                                         query_string)
 
         # Attempt to GET times
+        try:
+            # Success!
+            response = requests.get(url)
+            return response
+        except requests.exceptions.RequestException as e:
+            # Request Error
+            return e
+
+    def get_projects(self, **kwargs):
+        """
+        get_times(kwargs)
+
+        Returns JSON projects objects filtered by supplied parameters
+        Optional parameters:
+        slug='<slug>'
+        include_deleted=<boolean>
+        revisions=<boolean>
+
+        Does not accept a slug and include_deleted, but does accept any other
+        combination.
+        """
+        query_string = ""
+        query_list = []
+        if kwargs:
+            # The following combination is not allowed
+            if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
+                return "Error: invalid combination of slug and include_deleted"
+            # slug goes first, then delete it so it doesn't show up after the ?
+            elif 'slug' in kwargs.keys():
+                query_string = "/{}".format(kwargs['slug'])
+                del(kwargs['slug'])
+
+            # Convert True and False booleans to TimeSync compatible strings
+            for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
+                if v is True:
+                    kwargs[k] = 'true'
+                elif v is False:
+                    kwargs[k] = 'false'
+                query_list.append("{0}={1}".format(k, kwargs[k]))
+
+            # Check for items in query_list after slug was removed, create
+            # query string
+            if query_list:
+                query_string += "?{}".format("&".join(query_list))
+
+        # Construct query url - query_string is empty if no kwargs
+        url = "{0}/{1}/projects{2}".format(self.baseurl,
+                                           self._api_version(),
+                                           query_string)
+
+        # Attempt to GET projects
         try:
             # Success!
             response = requests.get(url)
