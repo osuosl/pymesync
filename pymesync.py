@@ -152,7 +152,6 @@ class TimeSync(object):
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
-        # return json.loads(json_object)
         python_object = json.loads(json_object)
 
         if not isinstance(python_object, list):
