@@ -1,0 +1,10 @@
+.. _usage:
+
+pymesync - Communicate with a TimeSync API
+==========================================
+
+This module provides an interface to communicate with an implementation of the
+`OSU Open Source Lab`_'s `TimeSync`_ API.
+
+.. _OSU Open Source Lab: http://www.osuosl.org
+.. _TimeSync: http://timesync.readthedocs.org/en/latest/
