@@ -351,7 +351,7 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         # Should return the error
-        self.assertEquals("Error, invalid query: bad",
+        self.assertEquals({'pymesync error': 'invalid query: bad'},
                           ts.get_times(bad=["query"]))
 
     def test_get_projects(self):
@@ -504,8 +504,8 @@ class TestPymesync(unittest.TestCase):
         # Test that error message is returned, can't combine slug and
         # include_deleted
         self.assertEquals(ts.get_projects(slug='gwm', include_deleted=True),
-                          "Error: invalid combination of slug and "
-                          + "include_deleted")
+                          {'pymesync error':
+                           'invalid combination: slug and include_deleted'})
 
     def test_get_projects_include_deleted_revisions(self):
         """Tests TimeSync.get_projects with revisions and include_deleted
