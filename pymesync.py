@@ -98,9 +98,10 @@ class TimeSync(object):
         """
         get_times([kwargs])
 
-        Request project information filtered by parameters passed to ``kwargs``.
-        Returns a list of python objects representing the JSON project
-        information returned by TimeSync or an error message if unsuccessful.
+        Request project information filtered by parameters passed to
+        ``kwargs``. Returns a list of python objects representing the JSON
+        project information returned by TimeSync or an error message if
+        unsuccessful.
 
         ``kwargs`` contains the optional query parameters described in the
         TimeSync documentation. If ``kwargs`` is empty, ``get_projects()`` will
