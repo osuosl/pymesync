@@ -11,7 +11,16 @@ This module allows users to send times to TimeSync (**send_time()**), get a time
 or a list of times from TimeSync (**get_times()**), and get a project or list of
 projects from TimeSync (**get_projects()**).
 
+Pymesync currently supports the following TimeSync API versions:
+
+* v1
+
 All of these methods return a python list of one to many dictionaries.
+
+* **send_time(baseurl)** - Sends time to baseurl (TimeSync), must include version
+  endpoint (ex. /v1)
+* **get_times([kwargs])** - Get times from TimeSync
+* **get_projects([kwargs])** - Get project information from TimeSync
 
 .. _OSU Open Source Lab: http://www.osuosl.org
 .. _TimeSync: http://timesync.readthedocs.org/en/latest/
