@@ -17,8 +17,7 @@ Pymesync currently supports the following TimeSync API versions:
 
 All of these methods return a python list of one to many dictionaries.
 
-* **send_time(baseurl)** - Sends time to baseurl (TimeSync), must include version
-  endpoint (ex. /v1)
+* **send_time(parameter_dict)** - Sends time to baseurl set in constructor
 * **get_times([kwargs])** - Get times from TimeSync
 * **get_projects([kwargs])** - Get project information from TimeSync
 
