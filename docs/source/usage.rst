@@ -74,6 +74,8 @@ TimeSync.\ **send_time(parameter_dict)**
     ``parameter_dict`` is a python dictionary containing the time information to
     send to TimeSync.
 
+------------------------------------------
+
 TimeSync.\ **get_times([\**kwargs])**
 
     Request time entries filtered by parameters passed to ``kwargs``. Returns a
@@ -83,7 +85,8 @@ TimeSync.\ **get_times([\**kwargs])**
     ``kwargs`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_times()`` will
     return all times in the database. The syntax for each argument is
-    ``query=["parameter"]``.
+    ``query=["parameter"]`` except for the ``id`` parameter which is
+    ``id=<integer-id>``.
 
     Currently the valid queries allowed by pymesync are:
 
@@ -94,8 +97,17 @@ TimeSync.\ **get_times([\**kwargs])**
     * ``end`` filter time request by end date
     * ``revisions`` either ``["true"]`` or ``["false"]`` to include revisions of
       times
+    * ``id`` get specific time entry by time id
+
+    .. warning::
+
+      If the ``id`` parameter is passed all other parameters will be ignored.
+      For example, ``ts.get_times(id=12, user=["bob"])`` is equivalent to
+      ``ts.get_times(id=12)``.
 
     .. _TimeSync documentation: http://timesync.readthedocs.org/en/latest/draft_api.html#get-endpoints
+
+------------------------------------------
 
 TimeSync.\ **get_projects([\**kwargs])**
 
@@ -129,7 +141,10 @@ TimeSync.\ **get_projects([\**kwargs])**
       Does not accept a ``slug`` combined with ``include_deleted``, but does
       accept any other combination.
 
+------------------------------------------
+
 Example usage:
+--------------
 
 .. code-block:: python
 

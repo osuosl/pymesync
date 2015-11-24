@@ -11,6 +11,5 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python tests.py
-  - flake8 pymesync.py
-  - flake8 tests.py
+  - make test
+  - make flake
