@@ -40,7 +40,8 @@ To access pymesync's public methods you must first initiate a TimeSync object
 Where
 
 * ``baseurl`` is a string containing the url of the TimeSync instance you will
-  communicate with
+  communicate with. This must include the version endpoint (example
+  ``"http://ts.example.com/v1"``)
 * ``user`` is a string containing the username of the user communicating with
   TimeSync
 * ``password`` is a string containing the user's password
@@ -126,7 +127,7 @@ Example usage:
 
     >>> import pymesync
     >>>
-    >>> ts = pymesync.TimeSync('http://ts.example.com', 'username', 'userpass', 'password')
+    >>> ts = pymesync.TimeSync('http://ts.example.com/v1', 'username', 'userpass', 'password')
     >>> params = {
     ...             "duration": 12,
     ...             "project": "ganeti-web-manager",
