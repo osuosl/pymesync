@@ -16,6 +16,7 @@ class TimeSync(object):
         self.user = user
         self.password = password
         self.auth_type = auth_type
+        self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "revisions"]
 
@@ -63,7 +64,8 @@ class TimeSync(object):
                     for slug in param:
                         query_list.append("{0}={1}".format(query, slug))
                 else:
-                    return "Error, invalid query: {}".format(query)
+                    return {self.error: "invalid query: {}".format(query)}
+                    # return "Error, invalid query: {}".format(query)
 
             query_string = "?{}".format(query_list[0])
             for string in query_list[1:]:
@@ -101,7 +103,8 @@ class TimeSync(object):
         if kwargs:
             # The following combination is not allowed
             if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
-                return "Error: invalid combination of slug and include_deleted"
+                error_message = "invalid combination: slug and include_deleted"
+                return {self.error: error_message}
             # slug goes first, then delete it so it doesn't show up after the ?
             elif 'slug' in kwargs.keys():
                 query_string = "/{}".format(kwargs['slug'])
@@ -109,10 +112,7 @@ class TimeSync(object):
 
             # Convert True and False booleans to TimeSync compatible strings
             for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
-                if v is True:
-                    kwargs[k] = 'true'
-                elif v is False:
-                    kwargs[k] = 'false'
+                kwargs[k] = 'true' if v else 'false'
                 query_list.append("{0}={1}".format(k, kwargs[k]))
 
             # Check for items in query_list after slug was removed, create
