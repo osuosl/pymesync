@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # pymesync documentation build configuration file, created by
-# sphinx-quickstart on Mon Nov 23 15:32:52 2015.
+# sphinx-quickstart on Tue Nov 24 13:20:27 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -75,7 +75,7 @@ language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = []
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
