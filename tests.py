@@ -315,6 +315,60 @@ class TestPymesync(unittest.TestCase):
                                         + "&activity=rev"
                                         + "&activity=hd")
 
+    def test_get_time_with_id(self):
+        """Tests TimeSync.get_times with revisions query parameter"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_times(id=2)
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/times/2')
+
+    def test_get_time_with_id_and_activity(self):
+        """Tests TimeSync.get_times with revisions query parameter"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_times(id=3, activity=["dev"])
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/times/3')
+
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no paramaters"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
