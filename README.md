@@ -13,7 +13,7 @@ $ source venv/bin/activate
 For usage documentation, build our docs:
 
 ```
-(venv) $ cd source
+(venv) $ cd docs
 (venv) $ make html
-(venv) $ <browser> _build/html/index.html
+(venv) $ <browser> build/html/index.html
 ```
