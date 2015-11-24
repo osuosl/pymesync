@@ -26,7 +26,7 @@ class TestPymesync(unittest.TestCase):
         }
 
         # Test baseurl
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -67,7 +67,7 @@ class TestPymesync(unittest.TestCase):
         }
 
         # Test baseurl
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -79,7 +79,7 @@ class TestPymesync(unittest.TestCase):
     def test_auth(self):
         """Tests TimeSync._auth function"""
         # Test baseurl
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -101,7 +101,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -128,7 +128,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -155,7 +155,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -182,7 +182,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -209,7 +209,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -236,7 +236,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -264,7 +264,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -293,7 +293,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -323,7 +323,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -343,7 +343,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_get_times_bad_param(self):
         """Tests TimeSync.get_times with an invalid query parameter"""
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -362,7 +362,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -388,7 +388,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -415,7 +415,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -442,7 +442,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -469,7 +469,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -491,7 +491,7 @@ class TestPymesync(unittest.TestCase):
     def test_get_projects_include_deleted_with_slug(self):
         """Tests TimeSync.get_projects with include_deleted query and slug,
         which is not allowed"""
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -516,7 +516,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader = mock.patch('json.loads')
         patched_json_loader.start()
 
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -539,7 +539,7 @@ class TestPymesync(unittest.TestCase):
     def test_json_to_python_single_object(self):
         """Test that TimeSync._json_to_python converts a json object to a python
         list of object"""
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -577,7 +577,7 @@ class TestPymesync(unittest.TestCase):
     def test_json_to_python_list_of_object(self):
         """Test that TimeSync._json_to_python converts a json list of objects
         to a python list of objects"""
-        baseurl = 'http://ts.example.com'
+        baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",

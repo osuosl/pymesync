@@ -2,7 +2,13 @@
 pymesync - Python TimeSync Module
 
 Allows for interactions with the TimeSync API
-- timesync.send_time() -- Sends time to baseurl (TimeSync)
+
+- send_time(parameter_dict) - Sends time to baseurl (TimeSync)
+- get_times([kwargs]) - Get times from TimeSync
+- get_projects([kwargs]) - Get project information from TimeSync
+
+Supported TimeSync versions:
+v1
 """
 import json
 import requests
@@ -41,7 +47,7 @@ class TimeSync(object):
         json_content = json.dumps(values)
 
         # Construct url to post to
-        url = "{0}/{1}/times".format(self.baseurl, self._api_version())
+        url = "{}/times".format(self.baseurl)
 
         # Attempt to POST to TimeSync
         try:
@@ -83,9 +89,8 @@ class TimeSync(object):
                 query_string += "&{}".format(string)
 
         # Construct query url
-        url = "{0}/{1}/times{2}".format(self.baseurl,
-                                        self._api_version(),
-                                        query_string)
+        url = "{0}/times{1}".format(self.baseurl,
+                                    query_string)
 
         # Attempt to GET times
         try:
@@ -141,9 +146,8 @@ class TimeSync(object):
                 query_string += "?{}".format("&".join(query_list))
 
         # Construct query url - query_string is empty if no kwargs
-        url = "{0}/{1}/projects{2}".format(self.baseurl,
-                                           self._api_version(),
-                                           query_string)
+        url = "{0}/projects{1}".format(self.baseurl,
+                                       query_string)
 
         # Attempt to GET projects
         try:
@@ -159,16 +163,6 @@ class TimeSync(object):
         return {'type': self.auth_type,
                 'username': self.user,
                 'password': self.password, }
-
-    def _api_version(self):
-        """
-        Queries API to find and return API version
-
-        Currently this is hardcoded to API v1 since no others exist. When v2 is
-        released, this will be updated to query the API and discover which
-        version is being used.
-        """
-        return 'v1'
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
