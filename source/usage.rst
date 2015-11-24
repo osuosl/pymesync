@@ -115,7 +115,12 @@ TimeSync.\ **get_projects([\**kwargs])**
 
       - example: ``revisions=True``
 
-Example Usage:
+    .. warning::
+
+      Does not accept a ``slug`` combined with ``include_deleted``, but does
+      accept any other combination.
+
+Example usage:
 
 .. code-block:: python
 

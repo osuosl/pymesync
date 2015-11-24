@@ -23,9 +23,13 @@ class TimeSync(object):
         """
         send_time(parameter_dict)
 
-        Sends a POST request in a JSON body to TimeSync, returns that body if
-        successful or an error if not.
-        parameter_dict - python dict containing time info.
+        Send a time entry to TimeSync via a POST request in a JSON body. This
+        method will return that body in the form of a list containing a single
+        python dictionary. The dictionary will contain a representation of that
+        JSON body if it was successful or error information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the time
+        information to send to TimeSync.
         """
         values = {
             'auth': self._auth(),
@@ -51,7 +55,14 @@ class TimeSync(object):
         """
         get_times([kwargs])
 
-        Returns JSON times objects filtered by supplied parameters
+        Request time entries filtered by parameters passed to ``kwargs``.
+        Returns a list of python objects representing the JSON time information
+        returned by TimeSync or an error message if unsuccessful.
+
+        ``kwargs`` contains the optional query parameters described in the
+        TimeSync documentation. If ``kwargs`` is empty, ``get_times()`` will
+        return all times in the database. The syntax for each argument is
+        ``query=["parameter"]``.
         """
         query_list = []  # Remains empty if no kwargs passed
         query_string = ""
@@ -85,16 +96,24 @@ class TimeSync(object):
 
     def get_projects(self, **kwargs):
         """
-        get_times(kwargs)
+        get_times([kwargs])
 
-        Returns JSON projects objects filtered by supplied parameters
+        Request project information filtered by parameters passed to ``kwargs``.
+        Returns a list of python objects representing the JSON project
+        information returned by TimeSync or an error message if unsuccessful.
+
+        ``kwargs`` contains the optional query parameters described in the
+        TimeSync documentation. If ``kwargs`` is empty, ``get_projects()`` will
+        return all projects in the database. The syntax for each argument is
+        ``query="parameter"`` or ``bool_query=<boolean>``.
+
         Optional parameters:
         slug='<slug>'
         include_deleted=<boolean>
         revisions=<boolean>
 
-        Does not accept a slug and include_deleted, but does accept any other
-        combination.
+        Does not accept a slug combined with include_deleted, but does accept
+        any other combination.
         """
         query_string = ""
         query_list = []
