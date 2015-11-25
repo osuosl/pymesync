@@ -202,3 +202,5 @@ Example usage:
     >>>
     >>> ts.get_projects(slug='gwm')
     [{u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
+    >>> ts.get_activities(slug='code')
+    [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]
