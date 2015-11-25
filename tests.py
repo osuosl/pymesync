@@ -587,6 +587,189 @@ class TestPymesync(unittest.TestCase):
                                         + "?include_deleted=true"
                                         + "&revisions=true")
 
+    def test_get_activities(self):
+        """Tests TimeSync.get_activities"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities()
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/activities')
+
+    def test_get_activities_slug(self):
+        """Tests TimeSync.get_activities with slug"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities(slug='code')
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/activities/code')
+
+    def test_get_activities_revisions(self):
+        """Tests TimeSync.get_activities with revisions query"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities(revisions=True)
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/activities?revisions=true')
+
+    def test_get_activities_slug_revisions(self):
+        """Tests TimeSync.get_projects with revisions query and slug"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities(slug='code', revisions=True)
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/activities/code?revisions=true')
+
+    def test_get_activities_include_deleted(self):
+        """Tests TimeSync.get_activities with include_deleted query"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities(include_deleted=True)
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(
+            'http://ts.example.com/v1/activities?include_deleted=true')
+
+    def test_get_activities_include_deleted_with_slug(self):
+        """Tests TimeSync.get_activities with include_deleted query and slug,
+        which is not allowed"""
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Test that error message is returned, can't combine slug and
+        # include_deleted
+        self.assertEquals(ts.get_activities(slug='code', include_deleted=True),
+                          {'pymesync error':
+                           'invalid combination: slug and include_deleted'})
+
+    def test_get_activities_include_deleted_revisions(self):
+        """Tests TimeSync.get_activities with revisions and include_deleted
+        queries"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Mock requests.get
+        requests.get = mock.Mock('requests.get')
+
+        # Send it
+        ts.get_activities(revisions=True, include_deleted=True)
+
+        patched_json_loader.stop()
+
+        # Test that requests.get was called with correct paramaters
+        requests.get.assert_called_with("http://ts.example.com/v1/activities"
+                                        + "?include_deleted=true"
+                                        + "&revisions=true")
+
     def test_json_to_python_single_object(self):
         """Test that TimeSync._json_to_python converts a json object to a python
         list of object"""
