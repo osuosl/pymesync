@@ -43,17 +43,14 @@ class TimeSync(object):
             'object': parameter_dict,
         }
 
-        # Convert parameter_dict to JSON object
-        json_content = json.dumps(values)
-
         # Construct url to post to
         url = "{}/times".format(self.baseurl)
 
         # Attempt to POST to TimeSync
         try:
             # Success!
-            response = requests.post(url, json=json_content)
-            return self._json_to_python(response)
+            response = requests.post(url, json=values)
+            return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request error
             return e
@@ -98,7 +95,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._json_to_python(response)
+            return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
             return e
@@ -155,7 +152,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._json_to_python(response)
+            return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
             return e
@@ -168,7 +165,7 @@ class TimeSync(object):
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
-        python_object = json.loads(json_object)
+        python_object = json.loads(str(json_object))
 
         if not isinstance(python_object, list):
             python_object = [python_object]

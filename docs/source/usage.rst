@@ -158,13 +158,13 @@ Example usage:
     ...             "activities": ["documenting"],
     ...             "notes": "Worked on docs",
     ...             "issue_uri": "https://github.com/",
-    ...             "date_worked": 2014-04-17,
+    ...             "date_worked": "2014-04-17",
     ...         }
     >>> ts.send_times(params)
-    {u'object': {u'activities': [u'documenting'], u'date_worked': 1993, u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}
+    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}
     >>>
     >>> ts.get_times(user=["username"])
-    {u'object': {u'activities': [u'documenting'], u'date_worked': 1993, u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}
+    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}]
     >>>
     >>> ts.get_projects(slug='gwm')
-    {u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}
+    [{u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]

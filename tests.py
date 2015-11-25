@@ -2,7 +2,6 @@ import unittest
 import pymesync
 import mock
 import requests
-import json
 
 
 class TestPymesync(unittest.TestCase):
@@ -22,7 +21,7 @@ class TestPymesync(unittest.TestCase):
             "activities": ["documenting"],
             "notes": "Worked on docs",
             "issue_uri": "https://github.com/",
-            "date_worked": 2014-04-17,
+            "date_worked": "2014-04-17",
         }
 
         # Test baseurl
@@ -38,8 +37,6 @@ class TestPymesync(unittest.TestCase):
             'auth': ts._auth(),
             'object': params,
         }
-        # Convert to json for test
-        json_content = json.dumps(content)
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
@@ -51,7 +48,7 @@ class TestPymesync(unittest.TestCase):
 
         # Test it
         requests.post.assert_called_with('http://ts.example.com/v1/times',
-                                         json=json_content)
+                                         json=content)
 
     def test_send_time_catch_request_error(self):
         """Tests TimeSync.send_time with request error"""
@@ -63,7 +60,7 @@ class TestPymesync(unittest.TestCase):
             "activities": ["documenting"],
             "notes": "Worked on docs",
             "issue_uri": "https://github.com/",
-            "date_worked": 2014-04-17,
+            "date_worked": "2014-04-17",
         }
 
         # Test baseurl
