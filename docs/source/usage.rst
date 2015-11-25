@@ -127,12 +127,46 @@ TimeSync.\ **get_projects([\**kwargs])**
       - example: ``slug='gwm'``
 
     * ``include_deleted`` tell TimeSync whether to include deleted projects in
-      request. Default is ``False``
+      request. Default is ``False`` and cannot be combined with a ``slug``.
 
       - example: ``include_deleted=True``
 
     * ``revisions`` tell TimeSync whether to include past revisions of projects
       in request. Default is ``False``
+
+      - example: ``revisions=True``
+
+    .. warning::
+
+      Does not accept a ``slug`` combined with ``include_deleted``, but does
+      accept any other combination.
+
+------------------------------------------
+
+TimeSync.\ **get_activities([\**kwargs])**
+
+    Request activity information filtered by parameters passed to ``kwargs``.
+    Returns a list of python objects representing the JSON activity information
+    returned by TimeSync or an error message if unsuccessful.
+
+    ``kwargs`` contains the optional query parameters described in the
+    `TimeSync documentation`_. If ``kwargs`` is empty, ``get_activities()`` will
+    return all activities in the database. The syntax for each argument is
+    ``query="parameter"`` or ``bool_query=<boolean>``.
+
+    The optional parameters currently supported by the TimeSync API are:
+
+    * ``slug`` filter activity request by activity slug
+
+      - example: ``slug='code'``
+
+    * ``include_deleted`` tell TimeSync whether to include deleted activities in
+      request. Default is ``False`` and cannot be combined with a ``slug``.
+
+      - example: ``include_deleted=True``
+
+    * ``revisions`` tell TimeSync whether to include past revisions of
+      activities in request. Default is ``False``
 
       - example: ``revisions=True``
 
@@ -168,3 +202,5 @@ Example usage:
     >>>
     >>> ts.get_projects(slug='gwm')
     [{u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
+    >>> ts.get_activities(slug='code')
+    [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]

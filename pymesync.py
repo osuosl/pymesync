@@ -102,7 +102,7 @@ class TimeSync(object):
 
     def get_projects(self, **kwargs):
         """
-        get_times([kwargs])
+        get_projects([kwargs])
 
         Request project information filtered by parameters passed to
         ``kwargs``. Returns a list of python objects representing the JSON
@@ -149,6 +149,63 @@ class TimeSync(object):
                                        query_string)
 
         # Attempt to GET projects
+        try:
+            # Success!
+            response = requests.get(url)
+            return self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request Error
+            return e
+
+    def get_activities(self, **kwargs):
+        """
+        get_activities([kwargs])
+
+        Request activity information filtered by parameters passed to
+        ``kwargs``. Returns a list of python objects representing the JSON
+        activity information returned by TimeSync or an error message if
+        unsuccessful.
+
+        ``kwargs`` contains the optional query parameters described in the
+        TimeSync documentation. If ``kwargs`` is empty, ``get_activities()``
+        will return all activities in the database. The syntax for each
+        argument is ``query="parameter"`` or ``bool_query=<boolean>``.
+
+        Optional parameters:
+        slug='<slug>'
+        include_deleted=<boolean>
+        revisions=<boolean>
+
+        Does not accept a slug combined with include_deleted, but does accept
+        any other combination.
+        """
+        query_string = ""
+        query_list = []
+        if kwargs:
+            # The following combination is not allowed
+            if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
+                error_message = "invalid combination: slug and include_deleted"
+                return {self.error: error_message}
+            # slug goes first, then delete it so it doesn't show up after the ?
+            elif 'slug' in kwargs.keys():
+                query_string = "/{}".format(kwargs['slug'])
+                del(kwargs['slug'])
+
+            # Convert True and False booleans to TimeSync compatible strings
+            for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
+                kwargs[k] = 'true' if v else 'false'
+                query_list.append("{0}={1}".format(k, kwargs[k]))
+
+            # Check for items in query_list after slug was removed, create
+            # query string
+            if query_list:
+                query_string += "?{}".format("&".join(query_list))
+
+        # Construct query url - query_string is empty if no kwargs
+        url = "{0}/activities{1}".format(self.baseurl,
+                                         query_string)
+
+        # Attempt to GET activities
         try:
             # Success!
             response = requests.get(url)
