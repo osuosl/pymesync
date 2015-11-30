@@ -123,26 +123,11 @@ class TimeSync(object):
         any other combination.
         """
         query_string = ""
-        query_list = []
         if kwargs:
-            # The following combination is not allowed
-            if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
+            query_string = self._format_endpoints(kwargs)
+            if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return {self.error: error_message}
-            # slug goes first, then delete it so it doesn't show up after the ?
-            elif 'slug' in kwargs.keys():
-                query_string = "/{}".format(kwargs['slug'])
-                del(kwargs['slug'])
-
-            # Convert True and False booleans to TimeSync compatible strings
-            for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
-                kwargs[k] = 'true' if v else 'false'
-                query_list.append("{0}={1}".format(k, kwargs[k]))
-
-            # Check for items in query_list after slug was removed, create
-            # query string
-            if query_list:
-                query_string += "?{}".format("&".join(query_list))
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl,
@@ -180,26 +165,11 @@ class TimeSync(object):
         any other combination.
         """
         query_string = ""
-        query_list = []
         if kwargs:
-            # The following combination is not allowed
-            if 'slug' in kwargs.keys() and 'include_deleted' in kwargs.keys():
+            query_string = self._format_endpoints(kwargs)
+            if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return {self.error: error_message}
-            # slug goes first, then delete it so it doesn't show up after the ?
-            elif 'slug' in kwargs.keys():
-                query_string = "/{}".format(kwargs['slug'])
-                del(kwargs['slug'])
-
-            # Convert True and False booleans to TimeSync compatible strings
-            for k, v in sorted(kwargs.items(), key=operator.itemgetter(0)):
-                kwargs[k] = 'true' if v else 'false'
-                query_list.append("{0}={1}".format(k, kwargs[k]))
-
-            # Check for items in query_list after slug was removed, create
-            # query string
-            if query_list:
-                query_string += "?{}".format("&".join(query_list))
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl,
@@ -228,3 +198,28 @@ class TimeSync(object):
             python_object = [python_object]
 
         return python_object
+
+    def _format_endpoints(self, queries):
+        """Format endpoints for GET projects and activities requests"""
+        query_string = ""
+        query_list = []
+
+        # The following combination is not allowed
+        if 'slug' in queries.keys() and 'include_deleted' in queries.keys():
+            return None
+        # slug goes first, then delete it so it doesn't show up after the ?
+        elif 'slug' in queries.keys():
+            query_string = "/{}".format(queries['slug'])
+            del(queries['slug'])
+
+        # Convert True and False booleans to TimeSync compatible strings
+        for k, v in sorted(queries.items(), key=operator.itemgetter(0)):
+            queries[k] = 'true' if v else 'false'
+            query_list.append("{0}={1}".format(k, queries[k]))
+
+        # Check for items in query_list after slug was removed, create
+        # query string
+        if query_list:
+            query_string += "?{}".format("&".join(query_list))
+
+        return query_string
