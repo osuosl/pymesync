@@ -52,6 +52,11 @@ class TestPymesync(unittest.TestCase):
 
     def test_send_time_catch_request_error(self):
         """Tests TimeSync.send_time with request error"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -64,7 +69,7 @@ class TestPymesync(unittest.TestCase):
         }
 
         # Test baseurl
-        baseurl = 'http://ts.example.com/v1'
+        baseurl = 'invalidurl'
         # Instantiate timesync class
         ts = pymesync.TimeSync(baseurl,
                                password="password",
@@ -72,6 +77,89 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         self.assertRaises(Exception, ts.send_time(params))
+
+    def test_post_project_valid(self):
+        """Tests TimeSync.post_project with valid data"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': ts._auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts.post_project(params)
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with('http://ts.example.com/v1/projects',
+                                         json=content)
+
+    def test_post_project_slug(self):
+        """Tests TimeSync.post_project with a slug"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': ts._auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts.post_project(params, slug="slug")
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            'http://ts.example.com/v1/projects/slug',
+            json=content)
 
     def test_auth(self):
         """Tests TimeSync._auth function"""
