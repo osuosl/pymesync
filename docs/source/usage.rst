@@ -72,7 +72,29 @@ TimeSync.\ **send_time(parameter_dict)**
     if it was successful or error information if it was not.
 
     ``parameter_dict`` is a python dictionary containing the time information to
-    send to TimeSync.
+    send to TimeSync. It requires the following fields:
+
+    * ``duration``
+    * ``project``
+    * ``user``
+    * ``activities``
+    * ``notes``
+    * ``issue_uri``
+    * ``date_worked``
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      params = {
+          "duration": 12,
+          "project": "ganeti-web-manager",
+          "user": "example-user",
+          "activities": ["documenting"],
+          "notes": "Worked on docs",
+          "issue_uri": "https://github.com/",
+          "date_worked": "2014-04-17",
+      }
 
 ------------------------------------------
 
@@ -176,6 +198,35 @@ TimeSync.\ **get_activities([\**kwargs])**
       accept any other combination.
 
 ------------------------------------------
+
+Administrative methods:
+-----------------------
+
+TimeSync.\ **post_project(parameter_dict, slug="")**
+
+    Post a project to TimeSync via a POST request in a JSON body. This
+    method will return that body in the form of a list containing a single
+    python dictionary. The dictionary will contain a representation of that
+    JSON body if it was successful or error information if it was not.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. It requires the following fields:
+
+    * ``uri``
+    * ``name``
+    * ``slugs``
+    * ``owner``
+
+    Example parameter_dict:
+
+    .. code-block:: python
+
+      paramater_dict = {
+          "uri": "https://code.osuosl.org/projects/timesync",
+          "name": "TimeSync API",
+          "slugs": ["timesync", "time"],
+          "owner": "example-2"
+      }
 
 Example usage:
 --------------
