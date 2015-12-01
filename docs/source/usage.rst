@@ -233,11 +233,11 @@ TimeSync.\ **post_project(parameter_dict, slug="")**
 
     .. code-block:: python
 
-      paramater_dict = {
+      parameter_dict = {
           "uri": "https://code.osuosl.org/projects/timesync",
           "name": "TimeSync API",
           "slugs": ["timesync", "time"],
-          "owner": "example-2"
+          "owner": "mrsj"
       }
 
     Example update ``parameter_dict``:
@@ -260,21 +260,28 @@ Example usage:
     >>>
     >>> ts = pymesync.TimeSync('http://ts.example.com/v1', 'username', 'userpass', 'password')
     >>> params = {
-    ...             "duration": 12,
-    ...             "project": "ganeti-web-manager",
-    ...             "user": "example-user",
-    ...             "activities": ["documenting"],
-    ...             "notes": "Worked on docs",
-    ...             "issue_uri": "https://github.com/",
-    ...             "date_worked": "2014-04-17",
-    ...         }
+    ...    "duration": 12,
+    ...    "project": "ganeti-web-manager",
+    ...    "user": "username",
+    ...    "activities": ["documenting"],
+    ...    "notes": "Worked on docs",
+    ...    "issue_uri": "https://github.com/",
+    ...    "date_worked": "2014-04-17",
+    ...}
     >>> ts.send_times(params)
-    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}
-    >>>
+    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}
     >>> ts.get_times(user=["username"])
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}]
-    >>>
+    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
     >>> ts.get_projects(slug='gwm')
-    [{u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
+    [{u'owner': u'username', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
     >>> ts.get_activities(slug='code')
     [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]
+    >>> project_params = {
+    ...    "uri": "https://code.osuosl.org/projects/timesync",
+    ...    "name": "TimeSync API",
+    ...    "slugs": ["timesync", "time"],
+    ...    "owner": "username"
+    ...}
+    >>> ts.post_project(project_params)
+    [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
+    >>>

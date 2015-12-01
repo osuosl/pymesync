@@ -365,7 +365,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader.stop()
 
         # Test that requests.get was called with baseurl and correct parameters
-        # Multiple paramaters are sorted alphabetically
+        # Multiple parameters are sorted alphabetically
         requests.get.assert_called_with(
             'http://ts.example.com/v1/times?activity=dev&project=gwm')
 
@@ -394,7 +394,7 @@ class TestPymesync(unittest.TestCase):
         patched_json_loader.stop()
 
         # Test that requests.get was called with baseurl and correct parameters
-        # Multiple paramaters are sorted alphabetically
+        # Multiple parameters are sorted alphabetically
         requests.get.assert_called_with("http://ts.example.com/v1/times"
                                         + "?activity=dev"
                                         + "&activity=rev"
@@ -455,7 +455,7 @@ class TestPymesync(unittest.TestCase):
             'http://ts.example.com/v1/times/3')
 
     def test_get_all_times(self):
-        """Tests TimeSync.get_times with no paramaters"""
+        """Tests TimeSync.get_times with no parameters"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -670,7 +670,7 @@ class TestPymesync(unittest.TestCase):
 
         patched_json_loader.stop()
 
-        # Test that requests.get was called with correct paramaters
+        # Test that requests.get was called with correct parameters
         requests.get.assert_called_with("http://ts.example.com/v1/projects"
                                         + "?include_deleted=true"
                                         + "&revisions=true")
@@ -853,7 +853,7 @@ class TestPymesync(unittest.TestCase):
 
         patched_json_loader.stop()
 
-        # Test that requests.get was called with correct paramaters
+        # Test that requests.get was called with correct parameters
         requests.get.assert_called_with("http://ts.example.com/v1/activities"
                                         + "?include_deleted=true"
                                         + "&revisions=true")
