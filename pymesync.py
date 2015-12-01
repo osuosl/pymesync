@@ -278,7 +278,7 @@ class TimeSync(object):
 
     def _check_params(self, actual, object_name):
         """Checks that ``actual`` parameter passed to POST method contains
-        items in required or optional lists"""
+        items in required or optional lists for that ``object_name``"""
         missing_list = list(self.required_params[object_name])
         # Check that actual is a python dict
         if not isinstance(actual, dict):
