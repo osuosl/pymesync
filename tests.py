@@ -77,7 +77,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.send_time(params),
                           [{'pymesync error':
-                            'send_time: invalid field in parameter: bad'}])
+                            'time object: invalid field: bad'}])
 
     def test_send_time_two_required_missing(self):
         """Tests TimeSync.send_time with missing required fields"""
@@ -103,7 +103,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.send_time(params),
                           [{'pymesync error':
-                            'send_time: parameter missing required field(s): '
+                            'time object: missing required field(s): '
                             'project, activities'}])
 
     def test_send_time_each_required_missing(self):
@@ -134,8 +134,7 @@ class TestPymesync(unittest.TestCase):
             del(params_to_test[key])
             self.assertEquals(ts.send_time(params_to_test), [{
                 "pymesync error":
-                "send_time: "
-                "parameter missing required field(s): {}".format(key)}])
+                "time object: missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
     def test_send_time_type_error(self):
@@ -158,13 +157,13 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.send_time(int_param),
                           [{'pymesync error':
-                            'send_time: requires a python dictionary'}])
+                            'time object: must be python dictionary'}])
         self.assertEquals(ts.send_time(string_param),
                           [{'pymesync error':
-                            'send_time: requires a python dictionary'}])
+                            'time object: must be python dictionary'}])
         self.assertEquals(ts.send_time(list_param),
                           [{'pymesync error':
-                            'send_time: requires a python dictionary'}])
+                            'time object: must be python dictionary'}])
 
     def test_send_time_catch_request_error(self):
         """Tests TimeSync.send_time with request error"""
@@ -301,7 +300,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.post_project(params),
                           [{'pymesync error':
-                            'post_project: invalid field in parameter: bad'}])
+                            'project object: invalid field: bad'}])
 
     def test_post_project_required_missing(self):
         """Tests TimeSync.post_project with missing required fields"""
@@ -325,7 +324,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.post_project(params), [
             {'pymesync error':
-             'post_project: parameter missing required field(s): owner'}])
+             'project object: missing required field(s): owner'}])
 
     def test_post_project_each_required_missing(self):
         """Tests TimeSync.send_time with missing required fields"""
@@ -354,8 +353,7 @@ class TestPymesync(unittest.TestCase):
             del(params_to_test[key])
             self.assertEquals(ts.post_project(params_to_test), [{
                 "pymesync error":
-                "post_project: "
-                "parameter missing required field(s): {}".format(key)}])
+                "project object: missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
     def test_post_project_type_error(self):
@@ -378,13 +376,13 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(ts.post_project(int_param),
                           [{'pymesync error':
-                            'post_project: requires a python dictionary'}])
+                            'project object: must be python dictionary'}])
         self.assertEquals(ts.post_project(string_param),
                           [{'pymesync error':
-                            'post_project: requires a python dictionary'}])
+                            'project object: must be python dictionary'}])
         self.assertEquals(ts.post_project(list_param),
                           [{'pymesync error':
-                            'post_project: requires a python dictionary'}])
+                            'project object: must be python dictionary'}])
 
     def test_auth(self):
         """Tests TimeSync._auth function"""
