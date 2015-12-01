@@ -50,6 +50,52 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with('http://ts.example.com/v1/times',
                                          json=content)
 
+    def test_send_time_uuid(self):
+        """Tests TimeSync.send_time with valid data and uuid"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        # Test baseurl and uuid
+        baseurl = 'http://ts.example.com/v1'
+        uuid = '1234-5678-90abc-d'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': ts._auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts.send_time(params, uuid=uuid)
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/times/{}".format(uuid),
+            json=content)
+
     def test_send_time_invalid(self):
         """Tests TimeSync.send_time with invalid field"""
         # Patch json.loads
