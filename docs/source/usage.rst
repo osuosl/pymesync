@@ -72,7 +72,29 @@ TimeSync.\ **send_time(parameter_dict)**
     if it was successful or error information if it was not.
 
     ``parameter_dict`` is a python dictionary containing the time information to
-    send to TimeSync.
+    send to TimeSync. It requires the following fields:
+
+    * ``duration``
+    * ``project``
+    * ``user``
+    * ``activities``
+    * ``notes`` - this field is optional
+    * ``issue_uri`` - this field is optional
+    * ``date_worked``
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      params = {
+          "duration": 12,
+          "project": "ganeti-web-manager",
+          "user": "example-user",
+          "activities": ["documenting"],
+          "notes": "Worked on docs",
+          "issue_uri": "https://github.com/",
+          "date_worked": "2014-04-17",
+      }
 
 ------------------------------------------
 
@@ -90,14 +112,14 @@ TimeSync.\ **get_times([\**kwargs])**
 
     Currently the valid queries allowed by pymesync are:
 
-    * ``user`` filter time request by user
-    * ``project`` filter time request by project
-    * ``activity`` filter time request by activity
-    * ``start`` filter time request by start date
-    * ``end`` filter time request by end date
-    * ``revisions`` either ``["true"]`` or ``["false"]`` to include revisions of
-      times
-    * ``id`` get specific time entry by time id
+    * ``user`` - filter time request by user
+    * ``project`` - filter time request by project
+    * ``activity`` - filter time request by activity
+    * ``start`` - filter time request by start date
+    * ``end`` - filter time request by end date
+    * ``revisions`` - either ``["true"]`` or ``["false"]`` to include revisions
+      of times
+    * ``id`` - get specific time entry by time id
 
     .. warning::
 
@@ -122,17 +144,17 @@ TimeSync.\ **get_projects([\**kwargs])**
 
     The optional parameters currently supported by the TimeSync API are:
 
-    * ``slug`` filter project request by project slug
+    * ``slug`` - filter project request by project slug
 
       - example: ``slug='gwm'``
 
-    * ``include_deleted`` tell TimeSync whether to include deleted projects in
+    * ``include_deleted`` - tell TimeSync whether to include deleted projects in
       request. Default is ``False`` and cannot be combined with a ``slug``.
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` tell TimeSync whether to include past revisions of projects
-      in request. Default is ``False``
+    * ``revisions`` - tell TimeSync whether to include past revisions of
+      projects in request. Default is ``False``
 
       - example: ``revisions=True``
 
@@ -156,16 +178,16 @@ TimeSync.\ **get_activities([\**kwargs])**
 
     The optional parameters currently supported by the TimeSync API are:
 
-    * ``slug`` filter activity request by activity slug
+    * ``slug`` - filter activity request by activity slug
 
       - example: ``slug='code'``
 
-    * ``include_deleted`` tell TimeSync whether to include deleted activities in
-      request. Default is ``False`` and cannot be combined with a ``slug``.
+    * ``include_deleted`` - tell TimeSync whether to include deleted activities
+      in request. Default is ``False`` and cannot be combined with a ``slug``.
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` tell TimeSync whether to include past revisions of
+    * ``revisions`` - tell TimeSync whether to include past revisions of
       activities in request. Default is ``False``
 
       - example: ``revisions=True``
@@ -177,6 +199,58 @@ TimeSync.\ **get_activities([\**kwargs])**
 
 ------------------------------------------
 
+Administrative methods:
+-----------------------
+
+TimeSync.\ **post_project(parameter_dict, slug="")**
+
+    Post a project to TimeSync via a POST request in a JSON body. This
+    method will return that body in the form of a list containing a single
+    python dictionary. The dictionary will contain a representation of that
+    JSON body if it was successful or error information if it was not.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. It requires the following fields:
+
+    * ``uri``
+    * ``name``
+    * ``slugs`` - this must be a list of strings
+    * ``owner``
+
+    If any of the fields are not provided TimeSync will return an error in a
+    JSON body, which will be converted to a python dictionary by pymesync.
+
+    If the ``slug`` parameter is passed to ``post_project()``, the values in
+    ``parameter_dict`` will be used to update the existing project. If ``uri``,
+    ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
+    to ``[]`` (empty array), the value will be set to the empty string/array.
+
+    If the ``slug`` parameter is passed and a value in ``parameter_dict`` is set
+    to ``None``, the current value in TimeSync for that item will be used (it
+    will not be updated).
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+          "uri": "https://code.osuosl.org/projects/timesync",
+          "name": "TimeSync API",
+          "slugs": ["timesync", "time"],
+          "owner": "mrsj"
+      }
+
+    Example update ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+          "uri": None,
+          "name": None,
+          "slugs": ["timesync", "time", "ts"],
+          "owner": None
+      }
+
 Example usage:
 --------------
 
@@ -186,21 +260,28 @@ Example usage:
     >>>
     >>> ts = pymesync.TimeSync('http://ts.example.com/v1', 'username', 'userpass', 'password')
     >>> params = {
-    ...             "duration": 12,
-    ...             "project": "ganeti-web-manager",
-    ...             "user": "example-user",
-    ...             "activities": ["documenting"],
-    ...             "notes": "Worked on docs",
-    ...             "issue_uri": "https://github.com/",
-    ...             "date_worked": "2014-04-17",
-    ...         }
+    ...    "duration": 12,
+    ...    "project": "ganeti-web-manager",
+    ...    "user": "username",
+    ...    "activities": ["documenting"],
+    ...    "notes": "Worked on docs",
+    ...    "issue_uri": "https://github.com/",
+    ...    "date_worked": "2014-04-17",
+    ...}
     >>> ts.send_times(params)
-    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}
-    >>>
+    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}
     >>> ts.get_times(user=["username"])
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'example-user', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'example-user', u'password': u'password', u'type': u'password'}}]
-    >>>
+    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
     >>> ts.get_projects(slug='gwm')
-    [{u'owner': u'example-user', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
+    [{u'owner': u'username', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
     >>> ts.get_activities(slug='code')
     [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]
+    >>> project_params = {
+    ...    "uri": "https://code.osuosl.org/projects/timesync",
+    ...    "name": "TimeSync API",
+    ...    "slugs": ["timesync", "time"],
+    ...    "owner": "username"
+    ...}
+    >>> ts.post_project(project_params)
+    [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
+    >>>

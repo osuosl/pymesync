@@ -38,13 +38,40 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the time
         information to send to TimeSync.
         """
-        values = {
-            'auth': self._auth(),
-            'object': parameter_dict,
-        }
+        values = {'auth': self._auth(), 'object': parameter_dict}
 
         # Construct url to post to
         url = "{}/times".format(self.baseurl)
+
+        # Attempt to POST to TimeSync
+        try:
+            # Success!
+            response = requests.post(url, json=values)
+            return self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return e
+
+    def post_project(self, parameter_dict, slug=None):
+        """
+        post_project(parameter_dict, slug="")
+
+        Post a project to TimeSync via a POST request in a JSON body. This
+        method will return that body in the form of a list containing a single
+        python dictionary. The dictionary will contain a representation of that
+        JSON body if it was successful or error information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the project
+        information to send to TimeSync.
+        ``slug`` contains the slug for an existing project. If ``slug`` is
+        supplied this method will update the specified project.
+        """
+        values = {'auth': self._auth(), 'object': parameter_dict}
+
+        slug = "/{}".format(slug) if slug else ""
+
+        # Construct url to post to
+        url = "{0}/projects{1}".format(self.baseurl, slug)
 
         # Attempt to POST to TimeSync
         try:
@@ -88,8 +115,7 @@ class TimeSync(object):
                     query_string += "&{}".format(string)
 
         # Construct query url
-        url = "{0}/times{1}".format(self.baseurl,
-                                    query_string)
+        url = "{0}/times{1}".format(self.baseurl, query_string)
 
         # Attempt to GET times
         try:
@@ -130,8 +156,7 @@ class TimeSync(object):
                 return {self.error: error_message}
 
         # Construct query url - query_string is empty if no kwargs
-        url = "{0}/projects{1}".format(self.baseurl,
-                                       query_string)
+        url = "{0}/projects{1}".format(self.baseurl, query_string)
 
         # Attempt to GET projects
         try:
@@ -172,8 +197,7 @@ class TimeSync(object):
                 return {self.error: error_message}
 
         # Construct query url - query_string is empty if no kwargs
-        url = "{0}/activities{1}".format(self.baseurl,
-                                         query_string)
+        url = "{0}/activities{1}".format(self.baseurl, query_string)
 
         # Attempt to GET activities
         try:
