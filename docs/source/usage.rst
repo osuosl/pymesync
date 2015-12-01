@@ -78,8 +78,8 @@ TimeSync.\ **send_time(parameter_dict)**
     * ``project``
     * ``user``
     * ``activities``
-    * ``notes``
-    * ``issue_uri``
+    * ``notes`` - this field is optional
+    * ``issue_uri`` - this field is optional
     * ``date_worked``
 
     Example ``parameter_dict``:
@@ -112,14 +112,14 @@ TimeSync.\ **get_times([\**kwargs])**
 
     Currently the valid queries allowed by pymesync are:
 
-    * ``user`` filter time request by user
-    * ``project`` filter time request by project
-    * ``activity`` filter time request by activity
-    * ``start`` filter time request by start date
-    * ``end`` filter time request by end date
-    * ``revisions`` either ``["true"]`` or ``["false"]`` to include revisions of
-      times
-    * ``id`` get specific time entry by time id
+    * ``user`` - filter time request by user
+    * ``project`` - filter time request by project
+    * ``activity`` - filter time request by activity
+    * ``start`` - filter time request by start date
+    * ``end`` - filter time request by end date
+    * ``revisions`` - either ``["true"]`` or ``["false"]`` to include revisions
+      of times
+    * ``id`` - get specific time entry by time id
 
     .. warning::
 
@@ -144,17 +144,17 @@ TimeSync.\ **get_projects([\**kwargs])**
 
     The optional parameters currently supported by the TimeSync API are:
 
-    * ``slug`` filter project request by project slug
+    * ``slug`` - filter project request by project slug
 
       - example: ``slug='gwm'``
 
-    * ``include_deleted`` tell TimeSync whether to include deleted projects in
+    * ``include_deleted`` - tell TimeSync whether to include deleted projects in
       request. Default is ``False`` and cannot be combined with a ``slug``.
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` tell TimeSync whether to include past revisions of projects
-      in request. Default is ``False``
+    * ``revisions`` - tell TimeSync whether to include past revisions of
+      projects in request. Default is ``False``
 
       - example: ``revisions=True``
 
@@ -178,16 +178,16 @@ TimeSync.\ **get_activities([\**kwargs])**
 
     The optional parameters currently supported by the TimeSync API are:
 
-    * ``slug`` filter activity request by activity slug
+    * ``slug`` - filter activity request by activity slug
 
       - example: ``slug='code'``
 
-    * ``include_deleted`` tell TimeSync whether to include deleted activities in
-      request. Default is ``False`` and cannot be combined with a ``slug``.
+    * ``include_deleted`` - tell TimeSync whether to include deleted activities
+      in request. Default is ``False`` and cannot be combined with a ``slug``.
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` tell TimeSync whether to include past revisions of
+    * ``revisions`` - tell TimeSync whether to include past revisions of
       activities in request. Default is ``False``
 
       - example: ``revisions=True``
@@ -214,10 +214,22 @@ TimeSync.\ **post_project(parameter_dict, slug="")**
 
     * ``uri``
     * ``name``
-    * ``slugs``
+    * ``slugs`` - this must be a list of strings
     * ``owner``
 
-    Example parameter_dict:
+    If any of the fields are not provided TimeSync will return an error in a
+    JSON body, which will be converted to a python dictionary by pymesync.
+
+    If the ``slug`` parameter is passed to ``post_project()``, the values in
+    ``parameter_dict`` will be used to update the existing project. If ``uri``,
+    ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
+    to ``[]`` (empty array), the value will be set to the empty string/array.
+
+    If the ``slug`` parameter is passed and a value in ``parameter_dict`` is set
+    to ``None``, the current value in TimeSync for that item will be used (it
+    will not be updated).
+
+    Example ``parameter_dict``:
 
     .. code-block:: python
 
@@ -226,6 +238,17 @@ TimeSync.\ **post_project(parameter_dict, slug="")**
           "name": "TimeSync API",
           "slugs": ["timesync", "time"],
           "owner": "example-2"
+      }
+
+    Example update ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+          "uri": None,
+          "name": None,
+          "slugs": ["timesync", "time", "ts"],
+          "owner": None
       }
 
 Example usage:
