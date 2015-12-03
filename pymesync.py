@@ -51,9 +51,9 @@ class TimeSync(object):
         information to send to TimeSync.
         """
         # Check that parameter_dict contains required fields and no bad fields
-        param_check = self._check_params(parameter_dict, "time")
-        if param_check != "valid":
-            return [{self.error: param_check}]
+        field_error = self._get_field_errors(parameter_dict, "time")
+        if field_error:
+            return [{self.error: field_error}]
 
         values = {'auth': self._auth(), 'object': parameter_dict}
 
@@ -84,9 +84,9 @@ class TimeSync(object):
         supplied this method will update the specified project.
         """
         # Check that parameter_dict contains required fields and no bad fields
-        param_check = self._check_params(parameter_dict, "project")
-        if param_check != "valid":
-            return [{self.error: param_check}]
+        field_error = self._get_field_errors(parameter_dict, "project")
+        if field_error:
+            return [{self.error: field_error}]
 
         values = {'auth': self._auth(), 'object': parameter_dict}
 
@@ -276,9 +276,10 @@ class TimeSync(object):
 
         return query_string
 
-    def _check_params(self, actual, object_name):
+    def _get_field_errors(self, actual, object_name):
         """Checks that ``actual`` parameter passed to POST method contains
-        items in required or optional lists for that ``object_name``"""
+        items in required or optional lists for that ``object_name``.
+        Returns None if no errors found or error string if error found"""
         missing_list = list(self.required_params[object_name])
         # Check that actual is a python dict
         if not isinstance(actual, dict):
@@ -287,8 +288,8 @@ class TimeSync(object):
         for key in actual:
             if (key not in self.required_params[object_name]
                     and key not in self.optional_params[object_name]):
-                return "{0} object: invalid field: {1}".format(
-                    object_name, key)
+                return "{0} object: invalid field: {1}".format(object_name,
+                                                               key)
 
             # Remove field from copied list if the field is in required
             if key in self.required_params[object_name]:
@@ -299,5 +300,5 @@ class TimeSync(object):
             return "{0} object: missing required field(s): {1}".format(
                 object_name, ", ".join(missing_list))
 
-        # Success if we made it this far
-        return "valid"
+        # No errors if we made it this far
+        return None
