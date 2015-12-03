@@ -151,8 +151,8 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        # patched_json_loader = mock.patch('json.loads')
-        # patched_json_loader.start()
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
