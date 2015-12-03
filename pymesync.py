@@ -280,10 +280,11 @@ class TimeSync(object):
         """Checks that ``actual`` parameter passed to POST method contains
         items in required or optional lists for that ``object_name``.
         Returns None if no errors found or error string if error found"""
-        missing_list = list(self.required_params[object_name])
         # Check that actual is a python dict
         if not isinstance(actual, dict):
             return "{} object: must be python dictionary".format(object_name)
+
+        missing_list = list(self.required_params[object_name])
 
         for key in actual:
             if (key not in self.required_params[object_name]
