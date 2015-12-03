@@ -4,6 +4,7 @@ pymesync - Python TimeSync Module
 Allows for interactions with the TimeSync API
 
 - send_time(parameter_dict) - Sends time to baseurl (TimeSync)
+- post_project(parameter_dict, slug="") - Creates or updates project
 - get_times([kwargs]) - Get times from TimeSync
 - get_projects([kwargs]) - Get project information from TimeSync
 
@@ -25,6 +26,17 @@ class TimeSync(object):
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "revisions"]
+        self.required_params = {
+            "time": ["duration", "project", "user",
+                     "activities", "date_worked"],
+            "project": ["uri", "name", "slugs", "owner"],
+            "activity": ["name", "slug"],
+        }
+        self.optional_params = {
+            "time": ["notes", "issue_uri"],
+            "project": [],
+            "activity": [],
+        }
 
     def send_time(self, parameter_dict):
         """
@@ -38,6 +50,11 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the time
         information to send to TimeSync.
         """
+        # Check that parameter_dict contains required fields and no bad fields
+        field_error = self._get_field_errors(parameter_dict, "time")
+        if field_error:
+            return [{self.error: field_error}]
+
         values = {'auth': self._auth(), 'object': parameter_dict}
 
         # Construct url to post to
@@ -66,6 +83,11 @@ class TimeSync(object):
         ``slug`` contains the slug for an existing project. If ``slug`` is
         supplied this method will update the specified project.
         """
+        # Check that parameter_dict contains required fields and no bad fields
+        field_error = self._get_field_errors(parameter_dict, "project")
+        if field_error:
+            return [{self.error: field_error}]
+
         values = {'auth': self._auth(), 'object': parameter_dict}
 
         slug = "/{}".format(slug) if slug else ""
@@ -108,7 +130,9 @@ class TimeSync(object):
                         for slug in param:
                             query_list.append("{0}={1}".format(query, slug))
                     else:
-                        return {self.error: "invalid query: {}".format(query)}
+                        return [
+                            {self.error: "invalid query: {}".format(query)}
+                        ]
 
                 query_string = "?{}".format(query_list[0])
                 for string in query_list[1:]:
@@ -153,7 +177,7 @@ class TimeSync(object):
             query_string = self._format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
-                return {self.error: error_message}
+                return [{self.error: error_message}]
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl, query_string)
@@ -194,7 +218,7 @@ class TimeSync(object):
             query_string = self._format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
-                return {self.error: error_message}
+                return [{self.error: error_message}]
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl, query_string)
@@ -207,6 +231,10 @@ class TimeSync(object):
         except requests.exceptions.RequestException as e:
             # Request Error
             return e
+
+###############################################################################
+# Internal methods
+###############################################################################
 
     def _auth(self):
         """Returns auth object to be send to TimeSync"""
@@ -247,3 +275,31 @@ class TimeSync(object):
             query_string += "?{}".format("&".join(query_list))
 
         return query_string
+
+    def _get_field_errors(self, actual, object_name):
+        """Checks that ``actual`` parameter passed to POST method contains
+        items in required or optional lists for that ``object_name``.
+        Returns None if no errors found or error string if error found"""
+        # Check that actual is a python dict
+        if not isinstance(actual, dict):
+            return "{} object: must be python dictionary".format(object_name)
+
+        missing_list = list(self.required_params[object_name])
+
+        for key in actual:
+            if (key not in self.required_params[object_name]
+                    and key not in self.optional_params[object_name]):
+                return "{0} object: invalid field: {1}".format(object_name,
+                                                               key)
+
+            # Remove field from copied list if the field is in required
+            if key in self.required_params[object_name]:
+                del(missing_list[missing_list.index(key)])
+
+        # If there is anything in missing_list, it is an absent required field
+        if missing_list:
+            return "{0} object: missing required field(s): {1}".format(
+                object_name, ", ".join(missing_list))
+
+        # No errors if we made it this far
+        return None

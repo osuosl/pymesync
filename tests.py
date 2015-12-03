@@ -50,6 +50,121 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with('http://ts.example.com/v1/times',
                                          json=content)
 
+    def test_send_time_invalid(self):
+        """Tests TimeSync.send_time with invalid field"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+            "bad": "field",
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.send_time(params),
+                          [{'pymesync error':
+                            'time object: invalid field: bad'}])
+
+    def test_send_time_two_required_missing(self):
+        """Tests TimeSync.send_time with missing required fields"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "user": "example-user",
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.send_time(params),
+                          [{'pymesync error':
+                            'time object: missing required field(s): '
+                            'project, activities'}])
+
+    def test_send_time_each_required_missing(self):
+        """Tests TimeSync.send_time with missing required fields"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "date_worked": "2014-04-17",
+        }
+
+        params_to_test = dict(params)
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        for key in params:
+            del(params_to_test[key])
+            self.assertEquals(ts.send_time(params_to_test), [{
+                "pymesync error":
+                "time object: missing required field(s): {}".format(key)}])
+            params_to_test = dict(params)
+
+    def test_send_time_type_error(self):
+        """Tests TimeSync.send_time with incorrect parameter types"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        int_param = 1
+        string_param = "hello"
+        list_param = [1, 2, 3]
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.send_time(int_param),
+                          [{'pymesync error':
+                            'time object: must be python dictionary'}])
+        self.assertEquals(ts.send_time(string_param),
+                          [{'pymesync error':
+                            'time object: must be python dictionary'}])
+        self.assertEquals(ts.send_time(list_param),
+                          [{'pymesync error':
+                            'time object: must be python dictionary'}])
+
     def test_send_time_catch_request_error(self):
         """Tests TimeSync.send_time with request error"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
@@ -160,6 +275,114 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with(
             'http://ts.example.com/v1/projects/slug',
             json=content)
+
+    def test_post_project_invalid(self):
+        """Tests TimeSync.post_project with invalid field"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2",
+            "bad": "field"
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.post_project(params),
+                          [{'pymesync error':
+                            'project object: invalid field: bad'}])
+
+    def test_post_project_required_missing(self):
+        """Tests TimeSync.post_project with missing required fields"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.post_project(params), [
+            {'pymesync error':
+             'project object: missing required field(s): owner'}])
+
+    def test_post_project_each_required_missing(self):
+        """Tests TimeSync.send_time with missing required fields"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        params_to_test = dict(params)
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        for key in params:
+            del(params_to_test[key])
+            self.assertEquals(ts.post_project(params_to_test), [{
+                "pymesync error":
+                "project object: missing required field(s): {}".format(key)}])
+            params_to_test = dict(params)
+
+    def test_post_project_type_error(self):
+        """Tests TimeSync.post_project with incorrect parameter types"""
+        # Patch json.loads
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        int_param = 1
+        string_param = "hello"
+        list_param = [1, 2, 3]
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.post_project(int_param),
+                          [{'pymesync error':
+                            'project object: must be python dictionary'}])
+        self.assertEquals(ts.post_project(string_param),
+                          [{'pymesync error':
+                            'project object: must be python dictionary'}])
+        self.assertEquals(ts.post_project(list_param),
+                          [{'pymesync error':
+                            'project object: must be python dictionary'}])
 
     def test_auth(self):
         """Tests TimeSync._auth function"""
@@ -480,7 +703,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with('http://ts.example.com/v1/times')
 
-    def test_get_times_bad_param(self):
+    def test_get_times_bad_query(self):
         """Tests TimeSync.get_times with an invalid query parameter"""
         baseurl = 'http://ts.example.com/v1'
         # Instantiate timesync class
@@ -490,7 +713,7 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         # Should return the error
-        self.assertEquals({'pymesync error': 'invalid query: bad'},
+        self.assertEquals([{'pymesync error': 'invalid query: bad'}],
                           ts.get_times(bad=["query"]))
 
     def test_get_projects(self):
@@ -643,8 +866,8 @@ class TestPymesync(unittest.TestCase):
         # Test that error message is returned, can't combine slug and
         # include_deleted
         self.assertEquals(ts.get_projects(slug='gwm', include_deleted=True),
-                          {'pymesync error':
-                           'invalid combination: slug and include_deleted'})
+                          [{'pymesync error':
+                           'invalid combination: slug and include_deleted'}])
 
     def test_get_projects_include_deleted_revisions(self):
         """Tests TimeSync.get_projects with revisions and include_deleted
@@ -826,8 +1049,8 @@ class TestPymesync(unittest.TestCase):
         # Test that error message is returned, can't combine slug and
         # include_deleted
         self.assertEquals(ts.get_activities(slug='code', include_deleted=True),
-                          {'pymesync error':
-                           'invalid combination: slug and include_deleted'})
+                          [{'pymesync error':
+                           'invalid combination: slug and include_deleted'}])
 
     def test_get_activities_include_deleted_revisions(self):
         """Tests TimeSync.get_activities with revisions and include_deleted
