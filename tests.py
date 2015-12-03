@@ -131,9 +131,7 @@ class TestPymesync(unittest.TestCase):
     def test_send_time_type_error(self):
         """Tests TimeSync.send_time with incorrect parameter types"""
         # Parameters to be sent to TimeSync
-        int_param = 1
-        string_param = "hello"
-        list_param = [1, 2, 3]
+        param_list = [1, "hello", [1, 2, 3]]
 
         # Test baseurl
         baseurl = 'http://ts.example.com/v1'
@@ -143,15 +141,10 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.send_time(int_param),
-                          [{'pymesync error':
-                            'time object: must be python dictionary'}])
-        self.assertEquals(ts.send_time(string_param),
-                          [{'pymesync error':
-                            'time object: must be python dictionary'}])
-        self.assertEquals(ts.send_time(list_param),
-                          [{'pymesync error':
-                            'time object: must be python dictionary'}])
+        for param in param_list:
+            self.assertEquals(ts.send_time(param),
+                              [{'pymesync error':
+                                'time object: must be python dictionary'}])
 
     def test_send_time_catch_request_error(self):
         """Tests TimeSync.send_time with request error"""
@@ -309,7 +302,7 @@ class TestPymesync(unittest.TestCase):
              'project object: missing required field(s): owner'}])
 
     def test_post_project_each_required_missing(self):
-        """Tests TimeSync.send_time with missing required fields"""
+        """Tests TimeSync.post_project with missing required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -338,9 +331,7 @@ class TestPymesync(unittest.TestCase):
     def test_post_project_type_error(self):
         """Tests TimeSync.post_project with incorrect parameter types"""
         # Parameters to be sent to TimeSync
-        int_param = 1
-        string_param = "hello"
-        list_param = [1, 2, 3]
+        param_list = [1, "hello", [1, 2, 3]]
 
         # Test baseurl
         baseurl = 'http://ts.example.com/v1'
@@ -350,15 +341,10 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.post_project(int_param),
-                          [{'pymesync error':
-                            'project object: must be python dictionary'}])
-        self.assertEquals(ts.post_project(string_param),
-                          [{'pymesync error':
-                            'project object: must be python dictionary'}])
-        self.assertEquals(ts.post_project(list_param),
-                          [{'pymesync error':
-                            'project object: must be python dictionary'}])
+        for param in param_list:
+            self.assertEquals(ts.post_project(param),
+                              [{'pymesync error':
+                                'project object: must be python dictionary'}])
 
     def test_create_activity_valid(self):
         """Tests TimeSync.create_activity with valid data"""
@@ -370,7 +356,7 @@ class TestPymesync(unittest.TestCase):
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
-            "slugs": ["qa", "test"]
+            "slug": "qa",
         }
 
         # Test baseurl
@@ -409,7 +395,7 @@ class TestPymesync(unittest.TestCase):
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
-            "slugs": ["qa", "test"]
+            "slug": "qa",
         }
 
         # Test baseurl
@@ -438,6 +424,89 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with(
             'http://ts.example.com/v1/activities/slug',
             json=content)
+
+    def test_create_activity_invalid(self):
+        """Tests TimeSync.create_activity with invalid field"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+            "bad": "field",
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.create_activity(params),
+                          [{'pymesync error':
+                            'activity object: invalid field: bad'}])
+
+    def test_create_activity_required_missing(self):
+        """Tests TimeSync.create_activity with missing required fields"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "name": "Quality Assurance/Testing",
+        }
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        self.assertEquals(ts.create_activity(params), [
+            {'pymesync error':
+             'activity object: missing required field(s): slug'}])
+
+    def test_create_activity_each_required_missing(self):
+        """Tests TimeSync.create_activity with missing required fields"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+        }
+
+        params_to_test = dict(params)
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        for key in params:
+            del(params_to_test[key])
+            self.assertEquals(ts.create_activity(params_to_test), [{
+                "pymesync error":
+                "activity object: missing required field(s): {}".format(key)}])
+            params_to_test = dict(params)
+
+    def test_create_activity_type_error(self):
+        """Tests TimeSync.post_project with incorrect parameter types"""
+        # Parameters to be sent to TimeSync
+        param_list = [1, "hello", [1, 2, 3]]
+
+        # Test baseurl
+        baseurl = 'http://ts.example.com/v1'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        for param in param_list:
+            self.assertEquals(ts.create_activity(param),
+                              [{'pymesync error':
+                                'activity object: must be python dictionary'}])
 
     def test_auth(self):
         """Tests TimeSync._auth function"""
