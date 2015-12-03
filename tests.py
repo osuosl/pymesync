@@ -52,9 +52,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_send_time_invalid(self):
         """Tests TimeSync.send_time with invalid field"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -81,9 +78,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_send_time_two_required_missing(self):
         """Tests TimeSync.send_time with missing required fields"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -108,9 +102,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_send_time_each_required_missing(self):
         """Tests TimeSync.send_time with missing required fields"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -139,9 +130,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_send_time_type_error(self):
         """Tests TimeSync.send_time with incorrect parameter types"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         int_param = 1
         string_param = "hello"
@@ -170,8 +158,8 @@ class TestPymesync(unittest.TestCase):
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
+        # patched_json_loader = mock.patch('json.loads')
+        # patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -278,9 +266,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_post_project_invalid(self):
         """Tests TimeSync.post_project with invalid field"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -304,9 +289,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_post_project_required_missing(self):
         """Tests TimeSync.post_project with missing required fields"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -328,9 +310,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_post_project_each_required_missing(self):
         """Tests TimeSync.send_time with missing required fields"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -358,9 +337,6 @@ class TestPymesync(unittest.TestCase):
 
     def test_post_project_type_error(self):
         """Tests TimeSync.post_project with incorrect parameter types"""
-        # Patch json.loads
-        patched_json_loader = mock.patch('json.loads')
-        patched_json_loader.start()
         # Parameters to be sent to TimeSync
         int_param = 1
         string_param = "hello"
@@ -384,8 +360,8 @@ class TestPymesync(unittest.TestCase):
                           [{'pymesync error':
                             'project object: must be python dictionary'}])
 
-    def test_post_activities_valid(self):
-        """Tests TimeSync.post_activities with valid data"""
+    def test_create_activity_valid(self):
+        """Tests TimeSync.create_activity with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -415,7 +391,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.post_activities(params)
+        ts.create_activity(params)
 
         patched_json_loader.stop()
 
@@ -423,8 +399,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with('http://ts.example.com/v1/activities',
                                          json=content)
 
-    def test_post_activities_slug(self):
-        """Tests TimeSync.post_activities with a slug"""
+    def test_create_activity_slug(self):
+        """Tests TimeSync.create_activity with a slug"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -454,7 +430,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.post_activities(params, slug="slug")
+        ts.create_activity(params, slug="slug")
 
         patched_json_loader.stop()
 
