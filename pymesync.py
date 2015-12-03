@@ -38,7 +38,7 @@ class TimeSync(object):
             "activity": [],
         }
 
-    def send_time(self, parameter_dict):
+    def send_time(self, parameter_dict, uuid=None):
         """
         send_time(parameter_dict)
 
@@ -49,6 +49,8 @@ class TimeSync(object):
 
         ``parameter_dict`` is a python dictionary containing the time
         information to send to TimeSync.
+        ``uuid`` contains the uuid for an existing time entry. If ``uuid`` is
+        supplied this method will update the specified time entry.
         """
         # Check that parameter_dict contains required fields and no bad fields
         field_error = self._get_field_errors(parameter_dict, "time")
@@ -57,8 +59,10 @@ class TimeSync(object):
 
         values = {'auth': self._auth(), 'object': parameter_dict}
 
+        uuid = "/{}".format(uuid) if uuid else ""
+
         # Construct url to post to
-        url = "{}/times".format(self.baseurl)
+        url = "{0}/times{1}".format(self.baseurl, uuid)
 
         # Attempt to POST to TimeSync
         try:
