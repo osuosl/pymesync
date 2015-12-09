@@ -50,8 +50,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/times",
                                          json=content)
 
-    def test_create_time_uuid(self):
-        """Tests TimeSync.create_time with valid data and uuid"""
+    def test_update_time_uuid(self):
+        """Tests TimeSync.update_time with valid data by uuid"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -87,7 +87,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_time(params, uuid=uuid)
+        ts.update_time(params, uuid=uuid)
 
         patched_json_loader.stop()
 
@@ -262,8 +262,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/projects",
                                          json=content)
 
-    def test_create_project_slug(self):
-        """Tests TimeSync.create_project with a slug"""
+    def test_update_project_slug(self):
+        """Tests TimeSync.update_project by slug"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -295,7 +295,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_project(params, slug="slug")
+        ts.update_project(params, slug="slug")
 
         patched_json_loader.stop()
 
@@ -432,8 +432,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/activities",
                                          json=content)
 
-    def test_create_activity_slug(self):
-        """Tests TimeSync.create_activity with a slug"""
+    def test_update_activity_slug(self):
+        """Tests TimeSync.update_activity by slug"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -463,7 +463,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_activity(params, slug="slug")
+        ts.update_activity(params, slug="slug")
 
         patched_json_loader.stop()
 
