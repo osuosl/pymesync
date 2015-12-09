@@ -104,6 +104,41 @@ class TimeSync(object):
             # Request error
             return e
 
+    def create_activity(self, parameter_dict, slug=None):
+        """
+        create_activity(parameter_dict, slug=None)
+
+        Post an activity to TimeSync via a POST request in a JSON body. This
+        method will return that body in the form of a list containing a single
+        python dictionary. The dictionary will contain a representation of that
+        JSON body if it was successful or error information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the activity
+        information to send to TimeSync.
+        ``slug`` contains the slug for an existing activity. If ``slug`` is
+        supplied this method will update the specified activity.
+        """
+        # Check that parameter_dict contains required fields and no bad fields
+        field_error = self._get_field_errors(parameter_dict, "activity")
+        if field_error:
+            return [{self.error: field_error}]
+
+        values = {'auth': self._auth(), 'object': parameter_dict}
+
+        slug = "/{}".format(slug) if slug else ""
+
+        # Construct url to post to
+        url = "{0}/activities{1}".format(self.baseurl, slug)
+
+        # Attempt to POST to TimeSync
+        try:
+            # Success!
+            response = requests.post(url, json=values)
+            return self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return e
+
     def get_times(self, **kwargs):
         """
         get_times([kwargs])
