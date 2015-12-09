@@ -6,8 +6,8 @@ import requests
 
 class TestPymesync(unittest.TestCase):
 
-    def test_send_time_valid(self):
-        """Tests TimeSync.send_time with valid data"""
+    def test_create_time_valid(self):
+        """Tests TimeSync.create_time with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -42,7 +42,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.send_time(params)
+        ts.create_time(params)
 
         patched_json_loader.stop()
 
@@ -50,8 +50,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/times",
                                          json=content)
 
-    def test_send_time_uuid(self):
-        """Tests TimeSync.send_time with valid data and uuid"""
+    def test_create_time_uuid(self):
+        """Tests TimeSync.create_time with valid data and uuid"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -87,7 +87,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.send_time(params, uuid=uuid)
+        ts.create_time(params, uuid=uuid)
 
         patched_json_loader.stop()
 
@@ -96,8 +96,8 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/times/{}".format(uuid),
             json=content)
 
-    def test_send_time_invalid(self):
-        """Tests TimeSync.send_time with invalid field"""
+    def test_create_time_invalid(self):
+        """Tests TimeSync.create_time with invalid field"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -118,12 +118,12 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.send_time(params),
+        self.assertEquals(ts.create_time(params),
                           [{"pymesync error":
                             "time object: invalid field: bad"}])
 
-    def test_send_time_two_required_missing(self):
-        """Tests TimeSync.send_time with missing required fields"""
+    def test_create_time_two_required_missing(self):
+        """Tests TimeSync.create_time with missing required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -141,13 +141,13 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.send_time(params),
+        self.assertEquals(ts.create_time(params),
                           [{"pymesync error":
                             "time object: missing required field(s): "
                             "project, activities"}])
 
-    def test_send_time_each_required_missing(self):
-        """Tests TimeSync.send_time with missing required fields"""
+    def test_create_time_each_required_missing(self):
+        """Tests TimeSync.create_time with missing required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -169,13 +169,13 @@ class TestPymesync(unittest.TestCase):
 
         for key in params:
             del(params_to_test[key])
-            self.assertEquals(ts.send_time(params_to_test), [{
+            self.assertEquals(ts.create_time(params_to_test), [{
                 "pymesync error":
                 "time object: missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
-    def test_send_time_type_error(self):
-        """Tests TimeSync.send_time with incorrect parameter types"""
+    def test_create_time_type_error(self):
+        """Tests TimeSync.create_time with incorrect parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 
@@ -188,12 +188,12 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         for param in param_list:
-            self.assertEquals(ts.send_time(param),
+            self.assertEquals(ts.create_time(param),
                               [{"pymesync error":
                                 "time object: must be python dictionary"}])
 
-    def test_send_time_catch_request_error(self):
-        """Tests TimeSync.send_time with request error"""
+    def test_create_time_catch_request_error(self):
+        """Tests TimeSync.create_time with request error"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -218,7 +218,8 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertRaises(Exception, ts.send_time(params))
+        self.assertRaises(Exception, ts.create_time(params))
+        patched_json_loader.stop()
 
     def test_post_project_valid(self):
         """Tests TimeSync.post_project with valid data"""
