@@ -55,7 +55,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {'auth': self._auth(), 'object': parameter_dict}
+        values = {"auth": self._auth(), "object": parameter_dict}
 
         # Construct url to post to
         url = "{}/times".format(self.baseurl)
@@ -88,7 +88,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {'auth': self._auth(), 'object': parameter_dict}
+        values = {"auth": self._auth(), "object": parameter_dict}
 
         slug = "/{}".format(slug) if slug else ""
 
@@ -123,7 +123,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {'auth': self._auth(), 'object': parameter_dict}
+        values = {"auth": self._auth(), "object": parameter_dict}
 
         slug = "/{}".format(slug) if slug else ""
 
@@ -156,7 +156,7 @@ class TimeSync(object):
         query_string = ""
         if kwargs:
             if "id" in kwargs.keys():
-                query_string = "/{}".format(kwargs['id'])
+                query_string = "/{}".format(kwargs["id"])
             else:
                 # Sort them into an alphabetized list for easier testing
                 sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
@@ -200,7 +200,7 @@ class TimeSync(object):
         ``query="parameter"`` or ``bool_query=<boolean>``.
 
         Optional parameters:
-        slug='<slug>'
+        slug="<slug>"
         include_deleted=<boolean>
         revisions=<boolean>
 
@@ -241,7 +241,7 @@ class TimeSync(object):
         argument is ``query="parameter"`` or ``bool_query=<boolean>``.
 
         Optional parameters:
-        slug='<slug>'
+        slug="<slug>"
         include_deleted=<boolean>
         revisions=<boolean>
 
@@ -273,9 +273,9 @@ class TimeSync(object):
 
     def _auth(self):
         """Returns auth object to be send to TimeSync"""
-        return {'type': self.auth_type,
-                'username': self.user,
-                'password': self.password, }
+        return {"type": self.auth_type,
+                "username": self.user,
+                "password": self.password, }
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
@@ -292,16 +292,16 @@ class TimeSync(object):
         query_list = []
 
         # The following combination is not allowed
-        if 'slug' in queries.keys() and 'include_deleted' in queries.keys():
+        if "slug" in queries.keys() and "include_deleted" in queries.keys():
             return None
         # slug goes first, then delete it so it doesn't show up after the ?
-        elif 'slug' in queries.keys():
-            query_string = "/{}".format(queries['slug'])
-            del(queries['slug'])
+        elif "slug" in queries.keys():
+            query_string = "/{}".format(queries["slug"])
+            del(queries["slug"])
 
         # Convert True and False booleans to TimeSync compatible strings
         for k, v in sorted(queries.items(), key=operator.itemgetter(0)):
-            queries[k] = 'true' if v else 'false'
+            queries[k] = "true" if v else "false"
             query_list.append("{0}={1}".format(k, queries[k]))
 
         # Check for items in query_list after slug was removed, create
