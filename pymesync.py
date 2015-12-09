@@ -52,30 +52,12 @@ class TimeSync(object):
         ``uuid`` contains the uuid for an existing time entry. If ``uuid`` is
         supplied this method will update the specified time entry.
         """
-        # Check that parameter_dict contains required fields and no bad fields
-        field_error = self._get_field_errors(parameter_dict, "time")
-        if field_error:
-            return [{self.error: field_error}]
-
-        values = {"auth": self._auth(), "object": parameter_dict}
-
-        uuid = "/{}".format(uuid) if uuid else ""
-
-        # Construct url to post to
-        url = "{0}/times{1}".format(self.baseurl, uuid)
-
-        # Attempt to POST to TimeSync
-        try:
-            # Success!
-            response = requests.post(url, json=values)
-            return self._json_to_python(response.text)
-        except requests.exceptions.RequestException as e:
-            # Request error
-            return e
+        return self._create_or_update(parameter_dict, uuid,
+                                      "time", "times")
 
     def create_project(self, parameter_dict, slug=None):
         """
-        create_project(parameter_dict, slug="")
+        create_project(parameter_dict, slug=None)
 
         Post a project to TimeSync via a POST request in a JSON body. This
         method will return that body in the form of a list containing a single
@@ -87,26 +69,8 @@ class TimeSync(object):
         ``slug`` contains the slug for an existing project. If ``slug`` is
         supplied this method will update the specified project.
         """
-        # Check that parameter_dict contains required fields and no bad fields
-        field_error = self._get_field_errors(parameter_dict, "project")
-        if field_error:
-            return [{self.error: field_error}]
-
-        values = {"auth": self._auth(), "object": parameter_dict}
-
-        slug = "/{}".format(slug) if slug else ""
-
-        # Construct url to post to
-        url = "{0}/projects{1}".format(self.baseurl, slug)
-
-        # Attempt to POST to TimeSync
-        try:
-            # Success!
-            response = requests.post(url, json=values)
-            return self._json_to_python(response.text)
-        except requests.exceptions.RequestException as e:
-            # Request error
-            return e
+        return self._create_or_update(parameter_dict, slug,
+                                      "project", "projects")
 
     def create_activity(self, parameter_dict, slug=None):
         """
@@ -122,26 +86,8 @@ class TimeSync(object):
         ``slug`` contains the slug for an existing activity. If ``slug`` is
         supplied this method will update the specified activity.
         """
-        # Check that parameter_dict contains required fields and no bad fields
-        field_error = self._get_field_errors(parameter_dict, "activity")
-        if field_error:
-            return [{self.error: field_error}]
-
-        values = {"auth": self._auth(), "object": parameter_dict}
-
-        slug = "/{}".format(slug) if slug else ""
-
-        # Construct url to post to
-        url = "{0}/activities{1}".format(self.baseurl, slug)
-
-        # Attempt to POST to TimeSync
-        try:
-            # Success!
-            response = requests.post(url, json=values)
-            return self._json_to_python(response.text)
-        except requests.exceptions.RequestException as e:
-            # Request error
-            return e
+        return self._create_or_update(parameter_dict, slug,
+                                      "activity", "activities")
 
     def get_times(self, **kwargs):
         """
@@ -342,3 +288,25 @@ class TimeSync(object):
 
         # No errors if we made it this far
         return None
+
+    def _create_or_update(self, parameters, slug_or_uuid, obj_name, endpoint):
+        # Check that parameter_dict contains required fields and no bad fields
+        field_error = self._get_field_errors(parameters, obj_name)
+        if field_error:
+            return [{self.error: field_error}]
+
+        values = {"auth": self._auth(), "object": parameters}
+
+        slug_or_uuid = "/{}".format(slug_or_uuid) if slug_or_uuid else ""
+
+        # Construct url to post to
+        url = "{0}/{1}{2}".format(self.baseurl, endpoint, slug_or_uuid)
+
+        # Attempt to POST to TimeSync
+        try:
+            # Success!
+            response = requests.post(url, json=values)
+            return self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return e
