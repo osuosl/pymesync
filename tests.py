@@ -6,8 +6,8 @@ import requests
 
 class TestPymesync(unittest.TestCase):
 
-    def test_create_time_valid(self):
-        """Tests TimeSync.create_time with valid data"""
+    def test_create_or_update_create_time_valid(self):
+        """Tests TimeSync._create_or_update for create time with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -42,7 +42,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_time(params)
+        ts._create_or_update(params, None, "time", "times")
 
         patched_json_loader.stop()
 
@@ -50,8 +50,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/times",
                                          json=content)
 
-    def test_update_time_uuid(self):
-        """Tests TimeSync.update_time with valid data by uuid"""
+    def test_create_or_update_update_time_valid(self):
+        """Tests TimeSync._create_or_update for update time with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -87,7 +87,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.update_time(params, uuid=uuid)
+        ts._create_or_update(params, uuid, "time", "times")
 
         patched_json_loader.stop()
 
@@ -96,8 +96,9 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/times/{}".format(uuid),
             json=content)
 
-    def test_create_time_invalid(self):
-        """Tests TimeSync.create_time with invalid field"""
+    def test_create_or_update_create_time_invalid(self):
+        """Tests TimeSync._create_or_update for create time with invalid
+        field"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -118,12 +119,13 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_time(params),
+        self.assertEquals(ts._create_or_update(params, None, "time", "times"),
                           [{"pymesync error":
                             "time object: invalid field: bad"}])
 
-    def test_create_time_two_required_missing(self):
-        """Tests TimeSync.create_time with missing required fields"""
+    def test_create_or_update_create_time_two_required_missing(self):
+        """Tests TimeSync._create_or_update for create time with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -141,13 +143,14 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_time(params),
+        self.assertEquals(ts._create_or_update(params, None, "time", "times"),
                           [{"pymesync error":
                             "time object: missing required field(s): "
                             "project, activities"}])
 
-    def test_create_time_each_required_missing(self):
-        """Tests TimeSync.create_time with missing required fields"""
+    def test_create_or_update_create_time_each_required_missing(self):
+        """Tests TimeSync._create_or_update to create time with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
@@ -169,13 +172,15 @@ class TestPymesync(unittest.TestCase):
 
         for key in params:
             del(params_to_test[key])
-            self.assertEquals(ts.create_time(params_to_test), [{
-                "pymesync error":
-                "time object: missing required field(s): {}".format(key)}])
+            self.assertEquals(ts._create_or_update(params_to_test, None,
+                                                   "time", "times"),
+                              [{"pymesync error": "time object: "
+                                "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
-    def test_create_time_type_error(self):
-        """Tests TimeSync.create_time with incorrect parameter types"""
+    def test_create_or_update_create_time_type_error(self):
+        """Tests TimeSync._create_or_update for create time with incorrect
+        parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 
@@ -188,12 +193,14 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         for param in param_list:
-            self.assertEquals(ts.create_time(param),
+            self.assertEquals(ts._create_or_update(param, None,
+                                                   "time", "times"),
                               [{"pymesync error":
                                 "time object: must be python dictionary"}])
 
-    def test_create_time_catch_request_error(self):
-        """Tests TimeSync.create_time with request error"""
+    def test_create_or_update_create_time_catch_request_error(self):
+        """Tests TimeSync._create_or_update for create time with request
+        error"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -218,11 +225,13 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertRaises(Exception, ts.create_time(params))
+        self.assertRaises(Exception, ts._create_or_update(params, None,
+                                                          "time", "times"))
         patched_json_loader.stop()
 
-    def test_create_project_valid(self):
-        """Tests TimeSync.create_project with valid data"""
+    def test_create_or_update_create_project_valid(self):
+        """Tests TimeSync._create_or_update for create project with valid
+        data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -254,7 +263,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_project(params)
+        ts._create_or_update(params, None, "project", "projects")
 
         patched_json_loader.stop()
 
@@ -262,8 +271,9 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/projects",
                                          json=content)
 
-    def test_update_project_slug(self):
-        """Tests TimeSync.update_project by slug"""
+    def test_create_or_update_update_project_valid(self):
+        """Tests TimeSync._create_or_update for update project with valid
+        parameters"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -295,7 +305,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.update_project(params, slug="slug")
+        ts._create_or_update(params, "slug", "project", "projects")
 
         patched_json_loader.stop()
 
@@ -304,8 +314,9 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/projects/slug",
             json=content)
 
-    def test_create_project_invalid(self):
-        """Tests TimeSync.create_project with invalid field"""
+    def test_create_or_update_create_project_invalid(self):
+        """Tests TimeSync._create_or_update for create project with invalid
+        field"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -323,12 +334,14 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_project(params),
+        self.assertEquals(ts._create_or_update(params, None,
+                                               "project", "projects"),
                           [{"pymesync error":
                             "project object: invalid field: bad"}])
 
-    def test_create_project_required_missing(self):
-        """Tests TimeSync.create_project with missing required fields"""
+    def test_create_or_update_create_project_required_missing(self):
+        """Tests TimeSync._create_or_update for create project with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -344,12 +357,14 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_project(params), [
-            {"pymesync error":
-             "project object: missing required field(s): owner"}])
+        self.assertEquals(ts._create_or_update(params, None,
+                                               "project", "project"),
+                          [{"pymesync error": "project object: "
+                            "missing required field(s): owner"}])
 
-    def test_create_project_each_required_missing(self):
-        """Tests TimeSync.create_project with missing required fields"""
+    def test_create_or_update_create_project_each_required_missing(self):
+        """Tests TimeSync._create_or_update for create project with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -370,13 +385,15 @@ class TestPymesync(unittest.TestCase):
 
         for key in params:
             del(params_to_test[key])
-            self.assertEquals(ts.create_project(params_to_test), [{
-                "pymesync error":
-                "project object: missing required field(s): {}".format(key)}])
+            self.assertEquals(ts._create_or_update(params_to_test, None,
+                                                   "project", "projects"),
+                              [{"pymesync error": "project object: "
+                                "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
-    def test_create_project_type_error(self):
-        """Tests TimeSync.create_project with incorrect parameter types"""
+    def test_create_or_update_create_project_type_error(self):
+        """Tests TimeSync._create_or_update for create project with incorrect
+        parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 
@@ -389,12 +406,14 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         for param in param_list:
-            self.assertEquals(ts.create_project(param),
+            self.assertEquals(ts._create_or_update(param, None,
+                                                   "project", "projects"),
                               [{"pymesync error":
                                 "project object: must be python dictionary"}])
 
-    def test_create_activity_valid(self):
-        """Tests TimeSync.create_activity with valid data"""
+    def test_create_or_update_create_activity_valid(self):
+        """Tests TimeSync._create_or_update for create activity with valid
+        data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -424,7 +443,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.create_activity(params)
+        ts._create_or_update(params, None, "activity", "activities")
 
         patched_json_loader.stop()
 
@@ -432,8 +451,9 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/activities",
                                          json=content)
 
-    def test_update_activity_slug(self):
-        """Tests TimeSync.update_activity by slug"""
+    def test_create_or_update_update_activity_valid(self):
+        """Tests TimeSync._create_or_update for update activity with valid
+        parameters"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -463,7 +483,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.update_activity(params, slug="slug")
+        ts._create_or_update(params, "slug", "activity", "activities")
 
         patched_json_loader.stop()
 
@@ -472,8 +492,9 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/activities/slug",
             json=content)
 
-    def test_create_activity_invalid(self):
-        """Tests TimeSync.create_activity with invalid field"""
+    def test_create_or_update_create_activity_invalid(self):
+        """Tests TimeSync._create_or_update for create activity with invalid
+        field"""
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
@@ -489,12 +510,14 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_activity(params),
+        self.assertEquals(ts._create_or_update(params, None,
+                                               "activity", "activites"),
                           [{"pymesync error":
                             "activity object: invalid field: bad"}])
 
-    def test_create_activity_required_missing(self):
-        """Tests TimeSync.create_activity with missing required fields"""
+    def test_create_or_update_create_activity_required_missing(self):
+        """Tests TimeSync._create_or_update for create activity with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
@@ -508,12 +531,14 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.create_activity(params), [
-            {"pymesync error":
-             "activity object: missing required field(s): slug"}])
+        self.assertEquals(ts._create_or_update(params, None,
+                                               "activity", "activities"),
+                          [{"pymesync error": "activity object: "
+                            "missing required field(s): slug"}])
 
-    def test_create_activity_each_required_missing(self):
-        """Tests TimeSync.create_activity with missing required fields"""
+    def test_create_or_update_create_activity_each_required_missing(self):
+        """Tests TimeSync._create_or_update for create activity with missing
+        required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
@@ -532,13 +557,15 @@ class TestPymesync(unittest.TestCase):
 
         for key in params:
             del(params_to_test[key])
-            self.assertEquals(ts.create_activity(params_to_test), [{
-                "pymesync error":
-                "activity object: missing required field(s): {}".format(key)}])
+            self.assertEquals(ts._create_or_update(params_to_test, None,
+                                                   "activity", "activities"),
+                              [{"pymesync error": "activity object: "
+                                "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
-    def test_create_activity_type_error(self):
-        """Tests TimeSync.create_project with incorrect parameter types"""
+    def test_create_or_update_create_activity_type_error(self):
+        """Tests TimeSync._create_or_update for create activity with incorrect
+        parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 
@@ -551,7 +578,8 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         for param in param_list:
-            self.assertEquals(ts.create_activity(param),
+            self.assertEquals(ts._create_or_update(param, None,
+                                                   "activity", "activities"),
                               [{"pymesync error":
                                 "activity object: must be python dictionary"}])
 
