@@ -4,7 +4,7 @@ pymesync - Python TimeSync Module
 Allows for interactions with the TimeSync API
 
 - create_time(parameter_dict) - Sends time to baseurl (TimeSync)
-- post_project(parameter_dict, slug="") - Creates or updates project
+- create_project(parameter_dict, slug="") - Creates or updates project
 - get_times([kwargs]) - Get times from TimeSync
 - get_projects([kwargs]) - Get project information from TimeSync
 
@@ -73,9 +73,9 @@ class TimeSync(object):
             # Request error
             return e
 
-    def post_project(self, parameter_dict, slug=None):
+    def create_project(self, parameter_dict, slug=None):
         """
-        post_project(parameter_dict, slug="")
+        create_project(parameter_dict, slug="")
 
         Post a project to TimeSync via a POST request in a JSON body. This
         method will return that body in the form of a list containing a single

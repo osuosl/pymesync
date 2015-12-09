@@ -221,8 +221,8 @@ class TestPymesync(unittest.TestCase):
         self.assertRaises(Exception, ts.create_time(params))
         patched_json_loader.stop()
 
-    def test_post_project_valid(self):
-        """Tests TimeSync.post_project with valid data"""
+    def test_create_project_valid(self):
+        """Tests TimeSync.create_project with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -254,7 +254,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.post_project(params)
+        ts.create_project(params)
 
         patched_json_loader.stop()
 
@@ -262,8 +262,8 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/projects",
                                          json=content)
 
-    def test_post_project_slug(self):
-        """Tests TimeSync.post_project with a slug"""
+    def test_create_project_slug(self):
+        """Tests TimeSync.create_project with a slug"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -295,7 +295,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        ts.post_project(params, slug="slug")
+        ts.create_project(params, slug="slug")
 
         patched_json_loader.stop()
 
@@ -304,8 +304,8 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/projects/slug",
             json=content)
 
-    def test_post_project_invalid(self):
-        """Tests TimeSync.post_project with invalid field"""
+    def test_create_project_invalid(self):
+        """Tests TimeSync.create_project with invalid field"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -323,12 +323,12 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.post_project(params),
+        self.assertEquals(ts.create_project(params),
                           [{"pymesync error":
                             "project object: invalid field: bad"}])
 
-    def test_post_project_required_missing(self):
-        """Tests TimeSync.post_project with missing required fields"""
+    def test_create_project_required_missing(self):
+        """Tests TimeSync.create_project with missing required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -344,12 +344,12 @@ class TestPymesync(unittest.TestCase):
                                user="example-user",
                                auth_type="password")
 
-        self.assertEquals(ts.post_project(params), [
+        self.assertEquals(ts.create_project(params), [
             {"pymesync error":
              "project object: missing required field(s): owner"}])
 
-    def test_post_project_each_required_missing(self):
-        """Tests TimeSync.post_project with missing required fields"""
+    def test_create_project_each_required_missing(self):
+        """Tests TimeSync.create_project with missing required fields"""
         # Parameters to be sent to TimeSync
         params = {
             "uri": "https://code.osuosl.org/projects/timesync",
@@ -370,13 +370,13 @@ class TestPymesync(unittest.TestCase):
 
         for key in params:
             del(params_to_test[key])
-            self.assertEquals(ts.post_project(params_to_test), [{
+            self.assertEquals(ts.create_project(params_to_test), [{
                 "pymesync error":
                 "project object: missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
-    def test_post_project_type_error(self):
-        """Tests TimeSync.post_project with incorrect parameter types"""
+    def test_create_project_type_error(self):
+        """Tests TimeSync.create_project with incorrect parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 
@@ -389,7 +389,7 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         for param in param_list:
-            self.assertEquals(ts.post_project(param),
+            self.assertEquals(ts.create_project(param),
                               [{"pymesync error":
                                 "project object: must be python dictionary"}])
 
@@ -538,7 +538,7 @@ class TestPymesync(unittest.TestCase):
             params_to_test = dict(params)
 
     def test_create_activity_type_error(self):
-        """Tests TimeSync.post_project with incorrect parameter types"""
+        """Tests TimeSync.create_project with incorrect parameter types"""
         # Parameters to be sent to TimeSync
         param_list = [1, "hello", [1, 2, 3]]
 

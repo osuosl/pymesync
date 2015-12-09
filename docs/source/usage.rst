@@ -202,7 +202,7 @@ TimeSync.\ **get_activities([\**kwargs])**
 Administrative methods:
 -----------------------
 
-TimeSync.\ **post_project(parameter_dict, slug="")**
+TimeSync.\ **create_project(parameter_dict, slug="")**
 
     Post a project to TimeSync via a POST request in a JSON body. This
     method will return that body in the form of a list containing a single
@@ -220,7 +220,7 @@ TimeSync.\ **post_project(parameter_dict, slug="")**
     If any of the fields are not provided TimeSync will return an error in a
     JSON body, which will be converted to a python dictionary by pymesync.
 
-    If the ``slug`` parameter is passed to ``post_project()``, the values in
+    If the ``slug`` parameter is passed to ``create_project()``, the values in
     ``parameter_dict`` will be used to update the existing project. If ``uri``,
     ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
     to ``[]`` (empty array), the value will be set to the empty string/array.
@@ -282,6 +282,6 @@ Example usage:
     ...    "slugs": ["timesync", "time"],
     ...    "owner": "username"
     ...}
-    >>> ts.post_project(project_params)
+    >>> ts.create_project(project_params)
     [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
     >>>
