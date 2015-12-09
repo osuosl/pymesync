@@ -57,7 +57,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {'auth': self._auth(), 'object': parameter_dict}
+        values = {"auth": self._auth(), "object": parameter_dict}
 
         uuid = "/{}".format(uuid) if uuid else ""
 
@@ -92,12 +92,47 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {'auth': self._auth(), 'object': parameter_dict}
+        values = {"auth": self._auth(), "object": parameter_dict}
 
         slug = "/{}".format(slug) if slug else ""
 
         # Construct url to post to
         url = "{0}/projects{1}".format(self.baseurl, slug)
+
+        # Attempt to POST to TimeSync
+        try:
+            # Success!
+            response = requests.post(url, json=values)
+            return self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return e
+
+    def create_activity(self, parameter_dict, slug=None):
+        """
+        create_activity(parameter_dict, slug=None)
+
+        Post an activity to TimeSync via a POST request in a JSON body. This
+        method will return that body in the form of a list containing a single
+        python dictionary. The dictionary will contain a representation of that
+        JSON body if it was successful or error information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the activity
+        information to send to TimeSync.
+        ``slug`` contains the slug for an existing activity. If ``slug`` is
+        supplied this method will update the specified activity.
+        """
+        # Check that parameter_dict contains required fields and no bad fields
+        field_error = self._get_field_errors(parameter_dict, "activity")
+        if field_error:
+            return [{self.error: field_error}]
+
+        values = {"auth": self._auth(), "object": parameter_dict}
+
+        slug = "/{}".format(slug) if slug else ""
+
+        # Construct url to post to
+        url = "{0}/activities{1}".format(self.baseurl, slug)
 
         # Attempt to POST to TimeSync
         try:
@@ -125,7 +160,7 @@ class TimeSync(object):
         query_string = ""
         if kwargs:
             if "id" in kwargs.keys():
-                query_string = "/{}".format(kwargs['id'])
+                query_string = "/{}".format(kwargs["id"])
             else:
                 # Sort them into an alphabetized list for easier testing
                 sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
@@ -169,7 +204,7 @@ class TimeSync(object):
         ``query="parameter"`` or ``bool_query=<boolean>``.
 
         Optional parameters:
-        slug='<slug>'
+        slug="<slug>"
         include_deleted=<boolean>
         revisions=<boolean>
 
@@ -210,7 +245,7 @@ class TimeSync(object):
         argument is ``query="parameter"`` or ``bool_query=<boolean>``.
 
         Optional parameters:
-        slug='<slug>'
+        slug="<slug>"
         include_deleted=<boolean>
         revisions=<boolean>
 
@@ -242,9 +277,9 @@ class TimeSync(object):
 
     def _auth(self):
         """Returns auth object to be send to TimeSync"""
-        return {'type': self.auth_type,
-                'username': self.user,
-                'password': self.password, }
+        return {"type": self.auth_type,
+                "username": self.user,
+                "password": self.password, }
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
@@ -261,16 +296,16 @@ class TimeSync(object):
         query_list = []
 
         # The following combination is not allowed
-        if 'slug' in queries.keys() and 'include_deleted' in queries.keys():
+        if "slug" in queries.keys() and "include_deleted" in queries.keys():
             return None
         # slug goes first, then delete it so it doesn't show up after the ?
-        elif 'slug' in queries.keys():
-            query_string = "/{}".format(queries['slug'])
-            del(queries['slug'])
+        elif "slug" in queries.keys():
+            query_string = "/{}".format(queries["slug"])
+            del(queries["slug"])
 
         # Convert True and False booleans to TimeSync compatible strings
         for k, v in sorted(queries.items(), key=operator.itemgetter(0)):
-            queries[k] = 'true' if v else 'false'
+            queries[k] = "true" if v else "false"
             query_list.append("{0}={1}".format(k, queries[k]))
 
         # Check for items in query_list after slug was removed, create
