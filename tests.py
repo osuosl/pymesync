@@ -1,6 +1,7 @@
 import unittest
 import pymesync
 import mock
+from mock import patch
 import requests
 
 
@@ -1389,6 +1390,145 @@ class TestPymesync(unittest.TestCase):
         ]
 
         self.assertEquals(ts._json_to_python(json_object), python_object)
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_create_time(self, mock_create_or_update):
+        """Tests that TimeSync.create_time calls _create_or_update with correct
+        parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        ts.create_time(params)
+
+        mock_create_or_update.assert_called_with(params, None, "time", "times")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_update_time(self, mock_create_or_update):
+        """Tests that TimeSync.update_time calls _create_or_update with correct
+        parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        ts.update_time(params, "uuid")
+
+        mock_create_or_update.assert_called_with(params, "uuid",
+                                                 "time", "times")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_create_project(self, mock_create_or_update):
+        """Tests that TimeSync.create_project calls _create_or_update with
+        correct parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        ts.create_project(params)
+        mock_create_or_update.assert_called_with(params, None,
+                                                 "project", "projects")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_update_project(self, mock_create_or_update):
+        """Tests that TimeSync.update_time calls _create_or_update with correct
+        parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        ts.update_project(params, "slug")
+        mock_create_or_update.assert_called_with(params, "slug",
+                                                 "project", "projects")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_create_activity(self, mock_create_or_update):
+        """Tests that TimeSync.create_activity calls _create_or_update with
+        correct parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        ts.create_activity(params)
+        mock_create_or_update.assert_called_with(params, None,
+                                                 "activity", "activities")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_update_activity(self, mock_create_or_update):
+        """Tests that TimeSync.update_time calls _create_or_update with correct
+        parameters"""
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        ts.update_activity(params, "slug")
+        mock_create_or_update.assert_called_with(params, "slug",
+                                                 "activity", "activities")
 
 if __name__ == "__main__":
     unittest.main()
