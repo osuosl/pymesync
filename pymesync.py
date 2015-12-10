@@ -119,7 +119,7 @@ class TimeSync(object):
 
     def update_activity(self, parameter_dict, slug):
         """
-        update_activity(parameter_dict, slug=None)
+        update_activity(parameter_dict, slug)
 
         Send an activity update to TimeSync via a POST request in a JSON body.
         This method will return that body in the form of a list containing a
