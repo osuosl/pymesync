@@ -38,7 +38,7 @@ class TimeSync(object):
             "activity": [],
         }
 
-    def create_time(self, parameter_dict, uuid=None):
+    def create_time(self, parameter_dict):
         """
         create_time(parameter_dict)
 
@@ -49,15 +49,30 @@ class TimeSync(object):
 
         ``parameter_dict`` is a python dictionary containing the time
         information to send to TimeSync.
-        ``uuid`` contains the uuid for an existing time entry. If ``uuid`` is
-        supplied this method will update the specified time entry.
+        """
+        return self._create_or_update(parameter_dict, None,
+                                      "time", "times")
+
+    def update_time(self, parameter_dict, uuid):
+        """
+        update_time(parameter_dict, uuid)
+
+        Send a time entry update to TimeSync via a POST request in a JSON body.
+        This method will return that body in the form of a list containing a
+        single python dictionary. The dictionary will contain a representation
+        of that updated time object if it was successful or error information
+        if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the time
+        information to send to TimeSync.
+        ``uuid`` contains the uuid for a time entry to update.
         """
         return self._create_or_update(parameter_dict, uuid,
                                       "time", "times")
 
-    def create_project(self, parameter_dict, slug=None):
+    def create_project(self, parameter_dict):
         """
-        create_project(parameter_dict, slug=None)
+        create_project(parameter_dict)
 
         Post a project to TimeSync via a POST request in a JSON body. This
         method will return that body in the form of a list containing a single
@@ -66,13 +81,28 @@ class TimeSync(object):
 
         ``parameter_dict`` is a python dictionary containing the project
         information to send to TimeSync.
-        ``slug`` contains the slug for an existing project. If ``slug`` is
-        supplied this method will update the specified project.
+        """
+        return self._create_or_update(parameter_dict, None,
+                                      "project", "projects")
+
+    def update_project(self, parameter_dict, slug):
+        """
+        update_project(parameter_dict, slug)
+
+        Send a project update to TimeSync via a POST request in a JSON body.
+        This method will return that body in the form of a list containing a
+        single python dictionary. The dictionary will contain a representation
+        of that updated project object if it was successful or error
+        information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the project
+        information to send to TimeSync.
+        ``slug`` contains the slug for a project entry to update.
         """
         return self._create_or_update(parameter_dict, slug,
                                       "project", "projects")
 
-    def create_activity(self, parameter_dict, slug=None):
+    def create_activity(self, parameter_dict):
         """
         create_activity(parameter_dict, slug=None)
 
@@ -83,8 +113,23 @@ class TimeSync(object):
 
         ``parameter_dict`` is a python dictionary containing the activity
         information to send to TimeSync.
-        ``slug`` contains the slug for an existing activity. If ``slug`` is
-        supplied this method will update the specified activity.
+        """
+        return self._create_or_update(parameter_dict, None,
+                                      "activity", "activities")
+
+    def update_activity(self, parameter_dict, slug):
+        """
+        update_activity(parameter_dict, slug=None)
+
+        Send an activity update to TimeSync via a POST request in a JSON body.
+        This method will return that body in the form of a list containing a
+        single python dictionary. The dictionary will contain a representation
+        of that updated activity object if it was successful or error
+        information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the project
+        information to send to TimeSync.
+        ``slug`` contains the slug for an activity entry to update.
         """
         return self._create_or_update(parameter_dict, slug,
                                       "activity", "activities")
@@ -290,6 +335,13 @@ class TimeSync(object):
         return None
 
     def _create_or_update(self, parameters, slug_or_uuid, obj_name, endpoint):
+        """
+        Create or update an object ``obj_name`` at specified ``endpoint``. This
+        method will return that object in the form of a list containing a
+        single python dictionary. The dictionary will contain a representation
+        of the JSON body returned by TimeSync if it was successful or error
+        information if it was not.
+        """
         # Check that parameter_dict contains required fields and no bad fields
         field_error = self._get_field_errors(parameters, obj_name)
         if field_error:
