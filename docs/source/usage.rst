@@ -317,34 +317,25 @@ TimeSync.\ **get_activities(\**kwargs)**
 Administrative methods
 ----------------------
 
-These methods are available to TimeSync administrative users.
+These methods are available to TimeSync users with administrative permissions.
 
-TimeSync.\ **create_project(parameter_dict, slug="")**
+TimeSync.\ **create_project(parameter_dict)**
 
-    Post a project to TimeSync via a POST request in a JSON body. This
-    method will return that body in the form of a list containing a single
-    python dictionary. The dictionary will contain a representation of that
-    JSON body if it was successful or error information if it was not.
+    Create a project on the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created project if successful. The
+    dictionary will contain error information if ``create_project()`` was
+    unsuccessful.
 
     ``parameter_dict`` is a python dictionary containing the project
-    information to send to TimeSync. It requires the following fields:
+    information to send to TimeSync. The syntax is ``"key": "value"`` except for
+    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+    ``parameter_dict`` requires the following fields:
 
-    * ``uri``
-    * ``name``
-    * ``slugs`` - this must be a list of strings
-    * ``owner``
-
-    If any of the fields are not provided TimeSync will return an error in a
-    JSON body, which will be converted to a python dictionary by pymesync.
-
-    If the ``slug`` parameter is passed to ``create_project()``, the values in
-    ``parameter_dict`` will be used to update the existing project. If ``uri``,
-    ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
-    to ``[]`` (empty array), the value will be set to the empty string/array.
-
-    If the ``slug`` parameter is passed and a value in ``parameter_dict`` is set
-    to ``None``, the current value in TimeSync for that item will be used (it
-    will not be updated).
+    * ``"uri"``
+    * ``"name"``
+    * ``"slugs"`` - this must be a list of strings
+    * ``"owner"``
 
     Example ``parameter_dict``:
 
@@ -357,7 +348,37 @@ TimeSync.\ **create_project(parameter_dict, slug="")**
           "owner": "mrsj"
       }
 
-    Example update ``parameter_dict``:
+------------------------------------------
+
+TimeSync.\ **update_project(parameter_dict, slug)**
+
+    Update an existing project by slug on the TimeSync instance specified by the
+    baseurl provided when instantiating the TimeSync object. This method will
+    return a list with a single python dictionary containing the updated project
+    if successful. The dictionary will contain error information if
+    ``update_project()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. The syntax is ``"key": "value"`` except for
+    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+
+    ``slug`` is a string containing the slug of the project to be updated.
+
+    If ``"uri"``, ``"name"``, or ``"owner"`` are set to ``""`` (empty string) or
+    ``"slugs"`` is set to ``[]`` (empty array), the value will be set to the
+    empty string/array.
+
+    If a value in ``parameter_dict`` is set to ``None``, the current value in
+    TimeSync for that item will be used (it will not be updated).
+
+    ``parameter_dict`` requires the following fields:
+
+    * ``"uri"``
+    * ``"name"``
+    * ``"slugs"`` - this must be a list of strings
+    * ``"owner"``
+
+    Example ``parameter_dict`` to update project slugs:
 
     .. code-block:: python
 
@@ -367,6 +388,71 @@ TimeSync.\ **create_project(parameter_dict, slug="")**
           "slugs": ["timesync", "time", "ts"],
           "owner": None
       }
+
+------------------------------------------
+
+TimeSync.\ **create_activity(parameter_dict)**
+
+    Create an activity on the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created activity if successful.
+    The dictionary will contain error information if ``create_activity()`` was
+    unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the activity
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+    ``parameter_dict`` requires the following fields:
+
+    * ``"name"``
+    * ``"slug"``
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+      }
+
+------------------------------------------
+
+TimeSync.\ **update_activity(parameter_dict, slug)**
+
+    Update an existing activity by slug on the TimeSync instance specified by
+    the baseurl provided when instantiating the TimeSync object. This method
+    will return a list with a single python dictionary containing the updated
+    activity if successful. The dictionary will contain error information if
+    ``update_activity()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+
+    ``slug`` is a string containing the slug of the activity to be updated.
+
+    If ``"name"`` or ``"slug"`` in ``parameter_dict`` are set to ``""``
+    (empty string), the value will be set to the empty string.
+
+    If a value in ``parameter_dict`` is set to ``None``, the current value in
+    TimeSync for that item will be used (it will not be updated).
+
+    ``parameter_dict`` requires the following fields:
+
+    * ``"name"``
+    * ``"slug"``
+
+    Example ``parameter_dict`` to update activity slug:
+
+    .. code-block:: python
+
+      parameter_dict = {
+            "name": None,
+            "slug": "test",
+      }
+
+------------------------------------------
+
+
 
 Example usage
 -------------
