@@ -1498,10 +1498,8 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         params = {
-            "uri": "https://code.osuosl.org/projects/timesync",
-            "name": "TimeSync API",
-            "slugs": ["timesync", "time"],
-            "owner": "example-2"
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
         }
 
         ts.create_activity(params)
@@ -1520,10 +1518,8 @@ class TestPymesync(unittest.TestCase):
                                auth_type="password")
 
         params = {
-            "uri": "https://code.osuosl.org/projects/timesync",
-            "name": "TimeSync API",
-            "slugs": ["timesync", "time"],
-            "owner": "example-2"
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
         }
 
         ts.update_activity(params, "slug")
