@@ -7,7 +7,7 @@ This module provides an interface to communicate with an implementation of the
 `OSU Open Source Lab`_'s `TimeSync`_ API. An example implementation in Node.js
 can be found `on Github`_.
 
-This module allows users to send times to TimeSync (**send_time()**), get a time
+This module allows users to send times to TimeSync (**create_time()**), get a time
 or a list of times from TimeSync (**get_times()**), and get a project or list of
 projects from TimeSync (**get_projects()**).
 
@@ -17,7 +17,7 @@ Pymesync currently supports the following TimeSync API versions:
 
 All of these methods return a python list of one to many dictionaries.
 
-* **send_time(parameter_dict)** - Sends time to baseurl set in constructor
+* **create_time(parameter_dict)** - Sends time to baseurl set in constructor
 * **get_times([kwargs])** - Get times from TimeSync
 * **get_projects([kwargs])** - Get project information from TimeSync
 
@@ -64,7 +64,7 @@ Where
 Public methods:
 ---------------
 
-TimeSync.\ **send_time(parameter_dict)**
+TimeSync.\ **create_time(parameter_dict)**
 
     Send a time entry to TimeSync via a POST request in a JSON body. This method
     will return that body in the form of a list containing a single python
@@ -202,7 +202,7 @@ TimeSync.\ **get_activities([\**kwargs])**
 Administrative methods:
 -----------------------
 
-TimeSync.\ **post_project(parameter_dict, slug="")**
+TimeSync.\ **create_project(parameter_dict, slug="")**
 
     Post a project to TimeSync via a POST request in a JSON body. This
     method will return that body in the form of a list containing a single
@@ -220,7 +220,7 @@ TimeSync.\ **post_project(parameter_dict, slug="")**
     If any of the fields are not provided TimeSync will return an error in a
     JSON body, which will be converted to a python dictionary by pymesync.
 
-    If the ``slug`` parameter is passed to ``post_project()``, the values in
+    If the ``slug`` parameter is passed to ``create_project()``, the values in
     ``parameter_dict`` will be used to update the existing project. If ``uri``,
     ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
     to ``[]`` (empty array), the value will be set to the empty string/array.
@@ -268,7 +268,7 @@ Example usage:
     ...    "issue_uri": "https://github.com/",
     ...    "date_worked": "2014-04-17",
     ...}
-    >>> ts.send_times(params)
+    >>> ts.create_time(params)
     {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}
     >>> ts.get_times(user=["username"])
     [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
@@ -282,6 +282,6 @@ Example usage:
     ...    "slugs": ["timesync", "time"],
     ...    "owner": "username"
     ...}
-    >>> ts.post_project(project_params)
+    >>> ts.create_project(project_params)
     [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
     >>>
