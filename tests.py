@@ -97,6 +97,47 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/times/{}".format(uuid),
             json=content)
 
+    def test_create_or_update_update_time_valid_less_fields(self):
+        """Tests TimeSync._create_or_update for update time with one valid
+        parameter"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch('json.loads')
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+        }
+
+        # Test baseurl and uuid
+        baseurl = 'http://ts.example.com/v1'
+        uuid = '1234-5678-90abc-d'
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': ts._auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts._create_or_update(params, uuid, "time", "times")
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/times/{}".format(uuid),
+            json=content)
+
     def test_create_or_update_create_time_invalid(self):
         """Tests TimeSync._create_or_update for create time with invalid
         field"""
@@ -315,6 +356,46 @@ class TestPymesync(unittest.TestCase):
             "http://ts.example.com/v1/projects/slug",
             json=content)
 
+    def test_create_or_update_update_project_valid_less_fields(self):
+        """Tests TimeSync._create_or_update for update project with one valid
+        parameter"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch("json.loads")
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "slugs": ["timesync", "time"],
+        }
+
+        # Test baseurl
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            "auth": ts._auth(),
+            "object": params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts._create_or_update(params, "slug", "project", "projects")
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/projects/slug",
+            json=content)
+
     def test_create_or_update_create_project_invalid(self):
         """Tests TimeSync._create_or_update for create project with invalid
         field"""
@@ -463,6 +544,46 @@ class TestPymesync(unittest.TestCase):
         # Parameters to be sent to TimeSync
         params = {
             "name": "Quality Assurance/Testing",
+            "slug": "qa",
+        }
+
+        # Test baseurl
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="password")
+
+        # Format content for assert_called_with test
+        content = {
+            "auth": ts._auth(),
+            "object": params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        ts._create_or_update(params, "slug", "activity", "activities")
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/activities/slug",
+            json=content)
+
+    def test_create_or_update_update_activity_valid_less_fields(self):
+        """Tests TimeSync._create_or_update for update activity with one valid
+        parameter"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch("json.loads")
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
             "slug": "qa",
         }
 
@@ -1439,8 +1560,8 @@ class TestPymesync(unittest.TestCase):
 
         ts.update_time(params, "uuid")
 
-        mock_create_or_update.assert_called_with(params, "uuid",
-                                                 "time", "times")
+        mock_create_or_update.assert_called_with(params, "uuid", "time",
+                                                 "times", False)
 
     @patch("pymesync.TimeSync._create_or_update")
     def test_create_project(self, mock_create_or_update):
@@ -1483,8 +1604,8 @@ class TestPymesync(unittest.TestCase):
         }
 
         ts.update_project(params, "slug")
-        mock_create_or_update.assert_called_with(params, "slug",
-                                                 "project", "projects")
+        mock_create_or_update.assert_called_with(params, "slug", "project",
+                                                 "projects", False)
 
     @patch("pymesync.TimeSync._create_or_update")
     def test_create_activity(self, mock_create_or_update):
@@ -1523,8 +1644,8 @@ class TestPymesync(unittest.TestCase):
         }
 
         ts.update_activity(params, "slug")
-        mock_create_or_update.assert_called_with(params, "slug",
-                                                 "activity", "activities")
+        mock_create_or_update.assert_called_with(params, "slug", "activity",
+                                                 "activities", False)
 
 if __name__ == "__main__":
     unittest.main()

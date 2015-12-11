@@ -68,7 +68,7 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         return self._create_or_update(parameter_dict, uuid,
-                                      "time", "times")
+                                      "time", "times", False)
 
     def create_project(self, parameter_dict):
         """
@@ -100,7 +100,7 @@ class TimeSync(object):
         ``slug`` contains the slug for a project entry to update.
         """
         return self._create_or_update(parameter_dict, slug,
-                                      "project", "projects")
+                                      "project", "projects", False)
 
     def create_activity(self, parameter_dict):
         """
@@ -132,7 +132,7 @@ class TimeSync(object):
         ``slug`` contains the slug for an activity entry to update.
         """
         return self._create_or_update(parameter_dict, slug,
-                                      "activity", "activities")
+                                      "activity", "activities", False)
 
     def get_times(self, **kwargs):
         """
@@ -306,10 +306,11 @@ class TimeSync(object):
 
         return query_string
 
-    def _get_field_errors(self, actual, object_name):
+    def _get_field_errors(self, actual, object_name, create_object):
         """Checks that ``actual`` parameter passed to POST method contains
         items in required or optional lists for that ``object_name``.
-        Returns None if no errors found or error string if error found"""
+        Returns None if no errors found or error string if error found. If
+        ``create_object`` then ``actual`` gets checked for required fields"""
         # Check that actual is a python dict
         if not isinstance(actual, dict):
             return "{} object: must be python dictionary".format(object_name)
@@ -327,23 +328,27 @@ class TimeSync(object):
                 del(missing_list[missing_list.index(key)])
 
         # If there is anything in missing_list, it is an absent required field
-        if missing_list:
+        if missing_list and create_object:
             return "{0} object: missing required field(s): {1}".format(
                 object_name, ", ".join(missing_list))
 
         # No errors if we made it this far
         return None
 
-    def _create_or_update(self, parameters, slug_or_uuid, obj_name, endpoint):
+    def _create_or_update(self, parameters, slug_or_uuid,
+                          obj_name, endpoint, create_object=True):
         """
         Create or update an object ``obj_name`` at specified ``endpoint``. This
         method will return that object in the form of a list containing a
         single python dictionary. The dictionary will contain a representation
         of the JSON body returned by TimeSync if it was successful or error
-        information if it was not.
+        information if it was not. If ``create_object``, then ``parameters``
+        gets checked for required fields.
         """
         # Check that parameter_dict contains required fields and no bad fields
-        field_error = self._get_field_errors(parameters, obj_name)
+        field_error = self._get_field_errors(parameters,
+                                             obj_name,
+                                             create_object)
         if field_error:
             return [{self.error: field_error}]
 
