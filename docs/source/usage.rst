@@ -147,14 +147,11 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
     send to TimeSync. The syntax is ``"string_key": "string_value"`` with the
     exception of the key ``"duration"`` which takes an integer value, and the
     key ``"activities"``, which takes a list of strings containing activity
-    slugs. If any field is set to ``None`` (e.g. ``"duration": None``), that
-    field will not be updated.
+    slugs. You only need to send the fields that you want to update.
 
     ``uuid`` is a string containing the uuid of the time to be updated.
 
     ``update_time()`` accepts the following fields in ``parameter dict``:
-
-    Required:
 
     * ``"duration"`` - duration of time spent working on project in seconds (per
       TimeSync API)
@@ -165,9 +162,6 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
       this time entry
     * ``"date_worked"`` - date worked for this time entry in the form
       ``"yyyy-mm-dd"``
-
-    Optional:
-
     * ``"notes"`` - optional notes about this time entry
     * ``"issue_uri"`` - optional uri to issue worked on
 
@@ -176,12 +170,6 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
     .. code-block:: python
 
       params = {
-          "duration": None,
-          "project": None,
-          "user": None,
-          "activities": None,
-          "notes": None,
-          "issue_uri": None,
           "date_worked": "2015-04-17",
       }
 
@@ -368,10 +356,9 @@ TimeSync.\ **update_project(parameter_dict, slug)**
     ``"slugs"`` is set to ``[]`` (empty array), the value will be set to the
     empty string/array.
 
-    If a value in ``parameter_dict`` is set to ``None``, the current value in
-    TimeSync for that item will be used (it will not be updated).
+    You only need to pass the fields you want to update in ``parameter_dict``.
 
-    ``parameter_dict`` requires the following fields:
+    ``parameter_dict`` accepts the following fields:
 
     * ``"uri"``
     * ``"name"``
@@ -383,10 +370,7 @@ TimeSync.\ **update_project(parameter_dict, slug)**
     .. code-block:: python
 
       parameter_dict = {
-          "uri": None,
-          "name": None,
-          "slugs": ["timesync", "time", "ts"],
-          "owner": None
+          "slugs": ["timesync", "time", "ts"]
       }
 
 ------------------------------------------
@@ -433,10 +417,9 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     If ``"name"`` or ``"slug"`` in ``parameter_dict`` are set to ``""``
     (empty string), the value will be set to the empty string.
 
-    If a value in ``parameter_dict`` is set to ``None``, the current value in
-    TimeSync for that item will be used (it will not be updated).
+    You only need to pass the fields you want to update in ``parameter_dict``.
 
-    ``parameter_dict`` requires the following fields:
+    ``parameter_dict`` accepts the following fields to update an activity:
 
     * ``"name"``
     * ``"slug"``
@@ -446,8 +429,7 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     .. code-block:: python
 
       parameter_dict = {
-            "name": None,
-            "slug": "test",
+            "slug": "test"
       }
 
 ------------------------------------------
