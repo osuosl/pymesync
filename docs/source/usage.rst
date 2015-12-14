@@ -6,15 +6,15 @@ pymesync - Communicate with a TimeSync API
 .. contents::
 
 This module provides an interface to communicate with an implementation of the
-`OSU Open Source Lab`_'s `TimeSync`_ API. An example implementation in Node.js
-can be found `on Github`_.
+`OSU Open Source Lab`_'s `TimeSync API`_. An implementation of the TimeSync API,
+built in Node.js, can be found at `github.com/osuosl/timesync-node`_.
 
 This module allows users to
 
 * Send times, projects, and activities to TimeSync (**create_time()**,
   **create_project()**, **create_activity()**),
 * Update times, projects, and activities (**update_time()**,
-  **create_project()**, **update_activity()**)
+  **update_project()**, **update_activity()**)
 * Get one or a list of times projects, and activities (**get_times()**,
   **get_projects()**, **get_activities()**)
 
@@ -43,8 +43,8 @@ empty list if TimeSync has no records).
 * **get_activities(\**kwargs)** - Get activity information from TimeSync
 
 .. _OSU Open Source Lab: http://www.osuosl.org
-.. _TimeSync: http://timesync.readthedocs.org/en/latest/
-.. _on Github: https://github.com/osuosl/timesync-node
+.. _TimeSync API: http://timesync.readthedocs.org/en/latest/
+.. _github.com/osuosl/timesync-node: https://github.com/osuosl/timesync-node
 
 Install pymesync
 ----------------
