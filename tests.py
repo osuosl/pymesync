@@ -51,6 +51,56 @@ class TestPymesync(unittest.TestCase):
         requests.post.assert_called_with("http://ts.example.com/v1/times",
                                          json=content)
 
+    def test_create_or_update_create_time_valid_token(self):
+        """Tests TimeSync._create_or_update for create time with valid data"""
+        # Patch json.loads - Since we mocked the API call, we won't actually be
+        # getting a JSON object back, we don't want this mocked forever so just
+        # patch it.
+        patched_json_loader = mock.patch("json.loads")
+        patched_json_loader.start()
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        actual_post = requests.post
+
+        requests.post = mock.create_autospec(actual_post,
+                                             return_value="mymockedtoken")
+
+        # Test baseurl
+        baseurl = "http://ts.example.com/v1"
+        # Instantiate timesync class
+        ts = pymesync.TimeSync(baseurl,
+                               password="password",
+                               user="example-user",
+                               auth_type="token")
+
+        # Format content for assert_called_with test
+        content = {
+            "auth": ts._auth(),
+            "object": params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(actual_post)
+
+        # Send it
+        ts._create_or_update(params, None, "time", "times")
+
+        patched_json_loader.stop()
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/times?token=mymockedtoken",
+            json=content)
+
     def test_create_or_update_update_time_valid(self):
         """Tests TimeSync._create_or_update for update time with valid data"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
