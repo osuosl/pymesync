@@ -150,8 +150,8 @@ class TimeSync(object):
         query_list = []  # Remains empty if no kwargs passed
         query_string = ""
         if kwargs:
-            if "id" in kwargs.keys():
-                query_string = "/{}".format(kwargs["id"])
+            if "uuid" in kwargs.keys():
+                query_string = "/{}".format(kwargs["uuid"])
             else:
                 # Sort them into an alphabetized list for easier testing
                 sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
