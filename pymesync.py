@@ -4,9 +4,14 @@ pymesync - Python TimeSync Module
 Allows for interactions with the TimeSync API
 
 - create_time(parameter_dict) - Sends time to baseurl (TimeSync)
-- create_project(parameter_dict, slug="") - Creates or updates project
-- get_times([kwargs]) - Get times from TimeSync
-- get_projects([kwargs]) - Get project information from TimeSync
+- update_time(parameter_dict, uuid) - Updates time by uuid
+- create_project(parameter_dict) - Creates project
+- update_project(parameter_dict, slug) - Updates project by slug
+- create_activity(parameter_dict) - Creates activity
+- update_activity(parameter_dict, slug) - Updates activity by slug
+- get_times(**kwargs) - Get times from TimeSync
+- get_projects(**kwargs) - Get project information from TimeSync
+- get_activities(**kwargs) - Get activity information from TimeSync
 
 Supported TimeSync versions:
 v1
