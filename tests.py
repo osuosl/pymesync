@@ -944,8 +944,8 @@ class TestPymesync(unittest.TestCase):
                                         + "&activity=rev"
                                         + "&activity=hd")
 
-    def test_get_time_with_id(self):
-        """Tests TimeSync.get_times with revisions query parameter"""
+    def test_get_time_with_uuid(self):
+        """Tests TimeSync.get_times with uuid query parameter"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -963,16 +963,16 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock("requests.get")
 
         # Send it
-        ts.get_times(id=2)
+        ts.get_times(uuid="234143klasdhfias432")
 
         patched_json_loader.stop()
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            "http://ts.example.com/v1/times/2")
+            "http://ts.example.com/v1/times/234143klasdhfias432")
 
-    def test_get_time_with_id_and_activity(self):
-        """Tests TimeSync.get_times with revisions query parameter"""
+    def test_get_time_with_uuid_and_activity(self):
+        """Tests TimeSync.get_times with uuid query parameter"""
         # Patch json.loads - Since we mocked the API call, we won't actually be
         # getting a JSON object back, we don't want this mocked forever so just
         # patch it.
@@ -990,13 +990,13 @@ class TestPymesync(unittest.TestCase):
         requests.get = mock.Mock("requests.get")
 
         # Send it
-        ts.get_times(id=3, activity=["dev"])
+        ts.get_times(uuid="234143klasdhfias432", activity=["dev"])
 
         patched_json_loader.stop()
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(
-            "http://ts.example.com/v1/times/3")
+            "http://ts.example.com/v1/times/234143klasdhfias432")
 
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no parameters"""
