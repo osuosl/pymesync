@@ -186,8 +186,8 @@ TimeSync.\ **get_times(\**kwargs)**
     ``kwargs`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_times()`` will
     return all times in the database. The syntax for each argument is
-    ``query=["parameter1", "parameter2"]`` except for the ``id`` parameter which
-    is ``id=<integer-id>``.
+    ``query=["parameter1", "parameter2"]`` except for the ``uuid`` parameter
+    which is ``uuid="uuid-as-string"``.
 
     Currently the valid queries allowed by pymesync are:
 
@@ -216,15 +216,15 @@ TimeSync.\ **get_times(\**kwargs)**
 
       - example: ``revisions=["true"]``
 
-    * ``id`` - get specific time entry by time id
+    * ``uuid`` - get specific time entry by time uuid
 
-      - example: ``id=134``
+      - example: ``uuid=134``
 
     .. warning::
 
-      If the ``id`` parameter is passed all other parameters will be ignored.
-      For example, ``ts.get_times(id=12, user=["bob"])`` is equivalent to
-      ``ts.get_times(id=12)``.
+      If the ``uuid`` parameter is passed all other parameters will be ignored.
+      For example, ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is
+      equivalent to ``ts.get_times(uuid="time-entry-uuid")``.
 
 ------------------------------------------
 
@@ -454,9 +454,9 @@ Example usage
     ...    "date_worked": "2014-04-17",
     ...}
     >>> ts.create_time(params)
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
+    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'uuid': 1234-asdf-roro-5678}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
     >>> ts.get_times(user=["username"])
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
+    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'uuid': 1234-asdf-roro-5678}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
     >>> ts.get_projects(slug='gwm')
     [{u'owner': u'username', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
     >>> ts.get_activities(slug='code')
