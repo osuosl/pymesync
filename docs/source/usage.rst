@@ -453,20 +453,4 @@ Example usage
     ...    "issue_uri": "https://github.com/",
     ...    "date_worked": "2014-04-17",
     ...}
-    >>> ts.create_time(params)
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'uuid': 1234-asdf-roro-5678}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
-    >>> ts.get_times(user=["username"])
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'uuid': 1234-asdf-roro-5678}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
-    >>> ts.get_projects(slug='gwm')
-    [{u'owner': u'username', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
-    >>> ts.get_activities(slug='code')
-    [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]
-    >>> project_params = {
-    ...    "uri": "https://code.osuosl.org/projects/timesync",
-    ...    "name": "TimeSync API",
-    ...    "slugs": ["timesync", "time"],
-    ...    "owner": "username"
-    ...}
-    >>> ts.create_project(project_params)
-    [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
-    >>>
+    >>> More to come when implementation is fixed...
