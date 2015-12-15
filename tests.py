@@ -183,15 +183,10 @@ class TestPymesync(unittest.TestCase):
                               [{"pymesync error":
                                 "time object: must be python dictionary"}])
 
-    def test_create_or_update_create_time_catch_request_error(self):
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_create_time_catch_request_error(self, m):
         """Tests TimeSync._create_or_update for create time with request
         error"""
-        # Patch json.loads - Since we mocked the API call, we won't actually be
-        # getting a JSON object back, we don't want this mocked forever so just
-        # patch it.
-        patched_json_loader = mock.patch("json.loads")
-        patched_json_loader.start()
-        # Parameters to be sent to TimeSync
         params = {
             "duration": 12,
             "project": "ganet_web_manager",
@@ -202,11 +197,14 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
+        # To test that the exception is being caught with a bad baseurl,
+        # we need to use the actual post method
+        requests.post = actual_post
+
         self.assertRaises(Exception, self.ts._create_or_update(params,
                                                                None,
                                                                "time",
                                                                "times"))
-        patched_json_loader.stop()
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_create_or_update_create_project_valid(self, m_json_python):
@@ -1060,9 +1058,10 @@ class TestPymesync(unittest.TestCase):
     # def test_authentication_return_success(self):
     #     """Tests authenticate method with a token return"""
     #     # Mock requests.post so it doesn't actually post to TimeSync
+    #     res = dict()
+    #     res.text = "sometoken"
     #     requests.post = mock.create_autospec(requests.post,
-    #                                          return_value={"text":
-    #                                                        "thisisatoken"})
+    #                                          return_value=res)
     #
     #     auth_block = self.ts.authenticate("example-user",
     #                                       "password",
@@ -1093,4 +1092,5 @@ class TestPymesync(unittest.TestCase):
     #                                     "password"}])
 
 if __name__ == "__main__":
+    actual_post = requests.post  # Save this for testing exceptions
     unittest.main()
