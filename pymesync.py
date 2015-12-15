@@ -23,11 +23,11 @@ import operator
 
 class TimeSync(object):
 
-    def __init__(self, baseurl, user, password, auth_type):
+    def __init__(self, baseurl):
         self.baseurl = baseurl
-        self.user = user
-        self.password = password
-        self.auth_type = auth_type
+        self.user = None
+        self.password = None
+        self.auth_type = None
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "revisions"]
@@ -42,6 +42,27 @@ class TimeSync(object):
             "project": [],
             "activity": [],
         }
+
+    def authenticate(self, username, password, auth_type):
+        self.user = username
+        self.password = password
+        self.auth_type = auth_type
+        auth = {"auth": self._auth()}
+        url = "{}/login".format(self.baseurl)
+
+        try:
+            # Success!
+            response = requests.post(url, json=auth)
+            token_list_dict = self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return [{self.error: e}]
+
+        if "error" in token_list_dict[0]:
+            return token_list_dict
+        else:
+            self.token = token_list_dict[0]["token"]
+            return token_list_dict
 
     def create_time(self, parameter_dict):
         """
@@ -183,7 +204,7 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error: e}]
 
     def get_projects(self, **kwargs):
         """
@@ -224,7 +245,7 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error: e}]
 
     def get_activities(self, **kwargs):
         """
@@ -265,7 +286,7 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error, e}]
 
 ###############################################################################
 # Internal methods
@@ -371,4 +392,4 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request error
-            return e
+            return [{self.error: e}]
