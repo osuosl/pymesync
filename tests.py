@@ -3,6 +3,13 @@ import pymesync
 import mock
 from mock import patch
 import requests
+import json
+
+
+class resp(object):
+
+    def __init__(self):
+        self.text = None
 
 
 class TestPymesync(unittest.TestCase):
@@ -16,6 +23,7 @@ class TestPymesync(unittest.TestCase):
 
     def tearDown(self):
         del(self.ts)
+        requests.post = actual_post
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_create_or_update_create_time_valid(self, m_json_python):
@@ -33,7 +41,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -66,7 +74,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            'auth': self.ts._auth(),
+            'auth': self.ts._token_auth(),
             'object': params,
         }
 
@@ -96,7 +104,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            'auth': self.ts._auth(),
+            'auth': self.ts._token_auth(),
             'object': params,
         }
 
@@ -104,7 +112,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._create_or_update(params, uuid, "time", "times")
+        self.ts._create_or_update(params, uuid, "time", "times", False)
 
         # Test it
         requests.post.assert_called_with(
@@ -220,7 +228,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -248,7 +256,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -275,7 +283,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -283,7 +291,7 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._create_or_update(params, "slug", "project", "projects")
+        self.ts._create_or_update(params, "slug", "project", "projects", False)
 
         # Test it
         requests.post.assert_called_with(
@@ -367,7 +375,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -393,7 +401,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -420,7 +428,7 @@ class TestPymesync(unittest.TestCase):
 
         # Format content for assert_called_with test
         content = {
-            "auth": self.ts._auth(),
+            "auth": self.ts._token_auth(),
             "object": params,
         }
 
@@ -428,7 +436,8 @@ class TestPymesync(unittest.TestCase):
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._create_or_update(params, "slug", "activity", "activities")
+        self.ts._create_or_update(params, "slug", "activity",
+                                  "activities", False)
 
         # Test it
         requests.post.assert_called_with(
@@ -1036,61 +1045,64 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(params, "slug", "activity",
                                                  "activities", False)
 
-    # @patch("pymesync.TimeSync._json_to_python")
-    # def test_authentication(self, mock_json_to_python):
-    #     """Tests authenticate method for url and data construction"""
-    #     auth = {
-    #         "auth": {
-    #             "type": "password",
-    #             "username": "example-user",
-    #             "password": "password"
-    #         }
-    #     }
-    #
-    #     # Mock requests.post so it doesn't actually post to TimeSync
-    #     requests.post = mock.create_autospec(requests.post)
-    #
-    #     self.ts.authenticate("example-user", "password", "password")
-    #
-    #     requests.post.assert_called_with("http://ts.example.com/v1/login",
-    #                                      json=auth)
-    #
-    # def test_authentication_return_success(self):
-    #     """Tests authenticate method with a token return"""
-    #     # Mock requests.post so it doesn't actually post to TimeSync
-    #     res = dict()
-    #     res.text = "sometoken"
-    #     requests.post = mock.create_autospec(requests.post,
-    #                                          return_value=res)
-    #
-    #     auth_block = self.ts.authenticate("example-user",
-    #                                       "password",
-    #                                       "password")
-    #
-    #     self.assertEquals(auth_block[0]["token"], self.ts.token, "sometoken")
-    #     self.assertEquals(auth_block, [{"authentication": "success",
-    #                                     "token": "sometoken"}])
-    #
-    # @patch("pymesync.TimeSync._json_to_python")
-    # def test_authentication_return_error(self, mock_json_to_python):
-    #     """Tests authenticate method with an error return"""
-    #     # Mock requests.post so it doesn't actually post to TimeSync
-    #     requests.post = mock.create_autospec(requests.post,
-    #                                          return_value='{"status": 401,\
-    #                                          "error": "Authentication \
-    #                                                    failure",\
-    #                                          "text": "Invalid username or "\
-    #                                                  "password"}')
-    #
-    #     auth_block = self.ts.authenticate("example-user",
-    #                                       "password",
-    #                                       "password")
-    #
-    #     self.assertEquals(auth_block, [{"status": 401,
-    #                                     "error": "Authentication failure",
-    #                                     "text": "Invalid username or "
-    #                                     "password"}])
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_authentication(self, mock_json_to_python):
+        """Tests authenticate method for url and data construction"""
+        auth = {
+            "auth": {
+                "type": "password",
+                "username": "example-user",
+                "password": "password"
+            }
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        self.ts.authenticate("example-user", "password", "password")
+
+        requests.post.assert_called_with("http://ts.example.com/v1/login",
+                                         json=auth)
+
+    def test_authentication_return_success(self):
+        """Tests authenticate method with a token return"""
+        # Use this fake response object for mocking requests.post
+        response = resp()
+        response.text = json.dumps({"token": "sometoken"})
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post,
+                                             return_value=response)
+
+        auth_block = self.ts.authenticate("example-user",
+                                          "password",
+                                          "password")
+
+        self.assertEquals(auth_block[0]["token"], self.ts.token, "sometoken")
+        self.assertEquals(auth_block, [{"token": "sometoken"}])
+
+    def test_authentication_return_error(self):
+        """Tests authenticate method with an error return"""
+        # Use this fake response object for mocking requests.post
+        response = resp()
+        response.text = json.dumps({"status": 401,
+                                    "error": "Authentication failure",
+                                    "text": "Invalid username or password"})
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post,
+                                             return_value=response)
+
+        auth_block = self.ts.authenticate("example-user",
+                                          "password",
+                                          "password")
+
+        self.assertEquals(auth_block, [{"status": 401,
+                                        "error": "Authentication failure",
+                                        "text": "Invalid username or "
+                                        "password"}])
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
+    actual_json_to_python = pymesync.TimeSync._json_to_python
     unittest.main()
