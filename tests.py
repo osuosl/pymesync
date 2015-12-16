@@ -710,16 +710,16 @@ class TestPymesync(unittest.TestCase):
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_time_for_revisions(self, m_json_python):
-        """Tests TimeSync.get_times with revisions query parameter"""
+    def test_get_time_for_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_times with include_revisions query parameter"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/times?revisions=true&token={1}".format(self.ts.baseurl,
-                                                          self.ts.token)
+        url = "{0}/times?include_revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(revisions=["true"])
+        self.ts.get_times(include_revisions=["true"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -762,7 +762,7 @@ class TestPymesync(unittest.TestCase):
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_with_uuid(self, m_json_python):
-        """Tests TimeSync.get_times with revisions query parameter"""
+        """Tests TimeSync.get_times with uuid query parameter"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
@@ -777,7 +777,7 @@ class TestPymesync(unittest.TestCase):
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_with_uuid_and_activity(self, m_json_python):
-        """Tests TimeSync.get_times with revisions query parameter"""
+        """Tests TimeSync.get_times with uuid and activity query parameters"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
@@ -842,31 +842,31 @@ class TestPymesync(unittest.TestCase):
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_projects_revisions(self, m_json_python):
-        """Tests TimeSync.get_projects with revisions query"""
+    def test_get_projects_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_projects with include_revisions query"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/projects?revisions=true&token={1}".format(self.ts.baseurl,
-                                                             self.ts.token)
+        url = "{0}/projects?include_revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_projects(revisions=True)
+        self.ts.get_projects(include_revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_projects_slug_revisions(self, m_json_python):
-        """Tests TimeSync.get_projects with revisions query and slug"""
+    def test_get_projects_slug_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_projects with include_revisions query and slug"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/projects/gwm?revisions=true&token={1}".format(
+        url = "{0}/projects/gwm?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_projects(slug="gwm", revisions=True)
+        self.ts.get_projects(slug="gwm", include_revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -900,18 +900,20 @@ class TestPymesync(unittest.TestCase):
                            "invalid combination: slug and include_deleted"}])
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_projects_include_deleted_revisions(self, m_json_python):
-        """Tests TimeSync.get_projects with revisions and include_deleted
+    def test_get_projects_include_deleted_include_revisions(self,
+                                                            m_json_python):
+        """Tests TimeSync.get_projects with include_revisions and include_deleted
         queries"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
         token_string = "&token={}".format(self.ts.token)
-        url = "{0}/projects?include_deleted=true&revisions=true{1}".format(
-            self.ts.baseurl, token_string)
+        endpoint = "/projects"
+        url = "{0}{1}?include_deleted=true&include_revisions=true{2}".format(
+            self.ts.baseurl, endpoint, token_string)
 
         # Send it
-        self.ts.get_projects(revisions=True, include_deleted=True)
+        self.ts.get_projects(include_revisions=True, include_deleted=True)
 
         # Test that requests.get was called with correct parameters
         requests.get.assert_called_with(url)
@@ -946,31 +948,31 @@ class TestPymesync(unittest.TestCase):
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_activities_revisions(self, m_json_python):
-        """Tests TimeSync.get_activities with revisions query"""
+    def test_get_activities_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_activities with include_revisions query"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/activities?revisions=true&token={1}".format(self.ts.baseurl,
-                                                               self.ts.token)
+        url = "{0}/activities?include_revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_activities(revisions=True)
+        self.ts.get_activities(include_revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_activities_slug_revisions(self, m_json_python):
-        """Tests TimeSync.get_projects with revisions query and slug"""
+    def test_get_activities_slug_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_projects with include_revisions query and slug"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/activities/code?revisions=true&token={1}".format(
+        url = "{0}/activities/code?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_activities(slug="code", revisions=True)
+        self.ts.get_activities(slug="code", include_revisions=True)
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1004,18 +1006,20 @@ class TestPymesync(unittest.TestCase):
                            "invalid combination: slug and include_deleted"}])
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_activities_include_deleted_revisions(self, m_json_python):
-        """Tests TimeSync.get_activities with revisions and include_deleted
-        queries"""
+    def test_get_activities_include_deleted_include_revisions(self,
+                                                              m_json_python):
+        """Tests TimeSync.get_activities with include_revisions and
+        include_deleted queries"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
         token_string = "&token={}".format(self.ts.token)
-        url = "{0}/activities?include_deleted=true&revisions=true{1}".format(
-            self.ts.baseurl, token_string)
+        endpoint = "/activities"
+        url = "{0}{1}?include_deleted=true&include_revisions=true{2}".format(
+            self.ts.baseurl, endpoint, token_string)
 
         # Send it
-        self.ts.get_activities(revisions=True, include_deleted=True)
+        self.ts.get_activities(include_revisions=True, include_deleted=True)
 
         # Test that requests.get was called with correct parameters
         requests.get.assert_called_with(url)
