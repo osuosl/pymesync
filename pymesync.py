@@ -76,8 +76,7 @@ class TimeSync(object):
         if "error" in token_list_dict[0]:
             return token_list_dict
         else:
-            token_dict = token_list_dict[0]
-            self.token = token_dict["token"]
+            self.token = token_list_dict[0]["token"]
             return token_list_dict
 
     def create_time(self, parameter_dict):
@@ -189,6 +188,11 @@ class TimeSync(object):
         return all times in the database. The syntax for each argument is
         ``query=["parameter"]``.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_list = []  # Remains empty if no kwargs passed
         query_string = "?"
         if kwargs:
@@ -245,6 +249,11 @@ class TimeSync(object):
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -288,6 +297,11 @@ class TimeSync(object):
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -323,6 +337,12 @@ class TimeSync(object):
         """Returns auth object with a token to send to TimeSync endpoints"""
         return {"type": "token",
                 "token": self.token, }
+
+    def _local_auth_error(self):
+        """Checks that self.token is set. Returns error if not set, otherwise
+        returns None"""
+        return None if self.token else ("Not authenticated with TimeSync, "
+                                        "call self.authenticate() first")
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
@@ -400,6 +420,11 @@ class TimeSync(object):
         information if it was not. If ``create_object``, then ``parameters``
         gets checked for required fields.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         # Check that parameter_dict contains required fields and no bad fields
         field_error = self._get_field_errors(parameters,
                                              obj_name,
