@@ -209,9 +209,6 @@ class TimeSync(object):
                 for string in query_list:
                     query_string += "{}&".format(string)
 
-                # Get ready for the token
-                # query_string += "&"
-
         # Construct query url
         url = "{0}/times{1}token={2}".format(self.baseurl,
                                              query_string,
