@@ -20,6 +20,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.user = "example-user"
         self.ts.password = "password"
         self.ts.auth_type = "password"
+        self.ts.token = "TESTTOKEN"
 
     def tearDown(self):
         del(self.ts)
@@ -507,6 +508,122 @@ class TestPymesync(unittest.TestCase):
                               [{"pymesync error":
                                 "activity object: must be python dictionary"}])
 
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_create_time_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for create time with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None,
+                                                    "time", "times"),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_create_project_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for create project with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None,
+                                                    "project", "projects"),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_create_activity_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for create activity with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None,
+                                                    "activity", "activities"),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_update_time_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for update time with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "duration": 12,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None, "time",
+                                                    "times", False),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_update_project_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for update project with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "uri": "https://code.osuosl.org/projects/timesync",
+            "name": "TimeSync API",
+            "slugs": ["timesync", "time"],
+            "owner": "example-2"
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None, "project",
+                                                    "project", False),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_create_or_update_update_activity_no_auth(self, m_json_python):
+        """Tests TimeSync._create_or_update for update activity with no auth"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+        }
+
+        self.ts.token = None
+
+        # Send it
+        self.assertEquals(self.ts._create_or_update(params, None, "activity",
+                                                    "activities", False),
+                          [{"pymesync error": "Not authenticated with "
+                            "TimeSync, call self.authenticate() first"}])
+
     def test_auth(self):
         """Tests TimeSync._auth function"""
         # Create auth block to test _auth
@@ -903,6 +1020,31 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with correct parameters
         requests.get.assert_called_with(url)
 
+    def test_get_times_no_auth(self):
+        """Test that get_times() returns error message when auth not set"""
+        self.ts.token = None
+        self.assertEquals(self.ts.get_times(),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_get_projects_no_auth(self):
+        """Test that get_projects() returns error message when auth not set"""
+        self.ts.token = None
+        self.assertEquals(self.ts.get_projects(),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_get_activities_no_auth(self):
+        """Test that get_activities() returns error message when auth not
+        set"""
+        self.ts.token = None
+        self.assertEquals(self.ts.get_activities(),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
     def test_json_to_python_single_object(self):
         """Test that TimeSync._json_to_python converts a json object to a python
         list of object"""
@@ -1148,6 +1290,17 @@ class TestPymesync(unittest.TestCase):
                                         "error": "Authentication failure",
                                         "text": "Invalid username or "
                                         "password"}])
+
+    def test_local_auth_error_with_token(self):
+        """Test internal local_auth_error method with token"""
+        self.assertIsNone(self.ts._local_auth_error())
+
+    def test_local_auth_error_no_token(self):
+        """Test internal local_auth_error method with no token"""
+        self.ts.token = None
+        self.assertEquals(self.ts._local_auth_error(),
+                          "Not authenticated with TimeSync, "
+                          "call self.authenticate() first")
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
