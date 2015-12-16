@@ -28,6 +28,7 @@ class TimeSync(object):
         self.user = None
         self.password = None
         self.auth_type = None
+        self.token = None
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "revisions"]
@@ -44,6 +45,20 @@ class TimeSync(object):
         }
 
     def authenticate(self, username, password, auth_type):
+        """
+        authenticate(username, password, auth_type)
+
+        Authenticate a username and password with TimeSync via a POST request
+        to the login endpoint. This method will return a list containing a
+        single python dictionary. If successful, the dictionary will contain
+        the token in the form [{"token": "SOMETOKEN"}]. If an error is returned
+        the dictionary will contain the error information.
+
+        ``username`` is a string containing the username of the TimeSync user
+        ``password`` is a string containing the user's password
+        ``auth_type`` is a string containing the authentication method used by
+        TimeSync
+        """
         self.user = username
         self.password = password
         self.auth_type = auth_type
@@ -61,7 +76,8 @@ class TimeSync(object):
         if "error" in token_list_dict[0]:
             return token_list_dict
         else:
-            self.token = token_list_dict[0]["token"]
+            token_dict = token_list_dict[0]
+            self.token = token_dict["token"]
             return token_list_dict
 
     def create_time(self, parameter_dict):
@@ -293,10 +309,15 @@ class TimeSync(object):
 ###############################################################################
 
     def _auth(self):
-        """Returns auth object to be send to TimeSync"""
+        """Returns auth object to log in to TimeSync"""
         return {"type": self.auth_type,
                 "username": self.user,
                 "password": self.password, }
+
+    def _token_auth(self):
+        """Returns auth object with a token to send to TimeSync endpoints"""
+        return {"type": "token",
+                "token": self.token, }
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
@@ -378,7 +399,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {"auth": self._auth(), "object": parameters}
+        values = {"auth": self._token_auth(), "object": parameters}
 
         slug_or_uuid = "/{}".format(slug_or_uuid) if slug_or_uuid else ""
 

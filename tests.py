@@ -523,12 +523,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?user=example-user&token={1}".format(self.ts.baseurl,
+                                                             self.ts.token)
+
         # Send it
         self.ts.get_times(user=[self.ts.user])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?user=example-user")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_proj(self, m_json_python):
@@ -536,12 +538,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?project=gwm&token={1}".format(self.ts.baseurl,
+                                                       self.ts.token)
+
         # Send it
         self.ts.get_times(project=["gwm"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?project=gwm")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_activity(self, m_json_python):
@@ -549,12 +553,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?activity=dev&token={1}".format(self.ts.baseurl,
+                                                        self.ts.token)
+
         # Send it
         self.ts.get_times(activity=["dev"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?activity=dev")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_start_date(self, m_json_python):
@@ -562,12 +568,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?start=2015-07-23&token={1}".format(self.ts.baseurl,
+                                                            self.ts.token)
+
         # Send it
         self.ts.get_times(start=["2015-07-23"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?start=2015-07-23")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_end_date(self, m_json_python):
@@ -575,12 +583,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?end=2015-07-23&token={1}".format(self.ts.baseurl,
+                                                          self.ts.token)
+
         # Send it
         self.ts.get_times(end=["2015-07-23"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?end=2015-07-23")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_revisions(self, m_json_python):
@@ -588,12 +598,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?revisions=true&token={1}".format(self.ts.baseurl,
+                                                          self.ts.token)
+
         # Send it
         self.ts.get_times(revisions=["true"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_proj_and_activity(self, m_json_python):
@@ -602,13 +614,15 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?activity=dev&project=gwm&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_times(project=["gwm"], activity=["dev"])
 
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple parameters are sorted alphabetically
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times?activity=dev&project=gwm")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_time_for_activity_x3(self, m_json_python):
@@ -617,41 +631,47 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        token_string = "&token={}".format(self.ts.token)
+
+        url = "{0}/times?activity=dev&activity=rev&activity=hd{1}".format(
+            self.ts.baseurl, token_string)
+
         # Send it
         self.ts.get_times(activity=["dev", "rev", "hd"])
 
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple parameters are sorted alphabetically
-        requests.get.assert_called_with("http://ts.example.com/v1/times"
-                                        "?activity=dev"
-                                        "&activity=rev"
-                                        "&activity=hd")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_time_with_id(self, m_json_python):
+    def test_get_time_with_uuid(self, m_json_python):
         """Tests TimeSync.get_times with revisions query parameter"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times/sadfasdg432?token={1}".format(self.ts.baseurl,
+                                                       self.ts.token)
+
         # Send it
-        self.ts.get_times(id=2)
+        self.ts.get_times(uuid="sadfasdg432")
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times/2")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
-    def test_get_time_with_id_and_activity(self, m_json_python):
+    def test_get_time_with_uuid_and_activity(self, m_json_python):
         """Tests TimeSync.get_times with revisions query parameter"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times/sadfasdg432?token={1}".format(self.ts.baseurl,
+                                                       self.ts.token)
+
         # Send it
-        self.ts.get_times(id=3, activity=["dev"])
+        self.ts.get_times(uuid="sadfasdg432", activity=["dev"])
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/times/3")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_all_times(self, m_json_python):
@@ -659,17 +679,20 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/times?token={1}".format(self.ts.baseurl,
+                                           self.ts.token)
+
         # Send it
         self.ts.get_times()
 
         # Test that requests.get was called with baseurl and correct parameter
-        requests.get.assert_called_with("http://ts.example.com/v1/times")
+        requests.get.assert_called_with(url)
 
     def test_get_times_bad_query(self):
         """Tests TimeSync.get_times with an invalid query parameter"""
         # Should return the error
-        self.assertEquals([{"pymesync error": "invalid query: bad"}],
-                          self.ts.get_times(bad=["query"]))
+        self.assertEquals(self.ts.get_times(bad=["query"]),
+                          [{"pymesync error": "invalid query: bad"}])
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_projects(self, m_json_python):
@@ -677,11 +700,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/projects?token={1}".format(self.ts.baseurl,
+                                              self.ts.token)
+
         # Send it
         self.ts.get_projects()
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with("http://ts.example.com/v1/projects")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_projects_slug(self, m_json_python):
@@ -689,12 +715,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/projects/gwm?token={1}".format(self.ts.baseurl,
+                                                  self.ts.token)
+
         # Send it
         self.ts.get_projects(slug="gwm")
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/projects/gwm")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_projects_revisions(self, m_json_python):
@@ -702,12 +730,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/projects?revisions=true&token={1}".format(self.ts.baseurl,
+                                                             self.ts.token)
+
         # Send it
         self.ts.get_projects(revisions=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/projects?revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_projects_slug_revisions(self, m_json_python):
@@ -715,12 +745,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/projects?/gwm?revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_projects(slug="gwm", revisions=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/projects/gwm?revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_projects_include_deleted(self, m_json_python):
@@ -728,12 +760,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/projects?include_deleted=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_projects(include_deleted=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/projects?include_deleted=true")
+        requests.get.assert_called_with(url)
 
     def test_get_projects_include_deleted_with_slug(self):
         """Tests TimeSync.get_projects with include_deleted query and slug,
@@ -755,13 +789,15 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        token_string = "&token={}".format(self.ts.token)
+        url = "{0}/projects?include_deleted=true&revisions=true{1}".format(
+            self.ts.baseurl, token_string)
+
         # Send it
         self.ts.get_projects(revisions=True, include_deleted=True)
 
         # Test that requests.get was called with correct parameters
-        requests.get.assert_called_with("http://ts.example.com/v1/projects"
-                                        "?include_deleted=true"
-                                        "&revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_activities(self, m_json_python):
@@ -769,12 +805,13 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/activities?token={1}".format(self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_activities()
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/activities")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_activities_slug(self, m_json_python):
@@ -782,12 +819,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/activities/code?token={1}".format(self.ts.baseurl,
+                                                     self.ts.token)
+
         # Send it
         self.ts.get_activities(slug="code")
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/activities/code")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_activities_revisions(self, m_json_python):
@@ -795,12 +834,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/activities?revisions=true&token={1}".format(self.ts.baseurl,
+                                                               self.ts.token)
+
         # Send it
         self.ts.get_activities(revisions=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/activities?revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_activities_slug_revisions(self, m_json_python):
@@ -808,12 +849,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/activities/code?revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_activities(slug="code", revisions=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/activities/code?revisions=true")
+        requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
     def test_get_activities_include_deleted(self, m_json_python):
@@ -821,12 +864,14 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        url = "{0}/activities?include_deleted=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
         # Send it
         self.ts.get_activities(include_deleted=True)
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(
-            "http://ts.example.com/v1/activities?include_deleted=true")
+        requests.get.assert_called_with(url)
 
     def test_get_activities_include_deleted_with_slug(self):
         """Tests TimeSync.get_activities with include_deleted query and slug,
@@ -848,13 +893,15 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
+        token_string = "&token={}".format(self.ts.baseurl)
+        url = "{0}/activities?include_deleted=true&revisions=true{1}".format(
+            token_string, self.ts.token)
+
         # Send it
         self.ts.get_activities(revisions=True, include_deleted=True)
 
         # Test that requests.get was called with correct parameters
-        requests.get.assert_called_with("http://ts.example.com/v1/activities"
-                                        "?include_deleted=true"
-                                        "&revisions=true")
+        requests.get.assert_called_with(url)
 
     def test_json_to_python_single_object(self):
         """Test that TimeSync._json_to_python converts a json object to a python
@@ -1104,5 +1151,4 @@ class TestPymesync(unittest.TestCase):
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
-    actual_json_to_python = pymesync.TimeSync._json_to_python
     unittest.main()
