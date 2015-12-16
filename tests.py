@@ -745,7 +745,7 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/projects?/gwm?revisions=true&token={1}".format(
+        url = "{0}/projects/gwm?revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
 
         # Send it
@@ -893,9 +893,9 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        token_string = "&token={}".format(self.ts.baseurl)
+        token_string = "&token={}".format(self.ts.token)
         url = "{0}/activities?include_deleted=true&revisions=true{1}".format(
-            token_string, self.ts.token)
+            self.ts.baseurl, token_string)
 
         # Send it
         self.ts.get_activities(revisions=True, include_deleted=True)
