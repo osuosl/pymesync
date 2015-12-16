@@ -4,9 +4,14 @@ pymesync - Python TimeSync Module
 Allows for interactions with the TimeSync API
 
 - create_time(parameter_dict) - Sends time to baseurl (TimeSync)
-- create_project(parameter_dict, slug="") - Creates or updates project
-- get_times([kwargs]) - Get times from TimeSync
-- get_projects([kwargs]) - Get project information from TimeSync
+- update_time(parameter_dict, uuid) - Updates time by uuid
+- create_project(parameter_dict) - Creates project
+- update_project(parameter_dict, slug) - Updates project by slug
+- create_activity(parameter_dict) - Creates activity
+- update_activity(parameter_dict, slug) - Updates activity by slug
+- get_times(**kwargs) - Get times from TimeSync
+- get_projects(**kwargs) - Get project information from TimeSync
+- get_activities(**kwargs) - Get activity information from TimeSync
 
 Supported TimeSync versions:
 v1
@@ -18,11 +23,12 @@ import operator
 
 class TimeSync(object):
 
-    def __init__(self, baseurl, user, password, auth_type):
+    def __init__(self, baseurl):
         self.baseurl = baseurl
-        self.user = user
-        self.password = password
-        self.auth_type = auth_type
+        self.user = None
+        self.password = None
+        self.auth_type = None
+        self.token = None
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "revisions"]
@@ -37,6 +43,60 @@ class TimeSync(object):
             "project": [],
             "activity": [],
         }
+
+    def authenticate(self, username=None, password=None, auth_type=None):
+        """
+        authenticate(username, password, auth_type)
+
+        Authenticate a username and password with TimeSync via a POST request
+        to the login endpoint. This method will return a list containing a
+        single python dictionary. If successful, the dictionary will contain
+        the token in the form [{"token": "SOMETOKEN"}]. If an error is returned
+        the dictionary will contain the error information.
+
+        ``username`` is a string containing the username of the TimeSync user
+        ``password`` is a string containing the user's password
+        ``auth_type`` is a string containing the authentication method used by
+        TimeSync
+        """
+        # Check for correct arguments in method call
+        arg_error_list = []
+        if not username:
+            arg_error_list.append("username")
+
+        if not password:
+            arg_error_list.append("password")
+
+        if not auth_type:
+            arg_error_list.append("auth_type")
+
+        if arg_error_list:
+            return [
+                {self.error: "Missing {}; please add to method call".format(
+                    ", ".join(arg_error_list))}
+            ]
+
+        del(arg_error_list)
+
+        self.user = username
+        self.password = password
+        self.auth_type = auth_type
+        auth = {"auth": self._auth()}
+        url = "{}/login".format(self.baseurl)
+
+        try:
+            # Success!
+            response = requests.post(url, json=auth)
+            token_list_dict = self._json_to_python(response.text)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return [{self.error: e}]
+
+        if "error" in token_list_dict[0]:
+            return token_list_dict
+        else:
+            self.token = token_list_dict[0]["token"]
+            return token_list_dict
 
     def create_time(self, parameter_dict):
         """
@@ -147,11 +207,16 @@ class TimeSync(object):
         return all times in the database. The syntax for each argument is
         ``query=["parameter"]``.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_list = []  # Remains empty if no kwargs passed
-        query_string = ""
+        query_string = "?"
         if kwargs:
-            if "id" in kwargs.keys():
-                query_string = "/{}".format(kwargs["id"])
+            if "uuid" in kwargs.keys():
+                query_string = "/{}?".format(kwargs["uuid"])
             else:
                 # Sort them into an alphabetized list for easier testing
                 sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
@@ -164,12 +229,13 @@ class TimeSync(object):
                             {self.error: "invalid query: {}".format(query)}
                         ]
 
-                query_string = "?{}".format(query_list[0])
-                for string in query_list[1:]:
-                    query_string += "&{}".format(string)
+                for string in query_list:
+                    query_string += "{}&".format(string)
 
         # Construct query url
-        url = "{0}/times{1}".format(self.baseurl, query_string)
+        url = "{0}/times{1}token={2}".format(self.baseurl,
+                                             query_string,
+                                             self.token)
 
         # Attempt to GET times
         try:
@@ -178,7 +244,7 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error: e}]
 
     def get_projects(self, **kwargs):
         """
@@ -202,12 +268,19 @@ class TimeSync(object):
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
+        else:
+            query_string = "?token={}".format(self.token)
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl, query_string)
@@ -219,7 +292,7 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error: e}]
 
     def get_activities(self, **kwargs):
         """
@@ -243,12 +316,19 @@ class TimeSync(object):
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
+        else:
+            query_string = "?token={}".format(self.token)
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl, query_string)
@@ -260,17 +340,28 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return e
+            return [{self.error, e}]
 
 ###############################################################################
 # Internal methods
 ###############################################################################
 
     def _auth(self):
-        """Returns auth object to be send to TimeSync"""
+        """Returns auth object to log in to TimeSync"""
         return {"type": self.auth_type,
                 "username": self.user,
                 "password": self.password, }
+
+    def _token_auth(self):
+        """Returns auth object with a token to send to TimeSync endpoints"""
+        return {"type": "token",
+                "token": self.token, }
+
+    def _local_auth_error(self):
+        """Checks that self.token is set. Returns error if not set, otherwise
+        returns None"""
+        return None if self.token else ("Not authenticated with TimeSync, "
+                                        "call self.authenticate() first")
 
     def _json_to_python(self, json_object):
         """Convert json object to native python list of objects"""
@@ -282,8 +373,9 @@ class TimeSync(object):
         return python_object
 
     def _format_endpoints(self, queries):
-        """Format endpoints for GET projects and activities requests"""
-        query_string = ""
+        """Format endpoints for GET projects and activities requests. Returns
+        None if invalid combination of slug and include_deleted"""
+        query_string = "?"
         query_list = []
 
         # The following combination is not allowed
@@ -291,7 +383,7 @@ class TimeSync(object):
             return None
         # slug goes first, then delete it so it doesn't show up after the ?
         elif "slug" in queries.keys():
-            query_string = "/{}".format(queries["slug"])
+            query_string = "/{}?".format(queries["slug"])
             del(queries["slug"])
 
         # Convert True and False booleans to TimeSync compatible strings
@@ -302,7 +394,9 @@ class TimeSync(object):
         # Check for items in query_list after slug was removed, create
         # query string
         if query_list:
-            query_string += "?{}".format("&".join(query_list))
+            query_string += "{}&".format("&".join(query_list))
+
+        query_string += "token={}".format(self.token)
 
         return query_string
 
@@ -345,6 +439,11 @@ class TimeSync(object):
         information if it was not. If ``create_object``, then ``parameters``
         gets checked for required fields.
         """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
         # Check that parameter_dict contains required fields and no bad fields
         field_error = self._get_field_errors(parameters,
                                              obj_name,
@@ -352,7 +451,7 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
-        values = {"auth": self._auth(), "object": parameters}
+        values = {"auth": self._token_auth(), "object": parameters}
 
         slug_or_uuid = "/{}".format(slug_or_uuid) if slug_or_uuid else ""
 
@@ -366,4 +465,4 @@ class TimeSync(object):
             return self._json_to_python(response.text)
         except requests.exceptions.RequestException as e:
             # Request error
-            return e
+            return [{self.error: e}]
