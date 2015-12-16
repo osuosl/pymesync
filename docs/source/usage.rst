@@ -85,6 +85,15 @@ Where
 * ``auth_type`` is a string containing the type of authentication your TimeSync
   implementation uses for login, such as ``"password"``, or ``"ldap"``.
 
+.. note::
+
+  If you attempt to get, create, or update objects before authenticating,
+  pymesync will return this error:
+
+  .. code-block:: python
+
+    [{"pymesync error": "Not authenticated with TimeSync, call self.authenticate() first"}]
+
 Public methods
 --------------
 
