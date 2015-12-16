@@ -11,6 +11,8 @@ built in Node.js, can be found at `github.com/osuosl/timesync-node`_.
 
 This module allows users to
 
+* Authenticate a pymesync object with a TimeSync implementation
+  (**authenticate()**)
 * Send times, projects, and activities to TimeSync (**create_time()**,
   **create_project()**, **create_activity()**),
 * Update times, projects, and activities (**update_time()**,
@@ -24,6 +26,11 @@ Pymesync currently supports the following TimeSync API versions:
 
 All of these methods return a list of one or more python dictionaries (or an
 empty list if TimeSync has no records).
+
+* **authenticate(username, password, auth_type)** - Authenticates a pymesync
+  object with a TimeSync implementation
+
+|
 
 * **create_time(parameter_dict)** - Sends time to TimeSync baseurl set in
   constructor
@@ -55,8 +62,8 @@ now you need to copy or clone the pymesync `source code`_ into your project and
 
 .. _source code: https://github.com/osuosl/pymesync
 
-Initiate a TimeSync object
---------------------------
+Initiate and Authenticate a TimeSync object
+-------------------------------------------
 
 To access pymesync's public methods you must first initiate a TimeSync object
 
@@ -64,7 +71,8 @@ To access pymesync's public methods you must first initiate a TimeSync object
 
     import pymesync
 
-    ts = pymesync.TimeSync(baseurl, user, password, auth_type)
+    ts = pymesync.TimeSync(baseurl)
+    ts.authenticate(user, password, auth_type)
 
 Where
 
@@ -75,18 +83,39 @@ Where
   TimeSync
 * ``password`` is a string containing the user's password
 * ``auth_type`` is a string containing the type of authentication your TimeSync
-  implementation uses, such as ``"password"``, ``"ldap"``, or ``"token"``.
-
-.. warning::
-
-    ``"token"`` auth is not currently supported by pymesync
-
+  implementation uses for login, such as ``"password"``, or ``"ldap"``.
 
 Public methods
 --------------
 
 These methods are available to general TimeSync users with applicable user roles
 on the projects they are submitting times to.
+
+TimeSync.\ **authenticate(user, password, auth_type)**
+
+    Authenticate a pymesync object with a TimeSync implementation. The
+    authentication is subject to any time limits imposed by that implementation.
+
+    ``user`` is a string containing the username of the user communicating with
+    TimeSync
+
+    ``password`` is a string containing the user's password
+
+    ``auth_type`` is a string containing the type of authentication your TimeSync
+    implementation uses for login, such as ``"password"``, or ``"ldap"``.
+
+    **authenticate()** will return a list containing a python dictionary. If
+    authentication was successful, the list will look like this:
+
+    .. code-block:: python
+
+      [{"token": "SOMELONGTOKEN"}]
+
+    If authentication was unsuccessful, the list will contain an error message:
+
+    .. code-block:: python
+
+      [{"status": 401, "error": "Authentication failure", "text": "Invalid username or password"}]
 
 TimeSync.\ **create_time(parameter_dict)**
 
@@ -443,7 +472,9 @@ Example usage
 
     >>> import pymesync
     >>>
-    >>> ts = pymesync.TimeSync('http://ts.example.com/v1', 'username', 'userpass', 'password')
+    >>> ts = pymesync.TimeSync("http://ts.example.com/v1")
+    >>> ts.authenticate("username", "userpass", "password")
+    >>>[{"token": "SOMELONGTOKEN"}]
     >>> params = {
     ...    "duration": 12,
     ...    "project": "ganeti-web-manager",
