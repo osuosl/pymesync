@@ -44,7 +44,7 @@ class TimeSync(object):
             "activity": [],
         }
 
-    def authenticate(self, username, password, auth_type):
+    def authenticate(self, username=None, password=None, auth_type=None):
         """
         authenticate(username, password, auth_type)
 
@@ -59,6 +59,25 @@ class TimeSync(object):
         ``auth_type`` is a string containing the authentication method used by
         TimeSync
         """
+        # Check for correct arguments in method call
+        arg_error_list = []
+        if not username:
+            arg_error_list.append("username")
+
+        if not password:
+            arg_error_list.append("password")
+
+        if not auth_type:
+            arg_error_list.append("auth_type")
+
+        if arg_error_list:
+            return [
+                {self.error: "Missing {}; please add to method call".format(
+                    ", ".join(arg_error_list))}
+            ]
+
+        del(arg_error_list)
+
         self.user = username
         self.password = password
         self.auth_type = auth_type
