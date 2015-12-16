@@ -3,39 +3,67 @@
 pymesync - Communicate with a TimeSync API
 ==========================================
 
-This module provides an interface to communicate with an implementation of the
-`OSU Open Source Lab`_'s `TimeSync`_ API. An example implementation in Node.js
-can be found `on Github`_.
+.. contents::
 
-This module allows users to send times to TimeSync (**create_time()**), get a time
-or a list of times from TimeSync (**get_times()**), and get a project or list of
-projects from TimeSync (**get_projects()**).
+This module provides an interface to communicate with an implementation of the
+`OSU Open Source Lab`_'s `TimeSync API`_. An implementation of the TimeSync API,
+built in Node.js, can be found at `github.com/osuosl/timesync-node`_.
+
+This module allows users to
+
+* Authenticate a pymesync object with a TimeSync implementation
+  (**authenticate()**)
+* Send times, projects, and activities to TimeSync (**create_time()**,
+  **create_project()**, **create_activity()**),
+* Update times, projects, and activities (**update_time()**,
+  **update_project()**, **update_activity()**)
+* Get one or a list of times projects, and activities (**get_times()**,
+  **get_projects()**, **get_activities()**)
 
 Pymesync currently supports the following TimeSync API versions:
 
 * v1
 
-All of these methods return a python list of one to many dictionaries.
+All of these methods return a list of one or more python dictionaries (or an
+empty list if TimeSync has no records).
 
-* **create_time(parameter_dict)** - Sends time to baseurl set in constructor
-* **get_times([kwargs])** - Get times from TimeSync
-* **get_projects([kwargs])** - Get project information from TimeSync
+* **authenticate(username, password, auth_type)** - Authenticates a pymesync
+  object with a TimeSync implementation
+
+|
+
+* **create_time(parameter_dict)** - Sends time to TimeSync baseurl set in
+  constructor
+* **create_project(parameter_dict)** - Send new project to TimeSync
+* **create_activity(parameter_dict)** - Send new activity to TimeSync
+
+|
+
+* **update_time(parameter_dict, uuid)** - Update time entry specified by uuid
+* **update_project(parameter_dict, slug)** - Update project specified by slug
+* **update_activity(parameter_dict, slug)** - Update activity specified by slug
+
+|
+
+* **get_times(\**kwargs)** - Get times from TimeSync
+* **get_projects(\**kwargs)** - Get project information from TimeSync
+* **get_activities(\**kwargs)** - Get activity information from TimeSync
 
 .. _OSU Open Source Lab: http://www.osuosl.org
-.. _TimeSync: http://timesync.readthedocs.org/en/latest/
-.. _on Github: https://github.com/osuosl/timesync-node
+.. _TimeSync API: http://timesync.readthedocs.org/en/latest/
+.. _github.com/osuosl/timesync-node: https://github.com/osuosl/timesync-node
 
 Install pymesync
 ----------------
 
 Future implementation will allow you to simply ``pip install pymesync``, but for
-now you need to copy the pymesync `source code`_ into your project and
+now you need to copy or clone the pymesync `source code`_ into your project and
 ``pip install -r requirements.txt`` in a virtualenv.
 
 .. _source code: https://github.com/osuosl/pymesync
 
-Initiate a TimeSync object:
----------------------------
+Initiate and Authenticate a TimeSync object
+-------------------------------------------
 
 To access pymesync's public methods you must first initiate a TimeSync object
 
@@ -43,7 +71,8 @@ To access pymesync's public methods you must first initiate a TimeSync object
 
     import pymesync
 
-    ts = pymesync.TimeSync(baseurl, user, password, auth_type)
+    ts = pymesync.TimeSync(baseurl)
+    ts.authenticate(user, password, auth_type)
 
 Where
 
@@ -54,40 +83,86 @@ Where
   TimeSync
 * ``password`` is a string containing the user's password
 * ``auth_type`` is a string containing the type of authentication your TimeSync
-  implementation uses, such as ``"password"``, ``"ldap"``, or ``"token"``.
+  implementation uses for login, such as ``"password"``, or ``"ldap"``.
 
-.. warning::
+.. note::
 
-    ``"token"`` auth is not currently supported by pymesync
+  If you attempt to get, create, or update objects before authenticating,
+  pymesync will return this error:
 
+  .. code-block:: python
 
-Public methods:
----------------
+    [{"pymesync error": "Not authenticated with TimeSync, call self.authenticate() first"}]
+
+Public methods
+--------------
+
+These methods are available to general TimeSync users with applicable user roles
+on the projects they are submitting times to.
+
+TimeSync.\ **authenticate(user, password, auth_type)**
+
+    Authenticate a pymesync object with a TimeSync implementation. The
+    authentication is subject to any time limits imposed by that implementation.
+
+    ``user`` is a string containing the username of the user communicating with
+    TimeSync
+
+    ``password`` is a string containing the user's password
+
+    ``auth_type`` is a string containing the type of authentication your TimeSync
+    implementation uses for login, such as ``"password"``, or ``"ldap"``.
+
+    **authenticate()** will return a list containing a python dictionary. If
+    authentication was successful, the list will look like this:
+
+    .. code-block:: python
+
+      [{"token": "SOMELONGTOKEN"}]
+
+    If authentication was unsuccessful, the list will contain an error message:
+
+    .. code-block:: python
+
+      [{"status": 401, "error": "Authentication failure", "text": "Invalid username or password"}]
 
 TimeSync.\ **create_time(parameter_dict)**
 
-    Send a time entry to TimeSync via a POST request in a JSON body. This method
-    will return that body in the form of a list containing a single python
-    dictionary. The dictionary will contain a representation of that JSON body
-    if it was successful or error information if it was not.
+    Send a time entry to the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created entry if successful. The
+    dictionary will contain error information if ``create_time()`` was
+    unsuccessful.
 
     ``parameter_dict`` is a python dictionary containing the time information to
-    send to TimeSync. It requires the following fields:
+    send to TimeSync. The syntax is ``"string_key": "string_value"`` with the
+    exception of the key ``"duration"`` which takes an integer value, and the
+    key ``"activities"``, which takes a list of strings containing activity
+    slugs. ``create_time()`` accepts the following fields in ``parameter dict``:
 
-    * ``duration``
-    * ``project``
-    * ``user``
-    * ``activities``
-    * ``notes`` - this field is optional
-    * ``issue_uri`` - this field is optional
-    * ``date_worked``
+    Required:
+
+    * ``"duration"`` - duration of time spent working on project in seconds (per
+      TimeSync API)
+    * ``"project"`` - slug of project worked on
+    * ``"user"`` - username of user that did the work, must match ``user``
+      specified in instantiation
+    * ``"activities"`` - list of slugs identifying the activies worked on for
+      this time entry
+    * ``"date_worked"`` - date worked for this time entry in the form
+      ``"yyyy-mm-dd"``
+
+    Optional:
+
+    * ``"notes"`` - optional notes about this time entry
+    * ``"issue_uri"`` - optional uri to issue worked on
 
     Example ``parameter_dict``:
 
     .. code-block:: python
 
       params = {
-          "duration": 12,
+          "duration": 7200,
           "project": "ganeti-web-manager",
           "user": "example-user",
           "activities": ["documenting"],
@@ -98,44 +173,106 @@ TimeSync.\ **create_time(parameter_dict)**
 
 ------------------------------------------
 
-TimeSync.\ **get_times([\**kwargs])**
+TimeSync.\ **update_time(parameter_dict, uuid)**
 
-    Request time entries filtered by parameters passed to ``kwargs``. Returns a
-    list of python objects representing the JSON time information returned by
-    TimeSync or an error message if unsuccessful.
+    Update a time entry by uuid on the TimeSync instance specified by the
+    baseurl provided when instantiating the TimeSync object. This method will
+    return a list with a single python dictionary containing the updated entry
+    if successful. The dictionary will contain error information if
+    ``update_time()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the time information to
+    send to TimeSync. The syntax is ``"string_key": "string_value"`` with the
+    exception of the key ``"duration"`` which takes an integer value, and the
+    key ``"activities"``, which takes a list of strings containing activity
+    slugs. You only need to send the fields that you want to update.
+
+    ``uuid`` is a string containing the uuid of the time to be updated.
+
+    ``update_time()`` accepts the following fields in ``parameter dict``:
+
+    * ``"duration"`` - duration of time spent working on project in seconds (per
+      TimeSync API)
+    * ``"project"`` - slug of project worked on
+    * ``"user"`` - username of user that did the work, must match ``user``
+      specified in instantiation
+    * ``"activities"`` - list of slugs identifying the activies worked on for
+      this time entry
+    * ``"date_worked"`` - date worked for this time entry in the form
+      ``"yyyy-mm-dd"``
+    * ``"notes"`` - optional notes about this time entry
+    * ``"issue_uri"`` - optional uri to issue worked on
+
+    Example ``parameter_dict`` to update the date_worked of a time entry:
+
+    .. code-block:: python
+
+      params = {
+          "date_worked": "2015-04-17",
+      }
+
+------------------------------------------
+
+TimeSync.\ **get_times(\**kwargs)**
+
+    Request time entries from the TimeSync instance specified by the baseurl
+    provided when instantiating the TimeSync object. The time entries are
+    filtered by parameters passed to ``kwargs``. Returns a list of python
+    dictionaries containing the time information returned by TimeSync or an
+    error message if unsuccessful.
 
     ``kwargs`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_times()`` will
     return all times in the database. The syntax for each argument is
-    ``query=["parameter"]`` except for the ``id`` parameter which is
-    ``id=<integer-id>``.
+    ``query=["parameter1", "parameter2"]`` except for the ``uuid`` parameter
+    which is ``uuid="uuid-as-string"``.
 
     Currently the valid queries allowed by pymesync are:
 
-    * ``user`` - filter time request by user
-    * ``project`` - filter time request by project
-    * ``activity`` - filter time request by activity
+    * ``user`` - filter time request by username
+
+      - example: ``user=["username"]``
+
+    * ``project`` - filter time request by project slug
+
+      - example: ``project=["slug"]``
+
+    * ``activity`` - filter time request by activity slug
+
+      - example: ``activity=["slug"]``
+
     * ``start`` - filter time request by start date
+
+      - example: ``start=["2014-07-23"]``
+
     * ``end`` - filter time request by end date
+
+      - example: ``end=["2015-07-23"]``
+
     * ``revisions`` - either ``["true"]`` or ``["false"]`` to include revisions
       of times
-    * ``id`` - get specific time entry by time id
+
+      - example: ``revisions=["true"]``
+
+    * ``uuid`` - get specific time entry by time uuid
+
+      - example: ``uuid=134``
 
     .. warning::
 
-      If the ``id`` parameter is passed all other parameters will be ignored.
-      For example, ``ts.get_times(id=12, user=["bob"])`` is equivalent to
-      ``ts.get_times(id=12)``.
-
-    .. _TimeSync documentation: http://timesync.readthedocs.org/en/latest/draft_api.html#get-endpoints
+      If the ``uuid`` parameter is passed all other parameters will be ignored.
+      For example, ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is
+      equivalent to ``ts.get_times(uuid="time-entry-uuid")``.
 
 ------------------------------------------
 
-TimeSync.\ **get_projects([\**kwargs])**
+TimeSync.\ **get_projects(\**kwargs)**
 
-    Request project information filtered by parameters passed to ``kwargs``.
-    Returns a list of python objects representing the JSON project information
-    returned by TimeSync or an error message if unsuccessful.
+    Request project entries from the TimeSync instance specified by the baseurl
+    provided when instantiating the TimeSync object. The project entries are
+    filtered by parameters passed to ``kwargs``. Returns a list of python
+    dictionaries containing the project information returned by TimeSync or an
+    error message if unsuccessful.
 
     ``kwargs`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_projects()`` will
@@ -165,11 +302,13 @@ TimeSync.\ **get_projects([\**kwargs])**
 
 ------------------------------------------
 
-TimeSync.\ **get_activities([\**kwargs])**
+TimeSync.\ **get_activities(\**kwargs)**
 
-    Request activity information filtered by parameters passed to ``kwargs``.
-    Returns a list of python objects representing the JSON activity information
-    returned by TimeSync or an error message if unsuccessful.
+    Request activity entries from the TimeSync instance specified by the baseurl
+    provided when instantiating the TimeSync object. The activity entries are
+    filtered by parameters passed to ``kwargs``. Returns a list of python
+    dictionaries containing the activity information returned by TimeSync or an
+    error message if unsuccessful.
 
     ``kwargs`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_activities()`` will
@@ -199,35 +338,30 @@ TimeSync.\ **get_activities([\**kwargs])**
 
 ------------------------------------------
 
-Administrative methods:
------------------------
+.. _TimeSync documentation: http://timesync.readthedocs.org/en/latest/draft_api.html#get-endpoints
 
-TimeSync.\ **create_project(parameter_dict, slug="")**
+Administrative methods
+----------------------
 
-    Post a project to TimeSync via a POST request in a JSON body. This
-    method will return that body in the form of a list containing a single
-    python dictionary. The dictionary will contain a representation of that
-    JSON body if it was successful or error information if it was not.
+These methods are available to TimeSync users with administrative permissions.
+
+TimeSync.\ **create_project(parameter_dict)**
+
+    Create a project on the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created project if successful. The
+    dictionary will contain error information if ``create_project()`` was
+    unsuccessful.
 
     ``parameter_dict`` is a python dictionary containing the project
-    information to send to TimeSync. It requires the following fields:
+    information to send to TimeSync. The syntax is ``"key": "value"`` except for
+    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+    ``parameter_dict`` requires the following fields:
 
-    * ``uri``
-    * ``name``
-    * ``slugs`` - this must be a list of strings
-    * ``owner``
-
-    If any of the fields are not provided TimeSync will return an error in a
-    JSON body, which will be converted to a python dictionary by pymesync.
-
-    If the ``slug`` parameter is passed to ``create_project()``, the values in
-    ``parameter_dict`` will be used to update the existing project. If ``uri``,
-    ``name``, or ``owner`` are set to ``""`` (empty string) or ``slugs`` is set
-    to ``[]`` (empty array), the value will be set to the empty string/array.
-
-    If the ``slug`` parameter is passed and a value in ``parameter_dict`` is set
-    to ``None``, the current value in TimeSync for that item will be used (it
-    will not be updated).
+    * ``"uri"``
+    * ``"name"``
+    * ``"slugs"`` - this must be a list of strings
+    * ``"owner"``
 
     Example ``parameter_dict``:
 
@@ -240,25 +374,116 @@ TimeSync.\ **create_project(parameter_dict, slug="")**
           "owner": "mrsj"
       }
 
-    Example update ``parameter_dict``:
+------------------------------------------
+
+TimeSync.\ **update_project(parameter_dict, slug)**
+
+    Update an existing project by slug on the TimeSync instance specified by the
+    baseurl provided when instantiating the TimeSync object. This method will
+    return a list with a single python dictionary containing the updated project
+    if successful. The dictionary will contain error information if
+    ``update_project()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. The syntax is ``"key": "value"`` except for
+    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+
+    ``slug`` is a string containing the slug of the project to be updated.
+
+    If ``"uri"``, ``"name"``, or ``"owner"`` are set to ``""`` (empty string) or
+    ``"slugs"`` is set to ``[]`` (empty array), the value will be set to the
+    empty string/array.
+
+    You only need to pass the fields you want to update in ``parameter_dict``.
+
+    ``parameter_dict`` accepts the following fields:
+
+    * ``"uri"``
+    * ``"name"``
+    * ``"slugs"`` - this must be a list of strings
+    * ``"owner"``
+
+    Example ``parameter_dict`` to update project slugs:
 
     .. code-block:: python
 
       parameter_dict = {
-          "uri": None,
-          "name": None,
-          "slugs": ["timesync", "time", "ts"],
-          "owner": None
+          "slugs": ["timesync", "time", "ts"]
       }
 
-Example usage:
---------------
+------------------------------------------
+
+TimeSync.\ **create_activity(parameter_dict)**
+
+    Create an activity on the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created activity if successful.
+    The dictionary will contain error information if ``create_activity()`` was
+    unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the activity
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+    ``parameter_dict`` requires the following fields:
+
+    * ``"name"``
+    * ``"slug"``
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+            "name": "Quality Assurance/Testing",
+            "slug": "qa",
+      }
+
+------------------------------------------
+
+TimeSync.\ **update_activity(parameter_dict, slug)**
+
+    Update an existing activity by slug on the TimeSync instance specified by
+    the baseurl provided when instantiating the TimeSync object. This method
+    will return a list with a single python dictionary containing the updated
+    activity if successful. The dictionary will contain error information if
+    ``update_activity()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the project
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+
+    ``slug`` is a string containing the slug of the activity to be updated.
+
+    If ``"name"`` or ``"slug"`` in ``parameter_dict`` are set to ``""``
+    (empty string), the value will be set to the empty string.
+
+    You only need to pass the fields you want to update in ``parameter_dict``.
+
+    ``parameter_dict`` accepts the following fields to update an activity:
+
+    * ``"name"``
+    * ``"slug"``
+
+    Example ``parameter_dict`` to update activity slug:
+
+    .. code-block:: python
+
+      parameter_dict = {
+            "slug": "test"
+      }
+
+------------------------------------------
+
+
+
+Example usage
+-------------
 
 .. code-block:: python
 
     >>> import pymesync
     >>>
-    >>> ts = pymesync.TimeSync('http://ts.example.com/v1', 'username', 'userpass', 'password')
+    >>> ts = pymesync.TimeSync("http://ts.example.com/v1")
+    >>> ts.authenticate("username", "userpass", "password")
+    >>>[{"token": "SOMELONGTOKEN"}]
     >>> params = {
     ...    "duration": 12,
     ...    "project": "ganeti-web-manager",
@@ -268,20 +493,4 @@ Example usage:
     ...    "issue_uri": "https://github.com/",
     ...    "date_worked": "2014-04-17",
     ...}
-    >>> ts.create_time(params)
-    {u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}
-    >>> ts.get_times(user=["username"])
-    [{u'object': {u'activities': [u'documenting'], u'date_worked': u'2014-04-17', u'notes': u'Worked on docs', u'project': u'ganeti-web-manager', u'user': u'username', u'duration': 12, u'issue_uri': u'https://github.com/', u'id': 1}, u'auth': {u'username': u'username', u'password': u'userpass', u'type': u'password'}}]
-    >>> ts.get_projects(slug='gwm')
-    [{u'owner': u'username', u'slugs': [u'ganeti', u'gwm'], u'id': 1, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'name': u'Ganeti Web Manager'}]
-    >>> ts.get_activities(slug='code')
-    [{"id":1,"name":"Programming","slug":"code","created_at":"2015-11-24","updated_at":null,"deleted_at":null,"uuid":"fd7fd535-1272-44cd-b4ec-726b65b1db96","revision":1}]
-    >>> project_params = {
-    ...    "uri": "https://code.osuosl.org/projects/timesync",
-    ...    "name": "TimeSync API",
-    ...    "slugs": ["timesync", "time"],
-    ...    "owner": "username"
-    ...}
-    >>> ts.create_project(project_params)
-    [{u'uuid': u'someuuid', u'created_at': u'2015-11-24', u'uri': u'https://code.osuosl.org/projects/timesync', u'id': 2, u'owner': u'username', u'revision': 1, u'slugs': [u'timesync', u'time'], u'name': u'TimeSync API'}]
-    >>>
+    >>> More to come when implementation is fixed...
