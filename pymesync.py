@@ -190,10 +190,10 @@ class TimeSync(object):
         ``query=["parameter"]``.
         """
         query_list = []  # Remains empty if no kwargs passed
-        query_string = ""
+        query_string = "?"
         if kwargs:
-            if "id" in kwargs.keys():
-                query_string = "/{}".format(kwargs["id"])
+            if "uuid" in kwargs.keys():
+                query_string = "/{}?".format(kwargs["uuid"])
             else:
                 # Sort them into an alphabetized list for easier testing
                 sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
@@ -206,12 +206,16 @@ class TimeSync(object):
                             {self.error: "invalid query: {}".format(query)}
                         ]
 
-                query_string = "?{}".format(query_list[0])
-                for string in query_list[1:]:
-                    query_string += "&{}".format(string)
+                for string in query_list:
+                    query_string += "{}&".format(string)
+
+                # Get ready for the token
+                # query_string += "&"
 
         # Construct query url
-        url = "{0}/times{1}".format(self.baseurl, query_string)
+        url = "{0}/times{1}token={2}".format(self.baseurl,
+                                             query_string,
+                                             self.token)
 
         # Attempt to GET times
         try:
@@ -250,6 +254,8 @@ class TimeSync(object):
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
+        else:
+            query_string = "?token={}".format(self.token)
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl, query_string)
@@ -291,6 +297,8 @@ class TimeSync(object):
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
+        else:
+            query_string = "?token={}".format(self.token)
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl, query_string)
@@ -329,8 +337,9 @@ class TimeSync(object):
         return python_object
 
     def _format_endpoints(self, queries):
-        """Format endpoints for GET projects and activities requests"""
-        query_string = ""
+        """Format endpoints for GET projects and activities requests. Returns
+        None if invalid combination of slug and include_deleted"""
+        query_string = "?"
         query_list = []
 
         # The following combination is not allowed
@@ -338,7 +347,7 @@ class TimeSync(object):
             return None
         # slug goes first, then delete it so it doesn't show up after the ?
         elif "slug" in queries.keys():
-            query_string = "/{}".format(queries["slug"])
+            query_string = "/{}?".format(queries["slug"])
             del(queries["slug"])
 
         # Convert True and False booleans to TimeSync compatible strings
@@ -349,7 +358,9 @@ class TimeSync(object):
         # Check for items in query_list after slug was removed, create
         # query string
         if query_list:
-            query_string += "?{}".format("&".join(query_list))
+            query_string += "{}&".format("&".join(query_list))
+
+        query_string += "token={}".format(self.token)
 
         return query_string
 
