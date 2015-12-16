@@ -1291,6 +1291,51 @@ class TestPymesync(unittest.TestCase):
                                         "text": "Invalid username or "
                                         "password"}])
 
+    def test_authentication_no_username(self):
+        """Tests authenticate method with no username in call"""
+        self.assertEquals(self.ts.authenticate(password="password",
+                                               auth_type="password"),
+                          [{"pymesync error": "Missing username; "
+                            "please add to method call"}])
+
+    def test_authentication_no_password(self):
+        """Tests authenticate method with no password in call"""
+        self.assertEquals(self.ts.authenticate(username="username",
+                                               auth_type="password"),
+                          [{"pymesync error": "Missing password; "
+                            "please add to method call"}])
+
+    def test_authentication_no_auth_type(self):
+        """Tests authenticate method with no auth_type in call"""
+        self.assertEquals(self.ts.authenticate(password="password",
+                                               username="username"),
+                          [{"pymesync error": "Missing auth_type; "
+                            "please add to method call"}])
+
+    def test_authentication_no_username_or_password(self):
+        """Tests authenticate method with no username or password in call"""
+        self.assertEquals(self.ts.authenticate(auth_type="password"),
+                          [{"pymesync error": "Missing username, password; "
+                            "please add to method call"}])
+
+    def test_authentication_no_username_or_auth_type(self):
+        """Tests authenticate method with no username or auth_type in call"""
+        self.assertEquals(self.ts.authenticate(password="password"),
+                          [{"pymesync error": "Missing username, auth_type; "
+                            "please add to method call"}])
+
+    def test_authentication_no_password_or_auth_type(self):
+        """Tests authenticate method with no username or auth_type in call"""
+        self.assertEquals(self.ts.authenticate(username="username"),
+                          [{"pymesync error": "Missing password, auth_type; "
+                            "please add to method call"}])
+
+    def test_authentication_no_arguments(self):
+        """Tests authenticate method with no arguments in call"""
+        self.assertEquals(self.ts.authenticate(),
+                          [{"pymesync error": "Missing username, password, "
+                            "auth_type; please add to method call"}])
+
     def test_local_auth_error_with_token(self):
         """Test internal local_auth_error method with token"""
         self.assertIsNone(self.ts._local_auth_error())
