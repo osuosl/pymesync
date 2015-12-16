@@ -31,7 +31,7 @@ class TimeSync(object):
         self.token = None
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
-                                  "start", "end", "revisions"]
+                                  "start", "end", "include_revisions"]
         self.required_params = {
             "time": ["duration", "project", "user",
                      "activities", "date_worked"],
