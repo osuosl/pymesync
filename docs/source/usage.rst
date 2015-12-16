@@ -249,10 +249,10 @@ TimeSync.\ **get_times(\**kwargs)**
 
       - example: ``end=["2015-07-23"]``
 
-    * ``revisions`` - either ``["true"]`` or ``["false"]`` to include revisions
-      of times
+    * ``include_revisions`` - either ``["true"]`` or ``["false"]`` to include 
+      revisions of times. Defaults to ["false"]
 
-      - example: ``revisions=["true"]``
+      - example: ``include_revisions=["true"]``
 
     * ``uuid`` - get specific time entry by time uuid
 
@@ -290,10 +290,10 @@ TimeSync.\ **get_projects(\**kwargs)**
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` - tell TimeSync whether to include past revisions of
+    * ``include_revisions`` - tell TimeSync whether to include past revisions of
       projects in request. Default is ``False``
 
-      - example: ``revisions=True``
+      - example: ``include_revisions=True``
 
     .. warning::
 
@@ -326,10 +326,10 @@ TimeSync.\ **get_activities(\**kwargs)**
 
       - example: ``include_deleted=True``
 
-    * ``revisions`` - tell TimeSync whether to include past revisions of
+    * ``include_revisions`` - tell TimeSync whether to include past revisions of
       activities in request. Default is ``False``
 
-      - example: ``revisions=True``
+      - example: ``include_revisions=True``
 
     .. warning::
 
