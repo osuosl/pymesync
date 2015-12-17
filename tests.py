@@ -839,7 +839,9 @@ class TestPymesync(unittest.TestCase):
                                            queries, token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432", include_deleted=["true"])
+        self.ts.get_times(uuid="sadfasdg432",
+                          include_revisions=["true"],
+                          include_deleted=["true"])
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
