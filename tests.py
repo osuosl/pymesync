@@ -791,6 +791,38 @@ class TestPymesync(unittest.TestCase):
         requests.get.assert_called_with(url)
 
     @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_with_uuid_and_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_times with uuid and include_revisions query
+        parameters"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times/sadfasdg432?include_revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(uuid="sadfasdg432", include_revisions=["true"])
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_with_uuid_and_include_deleted(self, m_json_python):
+        """Tests TimeSync.get_times with uuid and include_deleted query
+        parameters"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times/sadfasdg432?include_deleted=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(uuid="sadfasdg432", include_deleted=["true"])
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
     def test_get_all_times(self, m_json_python):
         """Tests TimeSync.get_times with no parameters"""
         # Mock requests.get
