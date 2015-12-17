@@ -402,11 +402,15 @@ class TimeSync(object):
 
         # Format the include_* queries similarly to other queries for easier
         # processing
-        if "include_deleted" in queries.keys() and queries["include_deleted"]:
-            queries["include_deleted"] = ["true"]
-        if ("include_revisions" in queries.keys()
-                and queries["include_revisions"]):
-            queries["include_revisions"] = ["true"]
+        if "include_deleted" in queries.keys():
+            queries["include_deleted"] = (["true"]
+                                          if queries["include_deleted"]
+                                          else ["false"])
+
+        if "include_revisions" in queries.keys():
+            queries["include_revisions"] = (["true"]
+                                            if queries["include_revisions"]
+                                            else ["false"])
 
         # If uuid is included, the only other accepted queries are the
         # include_*s

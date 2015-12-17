@@ -762,7 +762,7 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/times?include_deleted=False&token={1}".format(
+        url = "{0}/times?include_deleted=false&token={1}".format(
             self.ts.baseurl, self.ts.token)
 
         # Send it
