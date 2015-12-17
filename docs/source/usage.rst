@@ -249,20 +249,29 @@ TimeSync.\ **get_times(\**kwargs)**
 
       - example: ``end=["2015-07-23"]``
 
-    * ``include_revisions`` - either ``["true"]`` or ``["false"]`` to include 
-      revisions of times. Defaults to ["false"]
+    * ``include_revisions`` - either ``["true"]`` or ``["false"]`` to include
+      revisions of times. Defaults to ``["false"]``
 
       - example: ``include_revisions=["true"]``
 
+    * ``include_deleted`` - either ``["true"]`` or ``["false"]`` to include
+      deleted times. Defaults to ``["false"]``
+
+      - example: ``include_deleted=["true"]``
+
     * ``uuid`` - get specific time entry by time uuid
 
-      - example: ``uuid=134``
+      - example: ``uuid="someuuid"``
+
+      To get a deleted time by ``uuid``, also add the ``include_deleted``
+      parameter.
 
     .. warning::
 
-      If the ``uuid`` parameter is passed all other parameters will be ignored.
-      For example, ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is
-      equivalent to ``ts.get_times(uuid="time-entry-uuid")``.
+      If the ``uuid`` parameter is passed all other parameters will be ignored
+      except for ``include_deleted`` and ``include_revisions``. For example,
+      ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is equivalent to
+      ``ts.get_times(uuid="time-entry-uuid")``.
 
 ------------------------------------------
 
