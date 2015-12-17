@@ -400,6 +400,16 @@ class TimeSync(object):
         query_string = "?"
         query_list = []
 
+        # Format the include_* queries similarly to other queries for easier
+        # processing
+        if "include_deleted" in queries.keys() and queries["include_deleted"]:
+            queries["include_deleted"] = ["true"]
+        if ("include_revisions" in queries.keys()
+                and queries["include_revisions"]):
+            queries["include_revisions"] = ["true"]
+
+        # If uuid is included, the only other accepted queries are the
+        # include_*s
         if "uuid" in queries.keys():
             query_string = "/{}?".format(queries["uuid"])
             if "include_deleted" in queries.keys():
@@ -408,6 +418,8 @@ class TimeSync(object):
             if "include_revisions" in queries.keys():
                 query_string += "include_revisions={}&".format(
                     queries["include_revisions"][0])
+
+        # Everthing is a list now, so iterate through and append
         else:
             # Sort them into an alphabetized list for easier testing
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
@@ -415,6 +427,7 @@ class TimeSync(object):
                 for slug in param:
                     query_list.append("{0}={1}".format(query, slug))
 
+            # Last character will be an & so we can append the token
             for string in query_list:
                 query_string += "{}&".format(string)
 
