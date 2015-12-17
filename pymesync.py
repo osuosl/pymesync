@@ -31,7 +31,8 @@ class TimeSync(object):
         self.token = None
         self.error = "pymesync error"
         self.valid_get_queries = ["user", "project", "activity",
-                                  "start", "end", "include_revisions"]
+                                  "start", "end", "include_revisions",
+                                  "include_deleted", "uuid"]
         self.required_params = {
             "time": ["duration", "project", "user",
                      "activities", "date_worked"],
@@ -212,25 +213,18 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
-        query_list = []  # Remains empty if no kwargs passed
-        query_string = "?"
-        if kwargs:
-            if "uuid" in kwargs.keys():
-                query_string = "/{}?".format(kwargs["uuid"])
-            else:
-                # Sort them into an alphabetized list for easier testing
-                sorted_qs = sorted(kwargs.items(), key=operator.itemgetter(0))
-                for query, param in sorted_qs:
-                    if query in self.valid_get_queries:
-                        for slug in param:
-                            query_list.append("{0}={1}".format(query, slug))
-                    else:
-                        return [
-                            {self.error: "invalid query: {}".format(query)}
-                        ]
+        # Check for key error
+        for key in kwargs.keys():
+            if key not in self.valid_get_queries:
+                return [{self.error: "invalid query: {}".format(key)}]
 
-                for string in query_list:
-                    query_string += "{}&".format(string)
+        # Construct the query string
+        query_string = ""
+
+        if kwargs:
+            query_string = self._construct_filter_query(kwargs)
+        else:
+            query_string = "?"
 
         # Construct query url
         url = "{0}/times{1}token={2}".format(self.baseurl,
@@ -397,6 +391,32 @@ class TimeSync(object):
             query_string += "{}&".format("&".join(query_list))
 
         query_string += "token={}".format(self.token)
+
+        return query_string
+
+    def _construct_filter_query(self, queries):
+        """Construct the query string for filtering GET queries, such as
+        get_times()"""
+        query_string = "?"
+        query_list = []
+
+        if "uuid" in queries.keys():
+            query_string = "/{}?".format(queries["uuid"])
+            if "include_deleted" in queries.keys():
+                query_string += "include_deleted={}&".format(
+                    queries["include_deleted"][0])
+            if "include_revisions" in queries.keys():
+                query_string += "include_revisions={}&".format(
+                    queries["include_revisions"][0])
+        else:
+            # Sort them into an alphabetized list for easier testing
+            sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
+            for query, param in sorted_qs:
+                for slug in param:
+                    query_list.append("{0}={1}".format(query, slug))
+
+            for string in query_list:
+                query_string += "{}&".format(string)
 
         return query_string
 
