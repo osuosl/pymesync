@@ -217,6 +217,179 @@ class TestPymesync(unittest.TestCase):
                                                                "times"))
 
     @patch("pymesync.TimeSync._response_to_python")
+    def test_create_or_update_create_user_valid(self, m_resp_python):
+        """Tests TimeSync._create_or_update for create user with valid data"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        # Format content for assert_called_with test
+        content = {
+            "auth": self.ts._token_auth(),
+            "object": params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        self.ts._create_or_update(params, None, "user", "users")
+
+        # Test it
+        requests.post.assert_called_with("http://ts.example.com/v1/users",
+                                         json=content)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_create_or_update_update_user_valid(self, m_resp_python):
+        """Tests TimeSync._create_or_update for update user with valid data"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        # Test baseurl and uuid
+        username = "example-user"
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': self.ts._token_auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        self.ts._create_or_update(params, username, "user", "users", False)
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/users/{}".format(username),
+            json=content)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_create_or_update_update_user_valid_less_fields(self,
+                                                            m_resp_python):
+        """Tests TimeSync._create_or_update for update user with one valid
+        parameter"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "displayname": "Example User",
+        }
+
+        # Test baseurl and uuid
+        username = "example-user"
+
+        # Format content for assert_called_with test
+        content = {
+            'auth': self.ts._token_auth(),
+            'object': params,
+        }
+
+        # Mock requests.post so it doesn't actually post to TimeSync
+        requests.post = mock.create_autospec(requests.post)
+
+        # Send it
+        self.ts._create_or_update(params, username, "user", "users", False)
+
+        # Test it
+        requests.post.assert_called_with(
+            "http://ts.example.com/v1/users/{}".format(username),
+            json=content)
+
+    def test_create_or_update_create_user_invalid(self):
+        """Tests TimeSync._create_or_update for create user with invalid
+        field"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+            "bad": "field",
+        }
+
+        self.assertEquals(self.ts._create_or_update(params, None,
+                                                    "user", "users"),
+                          [{"pymesync error":
+                            "time object: invalid field: bad"}])
+
+    def test_create_or_update_create_user_two_required_missing(self):
+        """Tests TimeSync._create_or_update for create user with missing
+        required fields"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        self.assertEquals(self.ts._create_or_update(params, None,
+                                                    "user", "users"),
+                          [{"pymesync error":
+                            "time object: missing required field(s): "
+                            "username, password"}])
+
+    def test_create_or_update_create_user_each_required_missing(self):
+        """Tests TimeSync._create_or_update to create user with missing
+        required fields"""
+        # Parameters to be sent to TimeSync
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        params_to_test = dict(params)
+
+        for key in params:
+            del(params_to_test[key])
+            self.assertEquals(self.ts._create_or_update(params_to_test, None,
+                                                        "user", "users"),
+                              [{"pymesync error": "user object: "
+                                "missing required field(s): {}".format(key)}])
+            params_to_test = dict(params)
+
+    def test_create_or_update_create_user_type_error(self):
+        """Tests TimeSync._create_or_update for create user with incorrect
+        parameter types"""
+        # Parameters to be sent to TimeSync
+        param_list = [1, "hello", [1, 2, 3]]
+
+        for param in param_list:
+            self.assertEquals(self.ts._create_or_update(param, None,
+                                                        "user", "users"),
+                              [{"pymesync error":
+                                "user object: must be python dictionary"}])
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_create_or_update_create_user_catch_request_error(self, m):
+        """Tests TimeSync._create_or_update for create user with request
+        error"""
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        # To test that the exception is being caught with a bad baseurl,
+        # we need to use the actual post method
+        requests.post = actual_post
+
+        self.assertRaises(Exception, self.ts._create_or_update(params,
+                                                               None,
+                                                               "user",
+                                                               "users"))
+
+    @patch("pymesync.TimeSync._response_to_python")
     def test_create_or_update_create_project_valid(self, m_resp_python):
         """Tests TimeSync._create_or_update for create project with valid
         data"""
@@ -1337,8 +1510,8 @@ class TestPymesync(unittest.TestCase):
 
     @patch("pymesync.TimeSync._create_or_update")
     def test_update_activity(self, mock_create_or_update):
-        """Tests that TimeSync.update_time calls _create_or_update with correct
-        parameters"""
+        """Tests that TimeSync.update_activity calls _create_or_update with
+        correct parameters"""
         params = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
@@ -1347,6 +1520,36 @@ class TestPymesync(unittest.TestCase):
         self.ts.update_activity(params, "slug")
         mock_create_or_update.assert_called_with(params, "slug", "activity",
                                                  "activities", False)
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_create_user(self, mock_create_or_update):
+        """Tests that TimeSync.create_user calls _create_or_update with correct
+        parameters"""
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        self.ts.create_user(params)
+
+        mock_create_or_update.assert_called_with(params, None, "user", "users")
+
+    @patch("pymesync.TimeSync._create_or_update")
+    def test_update_user(self, mock_create_or_update):
+        """Tests that TimeSync.update_user calls _create_or_update with correct
+        parameters"""
+        params = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+        }
+
+        self.ts.update_user(params, "example")
+        mock_create_or_update.assert_called_with(params, "example", "user",
+                                                 "users", False)
 
     @patch("pymesync.TimeSync._response_to_python")
     def test_authentication(self, mock_response_to_python):
