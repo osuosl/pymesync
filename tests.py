@@ -719,7 +719,54 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(include_revisions=["true"])
+        self.ts.get_times(include_revisions=True)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_for_include_revisions_false(self, m_json_python):
+        """Tests TimeSync.get_times with include_revisions False query
+        parameter"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times?include_revisions=false&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(include_revisions=False)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_for_include_deleted(self, m_json_python):
+        """Tests TimeSync.get_times with include_deleted query parameter"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times?include_deleted=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(include_deleted=True)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_for_include_deleted_false(self, m_json_python):
+        """Tests TimeSync.get_times with include_revisions False query
+        parameter"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times?include_deleted=false&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(include_deleted=False)
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -786,6 +833,62 @@ class TestPymesync(unittest.TestCase):
 
         # Send it
         self.ts.get_times(uuid="sadfasdg432", activity=["dev"])
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_with_uuid_and_include_revisions(self, m_json_python):
+        """Tests TimeSync.get_times with uuid and include_revisions query
+        parameters"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times/sadfasdg432?include_revisions=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(uuid="sadfasdg432", include_revisions=True)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_with_uuid_and_include_deleted(self, m_json_python):
+        """Tests TimeSync.get_times with uuid and include_deleted query
+        parameters"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/times/sadfasdg432?include_deleted=true&token={1}".format(
+            self.ts.baseurl, self.ts.token)
+
+        # Send it
+        self.ts.get_times(uuid="sadfasdg432", include_deleted=True)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._json_to_python")
+    def test_get_time_with_uuid_include_deleted_and_revisions(self,
+                                                              m_json_python):
+        """Tests TimeSync.get_times with uuid and include_deleted query
+        parameters"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        # Please forgive me for this. I blame the PEP8 line length rule
+        endpoint = "times"
+        uuid = "sadfasdg432"
+        token = "token={}".format(self.ts.token)
+        queries = "include_deleted=true&include_revisions=true"
+        url = "{0}/{1}/{2}?{3}&{4}".format(self.ts.baseurl, endpoint, uuid,
+                                           queries, token)
+
+        # Send it
+        self.ts.get_times(uuid="sadfasdg432",
+                          include_revisions=True,
+                          include_deleted=True)
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)

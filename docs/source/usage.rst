@@ -225,7 +225,8 @@ TimeSync.\ **get_times(\**kwargs)**
     `TimeSync documentation`_. If ``kwargs`` is empty, ``get_times()`` will
     return all times in the database. The syntax for each argument is
     ``query=["parameter1", "parameter2"]`` except for the ``uuid`` parameter
-    which is ``uuid="uuid-as-string"``.
+    which is ``uuid="uuid-as-string"`` and the ``include_deleted`` and
+    ``include_revisions`` parameters which should be set to booleans.
 
     Currently the valid queries allowed by pymesync are:
 
@@ -249,20 +250,29 @@ TimeSync.\ **get_times(\**kwargs)**
 
       - example: ``end=["2015-07-23"]``
 
-    * ``include_revisions`` - either ``["true"]`` or ``["false"]`` to include 
-      revisions of times. Defaults to ["false"]
+    * ``include_revisions`` - either ``True`` or ``False`` to include
+      revisions of times. Defaults to ``False``
 
-      - example: ``include_revisions=["true"]``
+      - example: ``include_revisions=True``
+
+    * ``include_deleted`` - either ``True`` or ``False`` to include
+      deleted times. Defaults to ``False``
+
+      - example: ``include_deleted=True``
 
     * ``uuid`` - get specific time entry by time uuid
 
-      - example: ``uuid=134``
+      - example: ``uuid="someuuid"``
+
+      To get a deleted time by ``uuid``, also add the ``include_deleted``
+      parameter.
 
     .. warning::
 
-      If the ``uuid`` parameter is passed all other parameters will be ignored.
-      For example, ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is
-      equivalent to ``ts.get_times(uuid="time-entry-uuid")``.
+      If the ``uuid`` parameter is passed all other parameters will be ignored
+      except for ``include_deleted`` and ``include_revisions``. For example,
+      ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is equivalent to
+      ``ts.get_times(uuid="time-entry-uuid")``.
 
 ------------------------------------------
 
@@ -483,7 +493,7 @@ Example usage
     >>>
     >>> ts = pymesync.TimeSync("http://ts.example.com/v1")
     >>> ts.authenticate("username", "userpass", "password")
-    >>>[{"token": "SOMELONGTOKEN"}]
+    [{"token": "SOMELONGTOKEN"}]
     >>> params = {
     ...    "duration": 12,
     ...    "project": "ganeti-web-manager",
