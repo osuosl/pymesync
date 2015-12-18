@@ -1453,7 +1453,6 @@ class TestPymesync(unittest.TestCase):
     def test_authentication_no_token_in_response(self):
         """Tests authenticate method with no token in response"""
         response = resp()
-        response.text = "Bad Gateway"
         response.status_code = 502
 
         # Mock requests.post so it doesn't actually post to TimeSync
@@ -1463,9 +1462,9 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.authenticate(username="username",
                                                password="password",
                                                auth_type="password"),
-                          [{"pymesync error": "error connecting to TimeSync",
-                            "text": "Bad Gateway",
-                            "status": 502}])
+                          [{"pymesync error":
+                            "your baseurl http://ts.example.com/v1 "
+                            "returned status 502"}])
 
     def test_local_auth_error_with_token(self):
         """Test internal local_auth_error method with token"""
@@ -1482,13 +1481,12 @@ class TestPymesync(unittest.TestCase):
         """Test that pymesync doesn't break when getting a response that is
         not a JSON object"""
         response = resp()
-        response.text = "Bad Gateway"
         response.status_code = 502
 
         self.assertEquals(self.ts._response_to_python(response),
-                          [{"pymesync error": "error connecting to TimeSync",
-                            "text": "Bad Gateway",
-                            "status": 502}])
+                          [{"pymesync error":
+                            "your baseurl http://ts.example.com/v1 "
+                            "returned status 502"}])
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
