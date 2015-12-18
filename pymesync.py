@@ -9,6 +9,8 @@ Allows for interactions with the TimeSync API
 - update_project(parameter_dict, slug) - Updates project by slug
 - create_activity(parameter_dict) - Creates activity
 - update_activity(parameter_dict, slug) - Updates activity by slug
+- create_user(parameter_dict) - Creates a user
+- update_user(parameter_dict, username) - Updates user by username
 - get_times(**kwargs) - Get times from TimeSync
 - get_projects(**kwargs) - Get project information from TimeSync
 - get_activities(**kwargs) - Get activity information from TimeSync
