@@ -88,12 +88,12 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=auth)
-            token_list_dict = self._json_to_python(response.text)
+            token_list_dict = self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
 
-        if "error" in token_list_dict[0]:
+        if "error" in token_list_dict[0] or "token" not in token_list_dict[0]:
             return token_list_dict
         else:
             self.token = token_list_dict[0]["token"]
@@ -235,7 +235,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._json_to_python(response.text)
+            return self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -283,7 +283,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._json_to_python(response.text)
+            return self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -331,7 +331,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._json_to_python(response.text)
+            return self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error, e}]
@@ -357,9 +357,17 @@ class TimeSync(object):
         return None if self.token else ("Not authenticated with TimeSync, "
                                         "call self.authenticate() first")
 
-    def _json_to_python(self, json_object):
-        """Convert json object to native python list of objects"""
-        python_object = json.loads(str(json_object))
+    def _response_to_python(self, response):
+        """Convert response to native python list of objects"""
+        try:
+            python_object = json.loads(str(response.text))
+        except ValueError:
+            # If we get a ValueError, response.text isn't a JSON object, and
+            # therefore didn't come from a TimeSync connection.
+            err_msg = "connection to TimeSync failed at baseurl {} - ".format(
+                self.baseurl)
+            err_msg += "response status was {}".format(response.status_code)
+            return [{self.error: err_msg}]
 
         if not isinstance(python_object, list):
             python_object = [python_object]
@@ -499,7 +507,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=values)
-            return self._json_to_python(response.text)
+            return self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
