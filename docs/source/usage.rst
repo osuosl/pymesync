@@ -94,6 +94,25 @@ Where
 
     [{"pymesync error": "Not authenticated with TimeSync, call self.authenticate() first"}]
 
+Errors
+------
+
+Pymesync returns errors the same way it returns all other information: as a
+Python dictionary inside a list. If the error is a local pymesync error, the
+key for the error message will be ``"pymesync error"``. If the error is from
+TimeSync, the dictionary will contain the same keys described in the
+`TimeSync error documentation`_, but as a python dictionary.
+
+If there is an error connecting with the TimeSync instance specified by the
+baseurl passed to the pymesync constructor, the error will also contain the
+status code of the response. For example:
+
+.. code-block:: python
+
+    [{'pymesync error': 'your baseurl http://ts.example.com/v1 returned status 502'}]
+
+.. _TimeSync error documentation: http://timesync.readthedocs.org/en/latest/draft_errors.html
+
 Public methods
 --------------
 
