@@ -343,8 +343,6 @@ class TestPymesync(unittest.TestCase):
         params = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
-            "email": "example.user@example.com",
         }
 
         params_to_test = dict(params)

@@ -38,11 +38,13 @@ class TimeSync(object):
                      "activities", "date_worked"],
             "project": ["uri", "name", "slugs", "owner"],
             "activity": ["name", "slug"],
+            "user": ["username", "password"],
         }
         self.optional_params = {
             "time": ["notes", "issue_uri"],
             "project": [],
             "activity": [],
+            "user": ["displayname", "email"],
         }
 
     def authenticate(self, username=None, password=None, auth_type=None):
@@ -194,6 +196,38 @@ class TimeSync(object):
         """
         return self._create_or_update(parameter_dict, slug,
                                       "activity", "activities", False)
+
+    def create_user(self, parameter_dict):
+        """
+        create_user(parameter_dict)
+
+        Post a user to TimeSync via a POST request in a JSON body. This
+        method will return that body in the form of a list containing a single
+        python dictionary. The dictionary will contain a representation of that
+        JSON body if it was successful or error information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the user
+        information to send to TimeSync.
+        """
+        return self._create_or_update(parameter_dict, None,
+                                      "user", "users")
+
+    def update_user(self, parameter_dict, username):
+        """
+        update_user(parameter_dict, username)
+
+        Send a user update to TimeSync via a POST request in a JSON body.
+        This method will return that body in the form of a list containing a
+        single python dictionary. The dictionary will contain a representation
+        of that updated user object if it was successful or error
+        information if it was not.
+
+        ``parameter_dict`` is a python dictionary containing the user
+        information to send to TimeSync.
+        ``username`` contains the username for a user to update.
+        """
+        return self._create_or_update(parameter_dict, username,
+                                      "user", "users", False)
 
     def get_times(self, **kwargs):
         """
