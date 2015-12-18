@@ -364,9 +364,9 @@ class TimeSync(object):
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
-            return [{self.error: "error connecting to TimeSync",
-                     "text": response.text,
-                     "status": response.status_code}]
+            error_message = "your baseurl {0} returned status {1}".format(
+                self.baseurl, response.status_code)
+            return [{self.error: error_message}]
 
         if not isinstance(python_object, list):
             python_object = [python_object]
