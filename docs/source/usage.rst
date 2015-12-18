@@ -109,7 +109,7 @@ status code of the response. For example:
 
 .. code-block:: python
 
-    [{'pymesync error': 'your baseurl http://ts.example.com/v1 returned status 502'}]
+    [{"pymesync error": "connection to TimeSync failed at baseurl http://ts.example.com/v1 - response status was 502"}]
 
 .. _TimeSync error documentation: http://timesync.readthedocs.org/en/latest/draft_errors.html
 

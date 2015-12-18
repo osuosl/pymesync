@@ -1463,8 +1463,9 @@ class TestPymesync(unittest.TestCase):
                                                password="password",
                                                auth_type="password"),
                           [{"pymesync error":
-                            "your baseurl http://ts.example.com/v1 "
-                            "returned status 502"}])
+                            "connection to TimeSync failed at baseurl "
+                            "http://ts.example.com/v1 - "
+                            "response status was 502"}])
 
     def test_local_auth_error_with_token(self):
         """Test internal local_auth_error method with token"""
@@ -1485,8 +1486,9 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._response_to_python(response),
                           [{"pymesync error":
-                            "your baseurl http://ts.example.com/v1 "
-                            "returned status 502"}])
+                            "connection to TimeSync failed at baseurl "
+                            "http://ts.example.com/v1 - "
+                            "response status was 502"}])
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
