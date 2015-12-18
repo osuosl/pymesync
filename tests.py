@@ -319,7 +319,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "user", "users"),
                           [{"pymesync error":
-                            "time object: invalid field: bad"}])
+                            "user object: invalid field: bad"}])
 
     def test_create_or_update_create_user_two_required_missing(self):
         """Tests TimeSync._create_or_update for create user with missing
@@ -333,7 +333,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "user", "users"),
                           [{"pymesync error":
-                            "time object: missing required field(s): "
+                            "user object: missing required field(s): "
                             "username, password"}])
 
     def test_create_or_update_create_user_each_required_missing(self):
