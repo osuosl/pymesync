@@ -510,7 +510,7 @@ class TimeSync(object):
         # No errors if we made it this far
         return None
 
-    def _create_or_update(self, parameters, slug_or_uuid,
+    def _create_or_update(self, parameters, identifier,
                           obj_name, endpoint, create_object=True):
         """
         Create or update an object ``obj_name`` at specified ``endpoint``. This
@@ -534,10 +534,10 @@ class TimeSync(object):
 
         values = {"auth": self._token_auth(), "object": parameters}
 
-        slug_or_uuid = "/{}".format(slug_or_uuid) if slug_or_uuid else ""
+        identifier = "/{}".format(identifier) if identifier else ""
 
         # Construct url to post to
-        url = "{0}/{1}{2}".format(self.baseurl, endpoint, slug_or_uuid)
+        url = "{0}/{1}{2}".format(self.baseurl, endpoint, identifier)
 
         # Attempt to POST to TimeSync
         try:
