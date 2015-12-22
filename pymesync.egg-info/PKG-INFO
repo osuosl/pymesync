@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: pymesync
+Version: 0.0.1
+Summary: pymesync - python module for the OSUOSL TimeSync API
+Home-page: https://github.com/osuosl/pymesync
+Author: OSU Open Source Lab
+Author-email: support@osuosl.org
+License: Apache Version 2.0
+Description: pymesync - Python module for interacting with the OSUOSL TimeSync API
+Platform: UNKNOWN

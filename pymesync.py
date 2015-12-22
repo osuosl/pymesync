@@ -38,7 +38,7 @@ class TimeSync(object):
         self.required_params = {
             "time": ["duration", "project", "user",
                      "activities", "date_worked"],
-            "project": ["uri", "name", "slugs", "owner"],
+            "project": ["uri", "name", "slugs"],
             "activity": ["name", "slug"],
             "user": ["username", "password"],
         }
