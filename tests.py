@@ -1763,6 +1763,93 @@ class TestPymesync(unittest.TestCase):
         self.ts._delete_object("users", "example-user")
         requests.delete.assert_called_with(url)
 
+    @patch("pymesync.TimeSync._delete_object")
+    def test_delete_time(self, m_delete_object):
+        """Test that delete_time calls internal function correctly"""
+        self.ts.delete_time("abcd-3453-3de3-99sh")
+        m_delete_object.assert_called_with("times", "abcd-3453-3de3-99sh")
+
+    def test_delete_time_no_auth(self):
+        """Test that delete_time returns proper error on authentication
+        failure"""
+        self.ts.token = None
+        self.assertEquals(self.ts.delete_time("abcd-3453-3de3-99sh"),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_delete_time_no_uuid(self):
+        """Test that delete_time returns proper error when uuid not provided"""
+        self.assertEquals(self.ts.delete_time(),
+                          [{"pymesync error":
+                            "missing uuid; please add to method call"}])
+
+    @patch("pymesync.TimeSync._delete_object")
+    def test_delete_project(self, m_delete_object):
+        """Test that delete_project calls internal function correctly"""
+        self.ts.delete_project("ts")
+        m_delete_object.assert_called_with("projects", "ts")
+
+    def test_delete_project_no_auth(self):
+        """Test that delete_project returns proper error on authentication
+        failure"""
+        self.ts.token = None
+        self.assertEquals(self.ts.delete_project("ts"),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_delete_project_no_slug(self):
+        """Test that delete_project returns proper error when slug not
+        provided"""
+        self.assertEquals(self.ts.delete_project(),
+                          [{"pymesync error":
+                            "missing slug; please add to method call"}])
+
+    @patch("pymesync.TimeSync._delete_object")
+    def test_delete_activity(self, m_delete_object):
+        """Test that delete_activity calls internal function correctly"""
+        self.ts.delete_activity("code")
+        m_delete_object.assert_called_with("activities", "code")
+
+    def test_delete_activity_no_auth(self):
+        """Test that delete_activity returns proper error on authentication
+        failure"""
+        self.ts.token = None
+        self.assertEquals(self.ts.delete_activity("code"),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_delete_activity_no_slug(self):
+        """Test that delete_activity returns proper error when slug not
+        provided"""
+        self.assertEquals(self.ts.delete_activity(),
+                          [{"pymesync error":
+                            "missing slug; please add to method call"}])
+
+    @patch("pymesync.TimeSync._delete_object")
+    def test_delete_user(self, m_delete_object):
+        """Test that delete_user calls internal function correctly"""
+        self.ts.delete_user("example-user")
+        m_delete_object.assert_called_with("users", "example-user")
+
+    def test_delete_user_no_auth(self):
+        """Test that delete_user returns proper error on authentication
+        failure"""
+        self.ts.token = None
+        self.assertEquals(self.ts.delete_user("example-user"),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
+    def test_delete_user_no_username(self):
+        """Test that delete_user returns proper error when username not
+        provided"""
+        self.assertEquals(self.ts.delete_user(),
+                          [{"pymesync error":
+                            "missing username; please add to method call"}])
+
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
