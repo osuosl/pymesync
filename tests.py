@@ -1324,6 +1324,42 @@ class TestPymesync(unittest.TestCase):
                             "Not authenticated with TimeSync, "
                             "call self.authenticate() first"}])
 
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_get_users(self, m_resp_python):
+        """Tests TimeSync.get_users"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{}/users".format(self.ts.baseurl)
+
+        # Send it
+        self.ts.get_users()
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_get_users_username(self, m_resp_python):
+        """Tests TimeSync.get_users with username"""
+        # Mock requests.get
+        requests.get = mock.Mock("requests.get")
+
+        url = "{0}/users/{1}".format(self.ts.baseurl, "example-user")
+
+        # Send it
+        self.ts.get_users("example-user")
+
+        # Test that requests.get was called correctly
+        requests.get.assert_called_with(url)
+
+    def test_get_users_no_auth(self):
+        """Test that get_users() returns error message when auth not set"""
+        self.ts.token = None
+        self.assertEquals(self.ts.get_users(),
+                          [{"pymesync error":
+                            "Not authenticated with TimeSync, "
+                            "call self.authenticate() first"}])
+
     def test_response_to_python_single_object(self):
         """Test that TimeSync._response_to_python converts a json object to a python
         list of object"""

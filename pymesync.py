@@ -372,6 +372,35 @@ class TimeSync(object):
             # Request Error
             return [{self.error, e}]
 
+    def get_users(self, username=None):
+        """
+        get_users(username=None)
+
+        Request user entities from the TimeSync instance specified by the
+        baseurl provided when instantiating the TimeSync object. Returns a list
+        of python dictionaries containing the user information returned by
+        TimeSync or an error message if unsuccessful.
+
+        ``username`` is an optional parameter containing a string of the
+        specific username to be retrieved. If ``username`` is not provided, a
+        list containing all users will be returned. Defaults to ``None``.
+        """
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        url = "{0}/users/{1}".format(self.baseurl, username) if username else (
+              "{}/users".format(self.baseurl))
+
+        # Attempt to GET users
+        try:
+            # Success!
+            response = requests.get(url)
+            return self._response_to_python(response)
+        except requests.exceptions.RequestException as e:
+            # Request Error
+            return [{self.error, e}]
+
 ###############################################################################
 # Internal methods
 ###############################################################################
