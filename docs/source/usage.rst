@@ -13,10 +13,10 @@ This module allows users to
 
 * Authenticate a pymesync object with a TimeSync implementation
   (**authenticate()**)
-* Send times, projects, and activities to TimeSync (**create_time()**,
-  **create_project()**, **create_activity()**),
-* Update times, projects, and activities (**update_time()**,
-  **update_project()**, **update_activity()**)
+* Send times, projects, activities, and users to TimeSync (**create_time()**,
+  **create_project()**, **create_activity()**, **create_user()**),
+* Update times, projects, activities, and users (**update_time()**,
+  **update_project()**, **update_activity()**, **update_user()**)
 * Get one or a list of times projects, and activities (**get_times()**,
   **get_projects()**, **get_activities()**)
 
@@ -36,12 +36,14 @@ empty list if TimeSync has no records).
   constructor
 * **create_project(parameter_dict)** - Send new project to TimeSync
 * **create_activity(parameter_dict)** - Send new activity to TimeSync
+* **create_user(parameter_dict)** - Send a new user to TimeSync
 
 |
 
 * **update_time(parameter_dict, uuid)** - Update time entry specified by uuid
 * **update_project(parameter_dict, slug)** - Update project specified by slug
 * **update_activity(parameter_dict, slug)** - Update activity specified by slug
+* **update_user(parameter_dict, username)** - Update user specified by username
 
 |
 
@@ -476,7 +478,7 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     activity if successful. The dictionary will contain error information if
     ``update_activity()`` was unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the project
+    ``parameter_dict`` is a python dictionary containing the activity
     information to send to TimeSync. The syntax is ``"key": "value"``.
 
     ``slug`` is a string containing the slug of the activity to be updated.
@@ -501,6 +503,70 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
 
 ------------------------------------------
 
+TimeSync.\ **create_user(parameter_dict)**
+
+    Create a user on the TimeSync instance at the baseurl provided when
+    instantiating the TimeSync object. This method will return a list with
+    a single python dictionary containing the created user if successful.
+    The dictionary will contain error information if ``create_user()`` was
+    unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the user
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+    ``parameter_dict`` requires the following fields:
+
+    * ``"username"``
+    * ``"password"``
+
+    Additionally, the following parameters may be optionally included:
+
+    * ``"displayname"``
+    * ``"email"``
+
+    Example ``parameter_dict``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+          "username": "example",
+          "password": "password",
+          "displayname": "X. Ample User",
+          "email": "example@example.com"
+      }
+
+------------------------------------------
+
+TimeSync.\ **update_user(parameter_dict, username)**
+
+    Update an existing user by ``username`` on the TimeSync instance specified
+    by the baseurl provided when instantiating the TimeSync object. This method
+    will return a list with a single python dictionary containing the updated
+    user if successful. The dictionary will contain error information if
+    ``update_user()`` was unsuccessful.
+
+    ``parameter_dict`` is a python dictionary containing the user
+    information to send to TimeSync. The syntax is ``"key": "value"``.
+
+    ``username`` is a string containing the username of the user to be updated.
+
+    You only need to pass the fields you want to update in ``parameter_dict``.
+
+    ``parameter_dict`` accepts the following fields to update an activity:
+
+    * ``"username"``
+    * ``"password"``
+    * ``"displayname"``
+    * ``"email"``
+
+    Example ``parameter_dict`` to update a user's ``displayname``:
+
+    .. code-block:: python
+
+      parameter_dict = {
+            "displayname": "Eg Zample Yuser"
+      }
+
+------------------------------------------
 
 
 Example usage
