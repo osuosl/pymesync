@@ -13,12 +13,12 @@ This module allows users to
 
 * Authenticate a pymesync object with a TimeSync implementation
   (**authenticate()**)
-* Send times, projects, activities, and users to TimeSync (**create_time()**,
-  **create_project()**, **create_activity()**, **create_user()**),
-* Update times, projects, activities, and users (**update_time()**,
-  **update_project()**, **update_activity()**, **update_user()**)
-* Get one or a list of times projects, and activities (**get_times()**,
-  **get_projects()**, **get_activities()**)
+* Send times, projects, and activities to TimeSync (**create_time()**,
+  **create_project()**, **create_activity()**),
+* Update times, projects, and activities (**update_time()**,
+  **update_project()**, **update_activity()**)
+* Get one or a list of times projects, activities, and users (**get_times()**,
+  **get_projects()**, **get_activities()**, **get_users()**)
 
 Pymesync currently supports the following TimeSync API versions:
 
@@ -50,6 +50,7 @@ empty list if TimeSync has no records).
 * **get_times(\**kwargs)** - Get times from TimeSync
 * **get_projects(\**kwargs)** - Get project information from TimeSync
 * **get_activities(\**kwargs)** - Get activity information from TimeSync
+* **get_users(username=None)** - Get user information from TimeSync
 
 .. _OSU Open Source Lab: http://www.osuosl.org
 .. _TimeSync API: http://timesync.readthedocs.org/en/latest/
@@ -366,6 +367,19 @@ TimeSync.\ **get_activities(\**kwargs)**
 
       Does not accept a ``slug`` combined with ``include_deleted``, but does
       accept any other combination.
+
+------------------------------------------
+
+TimeSync.\ **get_users(username=None)**
+
+    Request user entities from the TimeSync instance specified by the baseurl
+    provided when instantiating the TimeSync object. Returns a list of python
+    dictionaries containing the user information returned by TimeSync or an
+    error message if unsuccessful.
+
+    ``username`` is an optional parameter containing a string of the specific
+    username to be retrieved. If ``username`` is not provided, a list containing
+    all users will be returned. Defaults to ``None``.
 
 ------------------------------------------
 
