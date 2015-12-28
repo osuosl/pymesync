@@ -1727,6 +1727,43 @@ class TestPymesync(unittest.TestCase):
                             "http://ts.example.com/v1 - "
                             "response status was 502"}])
 
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_delete_object_time(self, m_resp_python):
+        """Test that _delete_object calls requests.delete with the correct
+        url"""
+        requests.delete = mock.create_autospec(requests.delete)
+        url = "{}/times/abcd-3453-3de3-99sh".format(self.ts.baseurl)
+        self.ts._delete_object("times", "abcd-3453-3de3-99sh")
+        requests.delete.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_delete_object_project(self, m_resp_python):
+        """Test that _delete_object calls requests.delete with the correct
+        url"""
+        requests.delete = mock.create_autospec(requests.delete)
+        url = "{}/projects/ts".format(self.ts.baseurl)
+        self.ts._delete_object("projects", "ts")
+        requests.delete.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_delete_object_activity(self, m_resp_python):
+        """Test that _delete_object calls requests.delete with the correct
+        url"""
+        requests.delete = mock.create_autospec(requests.delete)
+        url = "{}/activities/code".format(self.ts.baseurl)
+        self.ts._delete_object("activities", "code")
+        requests.delete.assert_called_with(url)
+
+    @patch("pymesync.TimeSync._response_to_python")
+    def test_delete_object_user(self, m_resp_python):
+        """Test that _delete_object calls requests.delete with the correct
+        url"""
+        requests.delete = mock.create_autospec(requests.delete)
+        url = "{}/users/example-user".format(self.ts.baseurl)
+        self.ts._delete_object("users", "example-user")
+        requests.delete.assert_called_with(url)
+
+
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
     unittest.main()
