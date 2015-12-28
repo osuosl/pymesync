@@ -13,10 +13,10 @@ This module allows users to
 
 * Authenticate a pymesync object with a TimeSync implementation
   (**authenticate()**)
-* Send times, projects, and activities to TimeSync (**create_time()**,
-  **create_project()**, **create_activity()**),
-* Update times, projects, and activities (**update_time()**,
-  **update_project()**, **update_activity()**)
+* Send times, projects, activities, and users to TimeSync (**create_time()**,
+  **create_project()**, **create_activity()**, **create_user()**),
+* Update times, projects, activities, and users (**update_time()**,
+  **update_project()**, **update_activity()**, **update_user()**)
 * Get one or a list of times projects, activities, and users (**get_times()**,
   **get_projects()**, **get_activities()**, **get_users()**)
 
