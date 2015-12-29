@@ -138,7 +138,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "time", "times"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "time object: invalid field: bad"}])
 
     def test_create_or_update_create_time_two_required_missing(self):
@@ -155,7 +155,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "time", "times"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "time object: missing required field(s): "
                             "project, activities"}])
 
@@ -177,7 +177,7 @@ class TestPymesync(unittest.TestCase):
             del(params_to_test[key])
             self.assertEquals(self.ts._create_or_update(params_to_test, None,
                                                         "time", "times"),
-                              [{"pymesync error": "time object: "
+                              [{self.ts.error: "time object: "
                                 "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
@@ -185,12 +185,12 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._create_or_update for create time with incorrect
         parameter types"""
         # Parameters to be sent to TimeSync
-        param_list = [1, "hello", [1, 2, 3]]
+        param_list = [1, "hello", [1, 2, 3], None, True, False, 1.234]
 
         for param in param_list:
             self.assertEquals(self.ts._create_or_update(param, None,
                                                         "time", "times"),
-                              [{"pymesync error":
+                              [{self.ts.error:
                                 "time object: must be python dictionary"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -318,7 +318,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "user", "users"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "user object: invalid field: bad"}])
 
     def test_create_or_update_create_user_two_required_missing(self):
@@ -332,7 +332,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "user", "users"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "user object: missing required field(s): "
                             "username, password"}])
 
@@ -351,7 +351,7 @@ class TestPymesync(unittest.TestCase):
             del(params_to_test[key])
             self.assertEquals(self.ts._create_or_update(params_to_test, None,
                                                         "user", "users"),
-                              [{"pymesync error": "user object: "
+                              [{self.ts.error: "user object: "
                                 "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
@@ -359,12 +359,12 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._create_or_update for create user with incorrect
         parameter types"""
         # Parameters to be sent to TimeSync
-        param_list = [1, "hello", [1, 2, 3]]
+        param_list = [1, "hello", [1, 2, 3], None, True, False, 1.234]
 
         for param in param_list:
             self.assertEquals(self.ts._create_or_update(param, None,
                                                         "user", "users"),
-                              [{"pymesync error":
+                              [{self.ts.error:
                                 "user object: must be python dictionary"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -482,7 +482,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "projects"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "project object: invalid field: bad"}])
 
     def test_create_or_update_create_project_required_missing(self):
@@ -496,7 +496,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "project"),
-                          [{"pymesync error": "project object: "
+                          [{self.ts.error: "project object: "
                             "missing required field(s): uri"}])
 
     def test_create_or_update_create_project_each_required_missing(self):
@@ -515,7 +515,7 @@ class TestPymesync(unittest.TestCase):
             del(params_to_test[key])
             self.assertEquals(self.ts._create_or_update(params_to_test, None,
                                                         "project", "projects"),
-                              [{"pymesync error": "project object: "
+                              [{self.ts.error: "project object: "
                                 "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
@@ -523,12 +523,12 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._create_or_update for create project with incorrect
         parameter types"""
         # Parameters to be sent to TimeSync
-        param_list = [1, "hello", [1, 2, 3]]
+        param_list = [1, "hello", [1, 2, 3], None, True, False, 1.234]
 
         for param in param_list:
             self.assertEquals(self.ts._create_or_update(param, None,
                                                         "project", "projects"),
-                              [{"pymesync error":
+                              [{self.ts.error:
                                 "project object: must be python dictionary"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -624,7 +624,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "activity", "activites"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "activity object: invalid field: bad"}])
 
     def test_create_or_update_create_activity_required_missing(self):
@@ -637,7 +637,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "activity", "activities"),
-                          [{"pymesync error": "activity object: "
+                          [{self.ts.error: "activity object: "
                             "missing required field(s): slug"}])
 
     def test_create_or_update_create_activity_each_required_missing(self):
@@ -657,7 +657,7 @@ class TestPymesync(unittest.TestCase):
                                                         None,
                                                         "activity",
                                                         "activities"),
-                              [{"pymesync error": "activity object: "
+                              [{self.ts.error: "activity object: "
                                 "missing required field(s): {}".format(key)}])
             params_to_test = dict(params)
 
@@ -665,14 +665,14 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._create_or_update for create activity with incorrect
         parameter types"""
         # Parameters to be sent to TimeSync
-        param_list = [1, "hello", [1, 2, 3]]
+        param_list = [1, "hello", [1, 2, 3], None, True, False, 1.234]
 
         for param in param_list:
             self.assertEquals(self.ts._create_or_update(param,
                                                         None,
                                                         "activity",
                                                         "activities"),
-                              [{"pymesync error":
+                              [{self.ts.error:
                                 "activity object: must be python dictionary"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -694,7 +694,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "time", "times"),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -712,7 +712,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "projects"),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -729,7 +729,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "activity", "activities"),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -751,7 +751,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None, "time",
                                                     "times", False),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -769,7 +769,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None, "project",
                                                     "project", False),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -786,7 +786,7 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._create_or_update(params, None, "activity",
                                                     "activities", False),
-                          [{"pymesync error": "Not authenticated with "
+                          [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
 
     def test_auth(self):
@@ -1077,7 +1077,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync.get_times with an invalid query parameter"""
         # Should return the error
         self.assertEquals(self.ts.get_times(bad=["query"]),
-                          [{"pymesync error": "invalid query: bad"}])
+                          [{self.ts.error: "invalid query: bad"}])
 
     @patch("pymesync.TimeSync._response_to_python")
     def test_get_projects(self, m_resp_python):
@@ -1164,7 +1164,7 @@ class TestPymesync(unittest.TestCase):
         # include_deleted
         self.assertEquals(self.ts.get_projects(slug="gwm",
                                                include_deleted=True),
-                          [{"pymesync error":
+                          [{self.ts.error:
                            "invalid combination: slug and include_deleted"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -1270,7 +1270,7 @@ class TestPymesync(unittest.TestCase):
         # include_deleted
         self.assertEquals(self.ts.get_activities(slug="code",
                                                  include_deleted=True),
-                          [{"pymesync error":
+                          [{self.ts.error:
                            "invalid combination: slug and include_deleted"}])
 
     @patch("pymesync.TimeSync._response_to_python")
@@ -1296,7 +1296,7 @@ class TestPymesync(unittest.TestCase):
         """Test that get_times() returns error message when auth not set"""
         self.ts.token = None
         self.assertEquals(self.ts.get_times(),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "Not authenticated with TimeSync, "
                             "call self.authenticate() first"}])
 
@@ -1304,7 +1304,7 @@ class TestPymesync(unittest.TestCase):
         """Test that get_projects() returns error message when auth not set"""
         self.ts.token = None
         self.assertEquals(self.ts.get_projects(),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "Not authenticated with TimeSync, "
                             "call self.authenticate() first"}])
 
@@ -1313,7 +1313,7 @@ class TestPymesync(unittest.TestCase):
         set"""
         self.ts.token = None
         self.assertEquals(self.ts.get_activities(),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "Not authenticated with TimeSync, "
                             "call self.authenticate() first"}])
 
@@ -1349,7 +1349,7 @@ class TestPymesync(unittest.TestCase):
         """Test that get_users() returns error message when auth not set"""
         self.ts.token = None
         self.assertEquals(self.ts.get_users(),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "Not authenticated with TimeSync, "
                             "call self.authenticate() first"}])
 
@@ -1637,45 +1637,45 @@ class TestPymesync(unittest.TestCase):
         """Tests authenticate method with no username in call"""
         self.assertEquals(self.ts.authenticate(password="password",
                                                auth_type="password"),
-                          [{"pymesync error": "Missing username; "
+                          [{self.ts.error: "Missing username; "
                             "please add to method call"}])
 
     def test_authentication_no_password(self):
         """Tests authenticate method with no password in call"""
         self.assertEquals(self.ts.authenticate(username="username",
                                                auth_type="password"),
-                          [{"pymesync error": "Missing password; "
+                          [{self.ts.error: "Missing password; "
                             "please add to method call"}])
 
     def test_authentication_no_auth_type(self):
         """Tests authenticate method with no auth_type in call"""
         self.assertEquals(self.ts.authenticate(password="password",
                                                username="username"),
-                          [{"pymesync error": "Missing auth_type; "
+                          [{self.ts.error: "Missing auth_type; "
                             "please add to method call"}])
 
     def test_authentication_no_username_or_password(self):
         """Tests authenticate method with no username or password in call"""
         self.assertEquals(self.ts.authenticate(auth_type="password"),
-                          [{"pymesync error": "Missing username, password; "
+                          [{self.ts.error: "Missing username, password; "
                             "please add to method call"}])
 
     def test_authentication_no_username_or_auth_type(self):
         """Tests authenticate method with no username or auth_type in call"""
         self.assertEquals(self.ts.authenticate(password="password"),
-                          [{"pymesync error": "Missing username, auth_type; "
+                          [{self.ts.error: "Missing username, auth_type; "
                             "please add to method call"}])
 
     def test_authentication_no_password_or_auth_type(self):
         """Tests authenticate method with no username or auth_type in call"""
         self.assertEquals(self.ts.authenticate(username="username"),
-                          [{"pymesync error": "Missing password, auth_type; "
+                          [{self.ts.error: "Missing password, auth_type; "
                             "please add to method call"}])
 
     def test_authentication_no_arguments(self):
         """Tests authenticate method with no arguments in call"""
         self.assertEquals(self.ts.authenticate(),
-                          [{"pymesync error": "Missing username, password, "
+                          [{self.ts.error: "Missing username, password, "
                             "auth_type; please add to method call"}])
 
     def test_authentication_no_token_in_response(self):
@@ -1690,7 +1690,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.authenticate(username="username",
                                                password="password",
                                                auth_type="password"),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "connection to TimeSync failed at baseurl "
                             "http://ts.example.com/v1 - "
                             "response status was 502"}])
@@ -1713,7 +1713,7 @@ class TestPymesync(unittest.TestCase):
         response.status_code = 502
 
         self.assertEquals(self.ts._response_to_python(response),
-                          [{"pymesync error":
+                          [{self.ts.error:
                             "connection to TimeSync failed at baseurl "
                             "http://ts.example.com/v1 - "
                             "response status was 502"}])
