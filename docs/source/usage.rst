@@ -19,6 +19,8 @@ This module allows users to
   **update_project()**, **update_activity()**, **update_user()**)
 * Get one or a list of times projects, activities, and users (**get_times()**,
   **get_projects()**, **get_activities()**, **get_users()**)
+* Delete an object in the TimeSync database (**delete_time()**,
+  **delete_project()**, **delete_activity()**, **delete_user()**)
 
 Pymesync currently supports the following TimeSync API versions:
 
@@ -51,6 +53,13 @@ empty list if TimeSync has no records).
 * **get_projects(\**kwargs)** - Get project information from TimeSync
 * **get_activities(\**kwargs)** - Get activity information from TimeSync
 * **get_users(username=None)** - Get user information from TimeSync
+
+|
+
+* **delete_time(uuid)** - Delete time entry from TimeSync
+* **delete_project(slug)** - Delete project record from TimeSync
+* **delete_activity(slug)** - Delete activity record from TimeSync
+* **delete_user(username)** - Delete user record from TimeSync
 
 .. _OSU Open Source Lab: http://www.osuosl.org
 .. _TimeSync API: http://timesync.readthedocs.org/en/latest/
@@ -298,6 +307,15 @@ TimeSync.\ **get_times(\**kwargs)**
 
 ------------------------------------------
 
+TimeSync.\ **delete_time(uuid)**
+
+    Allows the currently authenticated user to delete their own time entry by
+    uuid.
+
+    ``uuid`` is a string containing the uuid of the time entry to be deleted.
+
+------------------------------------------
+
 TimeSync.\ **get_projects(\**kwargs)**
 
     Request project entries from the TimeSync instance specified by the baseurl
@@ -458,6 +476,15 @@ TimeSync.\ **update_project(parameter_dict, slug)**
 
 ------------------------------------------
 
+TimeSync.\ **delete_project(slug)**
+
+    Allows the currently authenticated admin user to delete a project record by
+    slug.
+
+    ``slug`` is a string containing the slug of the project to be deleted.
+
+------------------------------------------
+
 TimeSync.\ **create_activity(parameter_dict)**
 
     Create an activity on the TimeSync instance at the baseurl provided when
@@ -514,6 +541,15 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
       parameter_dict = {
             "slug": "test"
       }
+
+------------------------------------------
+
+TimeSync.\ **delete_activity(slug)**
+
+    Allows the currently authenticated admin user to delete an activity record
+    by slug.
+
+    ``slug`` is a string containing the slug of the activity to be deleted.
 
 ------------------------------------------
 
@@ -579,6 +615,15 @@ TimeSync.\ **update_user(parameter_dict, username)**
       parameter_dict = {
             "displayname": "Eg Zample Yuser"
       }
+
+------------------------------------------
+
+TimeSync.\ **delete_user(username)**
+
+    Allows the currently authenticated admin user to delete a user record by
+    username.
+
+    ``username`` is a string containing the username of the user to be deleted.
 
 ------------------------------------------
 

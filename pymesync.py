@@ -401,6 +401,85 @@ class TimeSync(object):
             # Request Error
             return [{self.error, e}]
 
+    def delete_time(self, uuid=None):
+        """
+        delete_time(uuid=None)
+
+        Allows the currently authenticated user to delete their own time entry
+        by uuid.
+
+        ``uuid`` is a string containing the uuid of the time entry to be
+        deleted.
+        """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        if not uuid:
+            return [{self.error: "missing uuid; please add to method call"}]
+
+        return self._delete_object("times", uuid)
+
+    def delete_project(self, slug=None):
+        """
+        delete_project(slug=None)
+
+        Allows the currently authenticated admin user to delete a project
+        record by slug.
+
+        ``slug`` is a string containing the slug of the project to be deleted.
+        """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        if not slug:
+            return [{self.error: "missing slug; please add to method call"}]
+
+        return self._delete_object("projects", slug)
+
+    def delete_activity(self, slug=None):
+        """
+        delete_activity(slug=None)
+
+        Allows the currently authenticated admin user to delete an activity
+        record by slug.
+
+        ``slug`` is a string containing the slug of the activity to be deleted.
+        """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        if not slug:
+            return [{self.error: "missing slug; please add to method call"}]
+
+        return self._delete_object("activities", slug)
+
+    def delete_user(self, username=None):
+        """
+        delete_user(username=None)
+
+        Allows the currently authenticated admin user to delete a user
+        record by username.
+
+        ``username`` is a string containing the username of the user to be
+        deleted.
+        """
+        # Check that user has authenticated
+        local_auth_error = self._local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        if not username:
+            return [{self.error:
+                     "missing username; please add to method call"}]
+
+        return self._delete_object("users", username)
+
 ###############################################################################
 # Internal methods
 ###############################################################################
@@ -572,6 +651,20 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=values)
+            return self._response_to_python(response)
+        except requests.exceptions.RequestException as e:
+            # Request error
+            return [{self.error: e}]
+
+    def _delete_object(self, endpoint, identifier):
+        """Deletes object at ``endpoint`` identified by ``identifier``"""
+        # Construct url
+        url = "{0}/{1}/{2}".format(self.baseurl, endpoint, identifier)
+
+        # Attempt to DELETE object
+        try:
+            # Success!
+            response = requests.delete(url)
             return self._response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
