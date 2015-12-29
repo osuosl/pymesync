@@ -396,7 +396,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         # Format content for assert_called_with test
@@ -424,7 +423,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         # Format content for assert_called_with test
@@ -479,7 +477,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2",
             "bad": "field"
         }
 
@@ -493,7 +490,6 @@ class TestPymesync(unittest.TestCase):
         required fields"""
         # Parameters to be sent to TimeSync
         params = {
-            "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
@@ -501,7 +497,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "project"),
                           [{"pymesync error": "project object: "
-                            "missing required field(s): owner"}])
+                            "missing required field(s): uri"}])
 
     def test_create_or_update_create_project_each_required_missing(self):
         """Tests TimeSync._create_or_update for create project with missing
@@ -511,7 +507,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         params_to_test = dict(params)
@@ -710,7 +705,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         self.ts.token = None
@@ -768,7 +762,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         self.ts.token = None
@@ -1507,7 +1500,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         self.ts.create_project(params)
@@ -1522,7 +1514,6 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
-            "owner": "example-2"
         }
 
         self.ts.update_project(params, "slug")
