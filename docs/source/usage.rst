@@ -154,8 +154,9 @@ TimeSync.\ **authenticate(user, password, auth_type)**
 
     ``password`` is a string containing the user's password
 
-    ``auth_type`` is a string containing the type of authentication your TimeSync
-    implementation uses for login, such as ``"password"``, or ``"ldap"``.
+    ``auth_type`` is a string containing the type of authentication your
+    TimeSync implementation uses for login, such as ``"password"``, or
+    ``"ldap"``.
 
     **authenticate()** will return a list containing a python dictionary. If
     authentication was successful, the list will look like this:
@@ -169,6 +170,14 @@ TimeSync.\ **authenticate(user, password, auth_type)**
     .. code-block:: python
 
       [{"status": 401, "error": "Authentication failure", "text": "Invalid username or password"}]
+
+    Example:
+
+    .. code-block:: python
+
+      >>> ts.authenticate("example-user", "example-password", "password")
+      [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
+      >>>
 
 TimeSync.\ **create_time(parameter_dict)**
 
@@ -201,19 +210,20 @@ TimeSync.\ **create_time(parameter_dict)**
     * ``"notes"`` - optional notes about this time entry
     * ``"issue_uri"`` - optional uri to issue worked on
 
-    Example ``parameter_dict``:
+    Example:
 
     .. code-block:: python
 
-      params = {
-          "duration": 7200,
-          "project": "ganeti-web-manager",
-          "user": "example-user",
-          "activities": ["documenting"],
-          "notes": "Worked on docs",
-          "issue_uri": "https://github.com/",
-          "date_worked": "2014-04-17",
-      }
+      >>> params = {
+      ...     "duration": 7200,
+      ...     "project": "ganeti-web-manager",
+      ...     "user": "example-user",
+      ...     "activities": ["documenting"],
+      ...     "notes": "Worked on docs",
+      ...     "issue_uri": "https://github.com/",
+      ...     "date_worked": "2014-04-17",
+      ... }
+      >>> ts.create_time(params)
 
 ------------------------------------------
 
