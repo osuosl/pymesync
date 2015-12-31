@@ -659,7 +659,10 @@ class TimeSync(object):
     def _delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
         # Construct url
-        url = "{0}/{1}/{2}".format(self.baseurl, endpoint, identifier)
+        url = "{0}/{1}/{2}?token={3}".format(self.baseurl,
+                                             endpoint,
+                                             identifier,
+                                             self.token)
 
         # Attempt to DELETE object
         try:
