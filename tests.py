@@ -491,21 +491,19 @@ class TestPymesync(unittest.TestCase):
         required fields"""
         # Parameters to be sent to TimeSync
         params = {
-            "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "project"),
                           [{self.ts.error: "project object: "
-                            "missing required field(s): uri"}])
+                            "missing required field(s): name"}])
 
     def test_create_or_update_create_project_each_required_missing(self):
         """Tests TimeSync._create_or_update for create project with missing
         required fields"""
         # Parameters to be sent to TimeSync
         params = {
-            "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
