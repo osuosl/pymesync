@@ -38,13 +38,13 @@ class TimeSync(object):
         self.required_params = {
             "time": ["duration", "project", "user",
                      "activities", "date_worked"],
-            "project": ["uri", "name", "slugs"],
+            "project": ["name", "slugs"],
             "activity": ["name", "slug"],
             "user": ["username", "password"],
         }
         self.optional_params = {
             "time": ["notes", "issue_uri"],
-            "project": [],
+            "project": ["uri"],
             "activity": [],
             "user": ["displayname", "email"],
         }
@@ -659,7 +659,10 @@ class TimeSync(object):
     def _delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
         # Construct url
-        url = "{0}/{1}/{2}".format(self.baseurl, endpoint, identifier)
+        url = "{0}/{1}/{2}?token={3}".format(self.baseurl,
+                                             endpoint,
+                                             identifier,
+                                             self.token)
 
         # Attempt to DELETE object
         try:

@@ -26,6 +26,7 @@ class TestPymesync(unittest.TestCase):
     def tearDown(self):
         del(self.ts)
         requests.post = actual_post
+        requests.delete = actual_delete
 
     @patch("pymesync.TimeSync._response_to_python")
     def test_create_or_update_create_time_valid(self, m_resp_python):
@@ -490,21 +491,19 @@ class TestPymesync(unittest.TestCase):
         required fields"""
         # Parameters to be sent to TimeSync
         params = {
-            "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
 
         self.assertEquals(self.ts._create_or_update(params, None,
                                                     "project", "project"),
                           [{self.ts.error: "project object: "
-                            "missing required field(s): uri"}])
+                            "missing required field(s): name"}])
 
     def test_create_or_update_create_project_each_required_missing(self):
         """Tests TimeSync._create_or_update for create project with missing
         required fields"""
         # Parameters to be sent to TimeSync
         params = {
-            "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
@@ -1723,7 +1722,8 @@ class TestPymesync(unittest.TestCase):
         """Test that _delete_object calls requests.delete with the correct
         url"""
         requests.delete = mock.create_autospec(requests.delete)
-        url = "{}/times/abcd-3453-3de3-99sh".format(self.ts.baseurl)
+        url = "{0}/times/abcd-3453-3de3-99sh?token={1}".format(self.ts.baseurl,
+                                                               self.ts.token)
         self.ts._delete_object("times", "abcd-3453-3de3-99sh")
         requests.delete.assert_called_with(url)
 
@@ -1732,7 +1732,8 @@ class TestPymesync(unittest.TestCase):
         """Test that _delete_object calls requests.delete with the correct
         url"""
         requests.delete = mock.create_autospec(requests.delete)
-        url = "{}/projects/ts".format(self.ts.baseurl)
+        url = "{0}/projects/ts?token={1}".format(self.ts.baseurl,
+                                                 self.ts.token)
         self.ts._delete_object("projects", "ts")
         requests.delete.assert_called_with(url)
 
@@ -1741,7 +1742,8 @@ class TestPymesync(unittest.TestCase):
         """Test that _delete_object calls requests.delete with the correct
         url"""
         requests.delete = mock.create_autospec(requests.delete)
-        url = "{}/activities/code".format(self.ts.baseurl)
+        url = "{0}/activities/code?token={1}".format(self.ts.baseurl,
+                                                     self.ts.token)
         self.ts._delete_object("activities", "code")
         requests.delete.assert_called_with(url)
 
@@ -1750,7 +1752,8 @@ class TestPymesync(unittest.TestCase):
         """Test that _delete_object calls requests.delete with the correct
         url"""
         requests.delete = mock.create_autospec(requests.delete)
-        url = "{}/users/example-user".format(self.ts.baseurl)
+        url = "{0}/users/example-user?token={1}".format(self.ts.baseurl,
+                                                        self.ts.token)
         self.ts._delete_object("users", "example-user")
         requests.delete.assert_called_with(url)
 
@@ -1844,4 +1847,5 @@ class TestPymesync(unittest.TestCase):
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
+    actual_delete = requests.delete
     unittest.main()
