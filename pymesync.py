@@ -274,6 +274,13 @@ class TimeSync(object):
                                              query_string,
                                              self.token)
 
+        # Test mode
+        if self.test:
+            if "uuid" in kwargs.keys():
+                return mock_pymesync.get_times(kwargs["uuid"])
+            else:
+                return mock_pymesync.get_times(None)
+
         # Attempt to GET times
         try:
             # Success!
@@ -321,6 +328,13 @@ class TimeSync(object):
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl, query_string)
+
+        # Test mode
+        if self.test:
+            if "slug" in kwargs.keys():
+                return mock_pymesync.get_projects(kwargs["slug"])
+            else:
+                return mock_pymesync.get_projects(None)
 
         # Attempt to GET projects
         try:
@@ -370,6 +384,13 @@ class TimeSync(object):
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl, query_string)
 
+        # Test mode
+        if self.test:
+            if "slug" in kwargs.keys():
+                return mock_pymesync.get_activities(kwargs["slug"])
+            else:
+                return mock_pymesync.get_activities(None)
+
         # Attempt to GET activities
         try:
             # Success!
@@ -398,6 +419,10 @@ class TimeSync(object):
 
         url = "{0}/users/{1}".format(self.baseurl, username) if username else (
               "{}/users".format(self.baseurl))
+
+        # Test mode
+        if self.test:
+            return mock_pymesync.get_users(username)
 
         # Attempt to GET users
         try:
