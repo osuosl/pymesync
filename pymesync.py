@@ -21,17 +21,19 @@ v1
 import json
 import requests
 import operator
+import mock_pymesync
 
 
 class TimeSync(object):
 
-    def __init__(self, baseurl):
+    def __init__(self, baseurl, test=False):
         self.baseurl = baseurl
         self.user = None
         self.password = None
         self.auth_type = None
         self.token = None
         self.error = "pymesync error"
+        self.test = test
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "include_revisions",
                                   "include_deleted", "uuid"]
@@ -88,6 +90,11 @@ class TimeSync(object):
         self.auth_type = auth_type
         auth = {"auth": self._auth()}
         url = "{}/login".format(self.baseurl)
+
+        # Test mode
+        if self.test:
+            self.token = "TESTTOKEN"
+            return mock_pymesync.authenticate()
 
         try:
             # Success!
@@ -647,6 +654,10 @@ class TimeSync(object):
         # Construct url to post to
         url = "{0}/{1}{2}".format(self.baseurl, endpoint, identifier)
 
+        if self.test:
+            return self._test_handler(parameters, identifier,
+                                      obj_name, create_object)
+
         # Attempt to POST to TimeSync
         try:
             # Success!
@@ -672,3 +683,27 @@ class TimeSync(object):
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
+
+    def _test_handler(self, parameters, identifier, obj_name, create_object):
+        """Handle test methods in test mode for creating or updating an
+        object"""
+        if obj_name == "time":
+            if create_object:
+                return mock_pymesync.create_time(parameters)
+            else:
+                return mock_pymesync.update_time(parameters, identifier)
+        elif obj_name == "project":
+            if create_object:
+                return mock_pymesync.create_project(parameters)
+            else:
+                return mock_pymesync.update_project(parameters, identifier)
+        elif obj_name == "activity":
+            if create_object:
+                return mock_pymesync.create_activity(parameters)
+            else:
+                return mock_pymesync.update_activity(parameters, identifier)
+        elif obj_name == "user":
+            if create_object:
+                return mock_pymesync.create_user(parameters)
+            else:
+                return mock_pymesync.update_user(parameters, identifier)
