@@ -372,4 +372,4 @@ def get_users(username):
 
 def delete_object():
     """Delete an object from TimeSync"""
-    return [{}]
+    return [{"status": 200}]

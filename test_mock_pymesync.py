@@ -481,10 +481,10 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_users(), expected_result)
 
     def test_mock_delete_object(self):
-        self.assertEquals(self.ts.delete_time("junk"), [{}])
-        self.assertEquals(self.ts.delete_project("junk"), [{}])
-        self.assertEquals(self.ts.delete_activity("junk"), [{}])
-        self.assertEquals(self.ts.delete_user("junk"), [{}])
+        self.assertEquals(self.ts.delete_time("junk"), [{"status": 200}])
+        self.assertEquals(self.ts.delete_project("junk"), [{"status": 200}])
+        self.assertEquals(self.ts.delete_activity("junk"), [{"status": 200}])
+        self.assertEquals(self.ts.delete_user("junk"), [{"status": 200}])
 
 
 if __name__ == "__main__":
