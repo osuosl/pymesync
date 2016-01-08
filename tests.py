@@ -1493,6 +1493,15 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts._TimeSync__response_to_python(response),
                           python_object)
 
+    def test_response_to_python_empty_response(self):
+        """Check that __response_to_python returns correctly for delete_*
+        methods"""
+        response = resp()
+        response.text = ""
+        response.status_code = 200
+        self.assertEquals(self.ts._TimeSync__response_to_python(response),
+                          [{"status": 200}])
+
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_time(self, mock_create_or_update):
         """Tests that TimeSync.create_time calls _create_or_update with correct
