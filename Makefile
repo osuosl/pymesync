@@ -20,4 +20,4 @@ flake:
 	      flake8 pymesync.py tests.py
 
 verify:
-				$(PY) tests.py && flake8 pymesync.py tests.py
+				$(PY) tests.py && $(PY) test_mock_pymesync.py && flake8 pymesync.py tests.py

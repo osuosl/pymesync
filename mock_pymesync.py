@@ -17,14 +17,15 @@ def create_time(p_dict):
 def update_time(p_dict, uuid):
     """Updates time by uuid"""
     updated_param = {
-        "duration": p_dict["duration"] if p_dict["duration"] else 18,
-        "user": p_dict["user"] if p_dict["user"] else "example-user",
-        "activities": p_dict["activities"] if p_dict["activities"] else ["qa"],
-        "project": p_dict["project"] if p_dict["project"] else ["ganeti"],
-        "notes": p_dict["notes"] if p_dict["notes"] else None,
-        "issue_uri": p_dict["issue_uri"] if p_dict["issue_uri"] else (
+        "duration": p_dict["duration"] if "duration" in p_dict else 18,
+        "user": p_dict["user"] if "user" in p_dict else "example-user",
+        "activities": p_dict["activities"] if "activities" in p_dict else (
+            ["qa"]),
+        "project": p_dict["project"] if "project" in p_dict else ["ganeti"],
+        "notes": p_dict["notes"] if "notes" in p_dict else None,
+        "issue_uri": p_dict["issue_uri"] if "issue_uri" in p_dict else (
             "https://github.com/osuosl/ganeti_webmgr/issues/56"),
-        "date_worked": p_dict["date_worked"] if p_dict["date_worked"] else (
+        "date_worked": p_dict["date_worked"] if "date_worked" in p_dict else (
             "2015-08-07"),
         "created_at": "2014-06-12",
         "updated_at": "2015-10-18",
@@ -53,16 +54,17 @@ def create_project(p_dict):
     p_dict["revision"] = 1
     p_dict["created_at"] = "2015-05-23"
     p_dict["updated_at"] = None
-    p_dict["uri"] = p_dict["uri"] if p_dict["uri"] else None
+    p_dict["deleted_at"] = None
+    p_dict["uri"] = p_dict["uri"] if "uri" in p_dict else None
     return [p_dict]
 
 
 def update_project(p_dict, slug):
     """Updates project by slug"""
     updated_param = {
-        "uri": p_dict["uri"] if p_dict["uri"] else None,
-        "name": p_dict["name"] if p_dict["name"] else "TimeSync API",
-        "slugs": p_dict["slugs"] if p_dict["slugs"] else ["timesync", "time"],
+        "uri": p_dict["uri"] if "uri" in p_dict else None,
+        "name": p_dict["name"] if "name" in p_dict else "TimeSync API",
+        "slugs": p_dict["slugs"] if "slugs" in p_dict else [slug],
         "created_at": "2014-04-16",
         "updated_at": "2014-04-18",
         "deleted_at": None,
@@ -97,8 +99,8 @@ def create_activity(p_dict):
 def update_activity(p_dict, slug):
     """Updates activity by slug"""
     updated_param = {
-        "name": p_dict["name"] if p_dict["name"] else "Testing Infra",
-        "slug": p_dict["slug"] if p_dict["slug"] else slug,
+        "name": p_dict["name"] if "name" in p_dict else "Testing Infra",
+        "slug": p_dict["slug"] if "slug" in p_dict else slug,
         "uuid": "3cf78d25-411c-4d1f-80c8-a09e5e12cae3",
         "created_at": "2014-04-16",
         "updated_at": "2014-04-17",
@@ -114,16 +116,18 @@ def create_user(p_dict):
     p_dict["admin"] = False
     p_dict["created_at"] = "2015-05-23"
     p_dict["deleted_at"] = None
+    del(p_dict["password"])
     return [p_dict]
 
 
 def update_user(p_dict, username):
     """Updates user by username"""
     updated_param = {
-        "username": p_dict["username"] if p_dict["username"] else "example",
-        "displayname": p_dict["displayname"] if p_dict["displayname"] else (
+        "username": p_dict["username"] if "username" in p_dict else username,
+        "displayname": p_dict["displayname"] if "displayname" in p_dict else (
             "Mr. Example"),
-        "email": p_dict["email"] if p_dict["email"] else"examplej@example.com",
+        "email": p_dict["email"] if "email" in p_dict else (
+            "examplej@example.com"),
         "active": True,
         "admin": False,
         "created_at": "2015-02-29",
@@ -140,8 +144,8 @@ def get_times(uuid):
             "user": "userone",
             "project": ["ganeti-webmgr", "gwm"],
             "activities": ["docs", "planning"],
-            "notes": "Worked on documentation toward settings configuration.",
-            "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues/40",
+            "notes": "Worked on documentation.",
+            "issue_uri": "https://github.com/osuosl/ganeti_webmgr",
             "date_worked": "2014-04-17",
             "revision": 1,
             "created_at": "2014-04-17",
@@ -158,21 +162,24 @@ def get_times(uuid):
                 "project": ["ganeti-webmgr", "gwm"],
                 "activities": ["code", "planning"],
                 "notes": "Worked on coding",
-                "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
+                "issue_uri": "https://github.com/osuosl/ganeti_webmgr",
                 "date_worked": "2014-04-17",
                 "revision": 1,
                 "created_at": "2014-04-17",
                 "updated_at": None,
                 "deleted_at": None,
                 "uuid": "12345676-1c9a-rrrr-bbbb-89b4544cad56"
-            },
+            }
+        )
+
+        p_list.append(
             {
                 "duration": 14,
                 "user": "userthree",
                 "project": ["timesync", "ts"],
                 "activities": ["code"],
                 "notes": "Worked on coding",
-                "issue_uri": "https://github.com/osuosl/timesync/issues",
+                "issue_uri": "https://github.com/osuosl/timesync",
                 "date_worked": "2014-04-17",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -235,7 +242,10 @@ def get_projects(slug):
                         "tschuy"
                     ]
                 }
-            },
+            }
+        )
+
+        p_list.append(
             {
                 "uri": "https://code.osuosl.org/projects/pymesync",
                 "name": "pymesync",
@@ -263,6 +273,7 @@ def get_projects(slug):
                 }
             }
         )
+    return p_list
 
 
 def get_activities(slug):
@@ -288,7 +299,10 @@ def get_activities(slug):
                 "created_at": "2014-04-17",
                 "deleted_at": None,
                 "updated_at": None
-            },
+            }
+        )
+
+        p_list.append(
             {
                 "name": "Planning",
                 "slugs": ["plan", "prep"],

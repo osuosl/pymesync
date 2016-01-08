@@ -317,6 +317,9 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # Save for later
+        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -331,10 +334,7 @@ class TimeSync(object):
 
         # Test mode
         if self.test:
-            if "slug" in kwargs.keys():
-                return mock_pymesync.get_projects(kwargs["slug"])
-            else:
-                return mock_pymesync.get_projects(None)
+            return mock_pymesync.get_projects(slug)
 
         # Attempt to GET projects
         try:
@@ -372,6 +372,9 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # Save for later
+        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -386,10 +389,7 @@ class TimeSync(object):
 
         # Test mode
         if self.test:
-            if "slug" in kwargs.keys():
-                return mock_pymesync.get_activities(kwargs["slug"])
-            else:
-                return mock_pymesync.get_activities(None)
+            return mock_pymesync.get_activities(slug)
 
         # Attempt to GET activities
         try:
@@ -679,8 +679,9 @@ class TimeSync(object):
         # Construct url to post to
         url = "{0}/{1}{2}".format(self.baseurl, endpoint, identifier)
 
+        # Test mode, remove leading '/' from identifier
         if self.test:
-            return self._test_handler(parameters, identifier,
+            return self._test_handler(parameters, identifier[1:],
                                       obj_name, create_object)
 
         # Attempt to POST to TimeSync
