@@ -354,3 +354,8 @@ def get_users(username):
             }
         ]
     return p_dict
+
+
+def delete_object():
+    """Delete an object from TimeSync"""
+    return [{}]

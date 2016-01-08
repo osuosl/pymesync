@@ -700,6 +700,10 @@ class TimeSync(object):
                                              identifier,
                                              self.token)
 
+        # Test mode
+        if self.test:
+            return mock_pymesync.delete_object()
+
         # Attempt to DELETE object
         try:
             # Success!
