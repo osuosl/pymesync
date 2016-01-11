@@ -88,7 +88,7 @@ class TimeSync(object):
         self.user = username
         self.password = password
         self.auth_type = auth_type
-        auth = {"auth": self._auth()}
+        auth = {"auth": self.__auth()}
         url = "{}/login".format(self.baseurl)
 
         # Test mode
@@ -99,7 +99,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=auth)
-            token_list_dict = self._response_to_python(response)
+            token_list_dict = self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
@@ -122,8 +122,8 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the time
         information to send to TimeSync.
         """
-        return self._create_or_update(parameter_dict, None,
-                                      "time", "times")
+        return self.__create_or_update(parameter_dict, None,
+                                       "time", "times")
 
     def update_time(self, parameter_dict, uuid):
         """
@@ -139,8 +139,8 @@ class TimeSync(object):
         information to send to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        return self._create_or_update(parameter_dict, uuid,
-                                      "time", "times", False)
+        return self.__create_or_update(parameter_dict, uuid,
+                                       "time", "times", False)
 
     def create_project(self, parameter_dict):
         """
@@ -154,8 +154,8 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the project
         information to send to TimeSync.
         """
-        return self._create_or_update(parameter_dict, None,
-                                      "project", "projects")
+        return self.__create_or_update(parameter_dict, None,
+                                       "project", "projects")
 
     def update_project(self, parameter_dict, slug):
         """
@@ -171,8 +171,8 @@ class TimeSync(object):
         information to send to TimeSync.
         ``slug`` contains the slug for a project entry to update.
         """
-        return self._create_or_update(parameter_dict, slug,
-                                      "project", "projects", False)
+        return self.__create_or_update(parameter_dict, slug,
+                                       "project", "projects", False)
 
     def create_activity(self, parameter_dict):
         """
@@ -186,8 +186,8 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the activity
         information to send to TimeSync.
         """
-        return self._create_or_update(parameter_dict, None,
-                                      "activity", "activities")
+        return self.__create_or_update(parameter_dict, None,
+                                       "activity", "activities")
 
     def update_activity(self, parameter_dict, slug):
         """
@@ -203,8 +203,8 @@ class TimeSync(object):
         information to send to TimeSync.
         ``slug`` contains the slug for an activity entry to update.
         """
-        return self._create_or_update(parameter_dict, slug,
-                                      "activity", "activities", False)
+        return self.__create_or_update(parameter_dict, slug,
+                                       "activity", "activities", False)
 
     def create_user(self, parameter_dict):
         """
@@ -218,8 +218,8 @@ class TimeSync(object):
         ``parameter_dict`` is a python dictionary containing the user
         information to send to TimeSync.
         """
-        return self._create_or_update(parameter_dict, None,
-                                      "user", "users")
+        return self.__create_or_update(parameter_dict, None,
+                                       "user", "users")
 
     def update_user(self, parameter_dict, username):
         """
@@ -235,8 +235,8 @@ class TimeSync(object):
         information to send to TimeSync.
         ``username`` contains the username for a user to update.
         """
-        return self._create_or_update(parameter_dict, username,
-                                      "user", "users", False)
+        return self.__create_or_update(parameter_dict, username,
+                                       "user", "users", False)
 
     def get_times(self, **kwargs):
         """
@@ -252,7 +252,7 @@ class TimeSync(object):
         ``query=["parameter"]``.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
@@ -265,7 +265,7 @@ class TimeSync(object):
         query_string = ""
 
         if kwargs:
-            query_string = self._construct_filter_query(kwargs)
+            query_string = self.__construct_filter_query(kwargs)
         else:
             query_string = "?"
 
@@ -285,7 +285,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -313,7 +313,7 @@ class TimeSync(object):
         any other combination.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
@@ -322,7 +322,7 @@ class TimeSync(object):
 
         query_string = ""
         if kwargs:
-            query_string = self._format_endpoints(kwargs)
+            query_string = self.__format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
@@ -340,7 +340,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -368,7 +368,7 @@ class TimeSync(object):
         any other combination.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
@@ -377,7 +377,7 @@ class TimeSync(object):
 
         query_string = ""
         if kwargs:
-            query_string = self._format_endpoints(kwargs)
+            query_string = self.__format_endpoints(kwargs)
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
@@ -395,7 +395,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error, e}]
@@ -413,7 +413,7 @@ class TimeSync(object):
         specific username to be retrieved. If ``username`` is not provided, a
         list containing all users will be returned. Defaults to ``None``.
         """
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
@@ -428,7 +428,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error, e}]
@@ -444,14 +444,14 @@ class TimeSync(object):
         deleted.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
         if not uuid:
             return [{self.error: "missing uuid; please add to method call"}]
 
-        return self._delete_object("times", uuid)
+        return self.__delete_object("times", uuid)
 
     def delete_project(self, slug=None):
         """
@@ -463,14 +463,14 @@ class TimeSync(object):
         ``slug`` is a string containing the slug of the project to be deleted.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
         if not slug:
             return [{self.error: "missing slug; please add to method call"}]
 
-        return self._delete_object("projects", slug)
+        return self.__delete_object("projects", slug)
 
     def delete_activity(self, slug=None):
         """
@@ -482,14 +482,14 @@ class TimeSync(object):
         ``slug`` is a string containing the slug of the activity to be deleted.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
         if not slug:
             return [{self.error: "missing slug; please add to method call"}]
 
-        return self._delete_object("activities", slug)
+        return self.__delete_object("activities", slug)
 
     def delete_user(self, username=None):
         """
@@ -502,7 +502,7 @@ class TimeSync(object):
         deleted.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
@@ -510,30 +510,30 @@ class TimeSync(object):
             return [{self.error:
                      "missing username; please add to method call"}]
 
-        return self._delete_object("users", username)
+        return self.__delete_object("users", username)
 
 ###############################################################################
 # Internal methods
 ###############################################################################
 
-    def _auth(self):
+    def __auth(self):
         """Returns auth object to log in to TimeSync"""
         return {"type": self.auth_type,
                 "username": self.user,
                 "password": self.password, }
 
-    def _token_auth(self):
+    def __token_auth(self):
         """Returns auth object with a token to send to TimeSync endpoints"""
         return {"type": "token",
                 "token": self.token, }
 
-    def _local_auth_error(self):
+    def __local_auth_error(self):
         """Checks that self.token is set. Returns error if not set, otherwise
         returns None"""
         return None if self.token else ("Not authenticated with TimeSync, "
                                         "call self.authenticate() first")
 
-    def _response_to_python(self, response):
+    def __response_to_python(self, response):
         """Convert response to native python list of objects"""
         try:
             python_object = json.loads(str(response.text))
@@ -550,7 +550,7 @@ class TimeSync(object):
 
         return python_object
 
-    def _format_endpoints(self, queries):
+    def __format_endpoints(self, queries):
         """Format endpoints for GET projects and activities requests. Returns
         None if invalid combination of slug and include_deleted"""
         query_string = "?"
@@ -578,7 +578,7 @@ class TimeSync(object):
 
         return query_string
 
-    def _construct_filter_query(self, queries):
+    def __construct_filter_query(self, queries):
         """Construct the query string for filtering GET queries, such as
         get_times()"""
         query_string = "?"
@@ -621,7 +621,7 @@ class TimeSync(object):
 
         return query_string
 
-    def _get_field_errors(self, actual, object_name, create_object):
+    def __get_field_errors(self, actual, object_name, create_object):
         """Checks that ``actual`` parameter passed to POST method contains
         items in required or optional lists for that ``object_name``.
         Returns None if no errors found or error string if error found. If
@@ -650,8 +650,8 @@ class TimeSync(object):
         # No errors if we made it this far
         return None
 
-    def _create_or_update(self, parameters, identifier,
-                          obj_name, endpoint, create_object=True):
+    def __create_or_update(self, parameters, identifier,
+                           obj_name, endpoint, create_object=True):
         """
         Create or update an object ``obj_name`` at specified ``endpoint``. This
         method will return that object in the form of a list containing a
@@ -661,18 +661,18 @@ class TimeSync(object):
         gets checked for required fields.
         """
         # Check that user has authenticated
-        local_auth_error = self._local_auth_error()
+        local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
         # Check that parameter_dict contains required fields and no bad fields
-        field_error = self._get_field_errors(parameters,
-                                             obj_name,
-                                             create_object)
+        field_error = self.__get_field_errors(parameters,
+                                              obj_name,
+                                              create_object)
         if field_error:
             return [{self.error: field_error}]
 
-        values = {"auth": self._token_auth(), "object": parameters}
+        values = {"auth": self.__token_auth(), "object": parameters}
 
         identifier = "/{}".format(identifier) if identifier else ""
 
@@ -688,12 +688,12 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=values)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
 
-    def _delete_object(self, endpoint, identifier):
+    def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
         # Construct url
         url = "{0}/{1}/{2}?token={3}".format(self.baseurl,
@@ -709,7 +709,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.delete(url)
-            return self._response_to_python(response)
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
