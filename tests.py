@@ -694,7 +694,7 @@ class TestPymesync(unittest.TestCase):
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_time_no_auth(self, m_resp_python):
-        """Tests TimeSync._TimeSync_create_or_update for create time with no
+        """Tests TimeSync._TimeSync__create_or_update for create time with no
         auth"""
         # Parameters to be sent to TimeSync
         params = {
@@ -717,7 +717,7 @@ class TestPymesync(unittest.TestCase):
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_project_no_auth(self, m_resp_python):
-        """Tests TimeSync._TimeSync_create_or_update for create project with no
+        """Tests TimeSync._TimeSync__create_or_update for create project with no
         auth"""
         # Parameters to be sent to TimeSync
         params = {
