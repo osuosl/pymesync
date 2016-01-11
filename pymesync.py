@@ -21,17 +21,19 @@ v1
 import json
 import requests
 import operator
+import mock_pymesync
 
 
 class TimeSync(object):
 
-    def __init__(self, baseurl):
+    def __init__(self, baseurl, test=False):
         self.baseurl = baseurl
         self.user = None
         self.password = None
         self.auth_type = None
         self.token = None
         self.error = "pymesync error"
+        self.test = test
         self.valid_get_queries = ["user", "project", "activity",
                                   "start", "end", "include_revisions",
                                   "include_deleted", "uuid"]
@@ -88,6 +90,11 @@ class TimeSync(object):
         self.auth_type = auth_type
         auth = {"auth": self._auth()}
         url = "{}/login".format(self.baseurl)
+
+        # Test mode
+        if self.test:
+            self.token = "TESTTOKEN"
+            return mock_pymesync.authenticate()
 
         try:
             # Success!
@@ -267,6 +274,13 @@ class TimeSync(object):
                                              query_string,
                                              self.token)
 
+        # Test mode
+        if self.test:
+            if "uuid" in kwargs.keys():
+                return mock_pymesync.get_times(kwargs["uuid"])
+            else:
+                return mock_pymesync.get_times(None)
+
         # Attempt to GET times
         try:
             # Success!
@@ -303,6 +317,9 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # Save for later
+        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -314,6 +331,10 @@ class TimeSync(object):
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/projects{1}".format(self.baseurl, query_string)
+
+        # Test mode
+        if self.test:
+            return mock_pymesync.get_projects(slug)
 
         # Attempt to GET projects
         try:
@@ -351,6 +372,9 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # Save for later
+        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+
         query_string = ""
         if kwargs:
             query_string = self._format_endpoints(kwargs)
@@ -362,6 +386,10 @@ class TimeSync(object):
 
         # Construct query url - query_string is empty if no kwargs
         url = "{0}/activities{1}".format(self.baseurl, query_string)
+
+        # Test mode
+        if self.test:
+            return mock_pymesync.get_activities(slug)
 
         # Attempt to GET activities
         try:
@@ -391,6 +419,10 @@ class TimeSync(object):
 
         url = "{0}/users/{1}".format(self.baseurl, username) if username else (
               "{}/users".format(self.baseurl))
+
+        # Test mode
+        if self.test:
+            return mock_pymesync.get_users(username)
 
         # Attempt to GET users
         try:
@@ -647,6 +679,11 @@ class TimeSync(object):
         # Construct url to post to
         url = "{0}/{1}{2}".format(self.baseurl, endpoint, identifier)
 
+        # Test mode, remove leading '/' from identifier
+        if self.test:
+            return self._test_handler(parameters, identifier[1:],
+                                      obj_name, create_object)
+
         # Attempt to POST to TimeSync
         try:
             # Success!
@@ -664,6 +701,10 @@ class TimeSync(object):
                                              identifier,
                                              self.token)
 
+        # Test mode
+        if self.test:
+            return mock_pymesync.delete_object()
+
         # Attempt to DELETE object
         try:
             # Success!
@@ -672,3 +713,27 @@ class TimeSync(object):
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
+
+    def _test_handler(self, parameters, identifier, obj_name, create_object):
+        """Handle test methods in test mode for creating or updating an
+        object"""
+        if obj_name == "time":
+            if create_object:
+                return mock_pymesync.create_time(parameters)
+            else:
+                return mock_pymesync.update_time(parameters, identifier)
+        elif obj_name == "project":
+            if create_object:
+                return mock_pymesync.create_project(parameters)
+            else:
+                return mock_pymesync.update_project(parameters, identifier)
+        elif obj_name == "activity":
+            if create_object:
+                return mock_pymesync.create_activity(parameters)
+            else:
+                return mock_pymesync.update_activity(parameters, identifier)
+        elif obj_name == "user":
+            if create_object:
+                return mock_pymesync.create_user(parameters)
+            else:
+                return mock_pymesync.update_user(parameters, identifier)
