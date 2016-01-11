@@ -28,6 +28,18 @@ class TestPymesync(unittest.TestCase):
         requests.post = actual_post
         requests.delete = actual_delete
 
+    def test_instantiate_with_token(self):
+        """Test that instantiating pymesync with a token sets the token
+        variable"""
+        ts = pymesync.TimeSync("baseurl", token="TOKENTOCHECK")
+        self.assertEquals(ts.token, "TOKENTOCHECK")
+
+    def test_instantiate_without_token(self):
+        """Test that instantiating pymesync without a token does not se the
+        token variable"""
+        ts = pymesync.TimeSync("baseurl")
+        self.assertIsNone(ts.token)
+
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_time_valid(self, m_resp_python):
         """Tests TimeSync._TimeSync__create_or_update for create time with
