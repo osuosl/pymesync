@@ -234,7 +234,67 @@ class TestPymesync(unittest.TestCase):
         self.assertRaises(Exception, self.ts._TimeSync__create_or_update(
             time, None, "time", "times"))
 
-    @patch("pymesync.TimeSync._TimeSync__response_to_python")
+    @patch("pymesync.TimeSync._TimeSync.__create_or_update")
+    def test_create_or_update_time_with_junk_string_duration(self,
+                                                      mock_create_or_update):
+        """Tests that TimeSync._create_time will fail if an invalid string
+        containing no hours/minutes is entered"""
+         params = {
+            "duration": "junktime",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+       
+        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+                                                              "time", "times"),
+                          [{self.ts.error:
+                            "time object: duration contains invalid string"}])
+    
+    @patch("pymesync.TimeSync._TimeSync.__create_or_update")
+    def test_create_or_update_time_with_invalid_string_duration(self,
+                                                      mock_create_or_update):
+        """Tests that TimeSync._create_time will fail if an invalid string
+        containing multiple hours/minutes is entered"""
+         params = {
+            "duration": "3h30min15hours",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+       
+        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+                                                              "time", "times"),
+                          [{self.ts.error:
+                            "time object: duration contains invalid string"}])
+
+    @patch("pymesync.TimeSync._TimeSync.__create_or_update")
+    def test_create_or_update_time_with_numberless_string_duration(self,
+                                                      mock_create_or_update):
+        """Tests that TimeSync._create_time will fail if a string containing
+        no numbers is entered as the duration"""
+         params = {
+            "duration": "hoursandminutes",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+       
+        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+                                                              "time", "times"),
+                          [{self.ts.error:
+                            "time object: duration contains invalid string"}])
+
+    @patch("pymesync.TimeSync._response_to_python")
     def test_create_or_update_create_user_valid(self, m_resp_python):
         """Tests TimeSync._TimeSync__create_or_update for create user with
         valid data"""
@@ -1555,7 +1615,44 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(time, "uuid", "time",
                                                  "times", False)
 
-    @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    @patch("pymsync.TimeSync._TimeSync.__create_or_update")
+    def test_create_time_with_string_duration(self, mock_create_or_update):
+        """Tests that TimeSync._create_time will convert a string duration to
+        the correct number of seconds"""
+        params = {
+            "duration": "3h30min",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.create_time(params)
+
+        mock_create_or_update.assert_called_with(params, None, "time", "times")
+
+    @patch("pymesync.TimeSync._TimeSync.__create_or_update")
+    def test_update_time_with_string_duration(self, mock_create_or_update):
+        """Tests that TimeSync._update_time will convert a string duration to
+        the correct number of seconds"""
+        params = {
+            "duration": "3h30min",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.update_time(params, "uuid")
+
+        mock_create_or_update.assert_called_with(params, "uuid", "time",
+                                                 "times", False)
+
+    @patch("pymesync.TimeSync._create_or_update")
     def test_create_project(self, mock_create_or_update):
         """Tests that TimeSync.create_project calls _create_or_update with
         correct parameters"""
