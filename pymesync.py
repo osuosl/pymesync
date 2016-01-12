@@ -26,12 +26,12 @@ import mock_pymesync
 
 class TimeSync(object):
 
-    def __init__(self, baseurl, test=False):
+    def __init__(self, baseurl, token=None, test=False):
         self.baseurl = baseurl
         self.user = None
         self.password = None
         self.auth_type = None
-        self.token = None
+        self.token = token
         self.error = "pymesync error"
         self.test = test
         self.valid_get_queries = ["user", "project", "activity",

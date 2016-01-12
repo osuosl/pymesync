@@ -97,6 +97,19 @@ Where
 * ``auth_type`` is a string containing the type of authentication your TimeSync
   implementation uses for login, such as ``"password"``, or ``"ldap"``.
 
+You can also optionally include a token in the constructor like so:
+
+.. code-block:: python
+
+  import pymesync
+
+  ts = pymesync.TimeSync(baseurl, token="SOMETOKENYOUGOTEARLIER")
+  # ts.authenticate() is not required
+
+This is handy when state is not kept between different parts of your system, but
+you don't want to have to re-authenticate your TimeSync objectfor every section
+of code.
+
 .. note::
 
   If you attempt to get, create, or update objects before authenticating,
