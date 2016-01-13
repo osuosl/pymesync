@@ -210,20 +210,22 @@ TimeSync.\ **create_time(parameter_dict)**
     * ``"notes"`` - optional notes about this time entry
     * ``"issue_uri"`` - optional uri to issue worked on
 
-    Example:
+    Example usage:
 
     .. code-block:: python
 
       >>> params = {
-      ...     "duration": 7200,
-      ...     "project": "ganeti-web-manager",
-      ...     "user": "example-user",
-      ...     "activities": ["documenting"],
-      ...     "notes": "Worked on docs",
-      ...     "issue_uri": "https://github.com/",
-      ...     "date_worked": "2014-04-17",
-      ... }
+      ...    "duration": 1200,
+      ...    "user": "example-2",
+      ...    "project": "ganeti_web_manager",
+      ...    "activities": ["docs"],
+      ...    "notes": "Worked on documentation toward settings configuration.",
+      ...    "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
+      ...    "date_worked": "2014-04-17"
+      ...}
       >>> ts.create_time(params)
+      [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 1200, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
+      >>>
 
 ------------------------------------------
 
@@ -257,13 +259,17 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
     * ``"notes"`` - optional notes about this time entry
     * ``"issue_uri"`` - optional uri to issue worked on
 
-    Example ``parameter_dict`` to update the date_worked of a time entry:
+    Example usage:
 
     .. code-block:: python
 
-      params = {
-          "date_worked": "2015-04-17",
-      }
+      >>> params = {
+      ...    "duration": 1900,
+      ...    "user": "red-leader",
+      ...    "activities": ["hello", "world"],
+      ...}
+      >>> ts.update_time(params, "some-uuid")
+      [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 1900, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
 
 ------------------------------------------
 
@@ -321,6 +327,14 @@ TimeSync.\ **get_times(\**kwargs)**
       To get a deleted time by ``uuid``, also add the ``include_deleted``
       parameter.
 
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.get_times()
+      [{'activities': ['docs', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userone', 'duration': 1200, 'deleted_at': None, 'uuid': 'c3706e79-1c9a-4765-8d7f-89b4544cad56', 'notes': 'Worked on documentation.', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}, {'activities': ['code', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'usertwo', 'duration': 1300, 'deleted_at': None, 'uuid': '12345676-1c9a-rrrr-bbbb-89b4544cad56', 'notes': 'Worked on coding', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}, {'activities': ['code'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userthree', 'duration': 1400, 'deleted_at': None, 'uuid': '12345676-1c9a-ssss-cccc-89b4544cad56', 'notes': 'Worked on coding', 'project': ['timesync', 'ts'], 'issue_uri': 'https://github.com/osuosl/timesync', 'created_at': '2014-04-17', 'revision': 1}]
+      >>>
+
     .. warning::
 
       If the ``uuid`` parameter is passed all other parameters will be ignored
@@ -336,6 +350,17 @@ TimeSync.\ **delete_time(uuid)**
     uuid.
 
     ``uuid`` is a string containing the uuid of the time entry to be deleted.
+
+    **delete_time()** returns a ``[{"status": 200}]`` if successful or an error
+    message if unsuccessful.
+
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.delete_time("some-uuid")
+      [{"status": 200}]
+      >>>
 
 ------------------------------------------
 
@@ -367,6 +392,14 @@ TimeSync.\ **get_projects(\**kwargs)**
       projects in request. Default is ``False``
 
       - example: ``include_revisions=True``
+
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.get_projects()
+      [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb', 'deleted_at': None, 'name': 'Ganeti Web Manager', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 4, 'uri': 'https://code.osuosl.org/projects/ganeti-webmgr', 'slugs': ['gwm']}, {'users': {'managers': ['tschuy'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj']}, 'uuid': 'a034806c-rrrr-bbbb-8de8-514575f31bfb', 'deleted_at': None, 'name': 'TimeSync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['timesync', 'ts']}, {'users': {'managers': ['mrsj'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj', 'MaraJade', 'thai']}, 'uuid': 'a034806c-ssss-cccc-8de8-514575f31bfb', 'deleted_at': None, 'name': 'pymesync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 1, 'uri': 'https://code.osuosl.org/projects/pymesync', 'slugs': ['pymesync', 'ps']}]
+      >>>
 
     .. warning::
 
@@ -404,6 +437,14 @@ TimeSync.\ **get_activities(\**kwargs)**
 
       - example: ``include_revisions=True``
 
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.get_activities()
+      [{'uuid': 'adf036f5-3d49-4a84-bef9-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Documentation', 'deleted_at': None, 'slugs': ['docs'], 'revision': 5}, {'uuid': 'adf036f5-3d49-bbbb-rrrr-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Coding', 'deleted_at': None, 'slugs': ['code', 'dev'], 'revision': 1}, {'uuid': 'adf036f5-3d49-cccc-ssss-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Planning', 'deleted_at': None, 'slugs': ['plan', 'prep'], 'revision': 1}]
+      >>>
+
     .. warning::
 
       Does not accept a ``slug`` combined with ``include_deleted``, but does
@@ -421,6 +462,14 @@ TimeSync.\ **get_users(username=None)**
     ``username`` is an optional parameter containing a string of the specific
     username to be retrieved. If ``username`` is not provided, a list containing
     all users will be returned. Defaults to ``None``.
+
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.get_users()
+      [{'username': 'userone', 'displayname': 'One Is The Loneliest Number', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampleone@example.com'}, {'username': 'usertwo', 'displayname': 'Two Can Be As Bad As One', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampletwo@example.com'}, {'username': 'userthree', 'displayname': "Yes It's The Saddest Experience", 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplethree@example.com'}, {'username': 'userfour', 'displayname': "You'll Ever Do", 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplefour@example.com'}]
+      >>>
 
 ------------------------------------------
 
@@ -449,16 +498,19 @@ TimeSync.\ **create_project(parameter_dict)**
     * ``"slugs"`` - this must be a list of strings
     * ``"owner"``
 
-    Example ``parameter_dict``:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-          "uri": "https://code.osuosl.org/projects/timesync",
-          "name": "TimeSync API",
-          "slugs": ["timesync", "time"],
-          "owner": "mrsj"
-      }
+      >>> params = {
+      ...    "uri": "https://code.osuosl.org/projects/timesync",
+      ...    "name": "TimeSync API",
+      ...    "slugs": ["timesync", "time"],
+      ...}
+      >>>
+      >>> ts.create_project(params)
+      [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
+      >>>
 
 ------------------------------------------
 
@@ -489,13 +541,17 @@ TimeSync.\ **update_project(parameter_dict, slug)**
     * ``"slugs"`` - this must be a list of strings
     * ``"owner"``
 
-    Example ``parameter_dict`` to update project slugs:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-          "slugs": ["timesync", "time", "ts"]
-      }
+      >>> params = {
+      ...    "uri": "https://code.osuosl.org/projects/timesync",
+      ...    "name": "pymesync",
+      ...}
+      >>> ts.update_project(params, "ps")
+      [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
+      >>>
 
 ------------------------------------------
 
@@ -505,6 +561,17 @@ TimeSync.\ **delete_project(slug)**
     slug.
 
     ``slug`` is a string containing the slug of the project to be deleted.
+
+    **delete_project()** returns a ``[{"status": 200}]`` if successful or an
+    error message if unsuccessful.
+
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.delete_project("some-slug")
+      [{"status": 200}]
+      >>>
 
 ------------------------------------------
 
@@ -523,14 +590,17 @@ TimeSync.\ **create_activity(parameter_dict)**
     * ``"name"``
     * ``"slug"``
 
-    Example ``parameter_dict``:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-            "name": "Quality Assurance/Testing",
-            "slug": "qa",
-      }
+      >>> params = {
+      ...    "name": "Quality Assurance/Testing",
+      ...    "slug": "qa"
+      ...}
+      >>> ts.create_activity(params)
+      [{'uuid': 'cfa07a4f-d446-4078-8d73-2f77560c35c0', 'created_at': '2013-07-27', 'updated_at': None, 'deleted_at': None, 'revision': 1, 'slug': 'qa', 'name': 'Quality Assurance/Testing'}]
+      >>>
 
 ------------------------------------------
 
@@ -557,13 +627,14 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     * ``"name"``
     * ``"slug"``
 
-    Example ``parameter_dict`` to update activity slug:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-            "slug": "test"
-      }
+      >>> params = {"name": "Code in the wild"}
+      >>> ts.update_activity(params, "ciw")
+      [{'uuid': '3cf78d25-411c-4d1f-80c8-a09e5e12cae3', 'created_at': '2014-04-16', 'updated_at': '2014-04-17', 'deleted_at': None, 'revision': 2, 'slug': 'ciw', 'name': 'Code in the wild'}]
+      >>>
 
 ------------------------------------------
 
@@ -573,6 +644,18 @@ TimeSync.\ **delete_activity(slug)**
     by slug.
 
     ``slug`` is a string containing the slug of the activity to be deleted.
+
+    **delete_activity()** returns a ``[{"status": 200}]`` if successful or an
+    error message if unsuccessful.
+
+    Example usage:
+
+    .. code-block:: python
+
+      >>> ts.delete_activity("some-slug")
+      [{"status": 200}]
+      >>>
+
 
 ------------------------------------------
 
@@ -596,16 +679,19 @@ TimeSync.\ **create_user(parameter_dict)**
     * ``"displayname"``
     * ``"email"``
 
-    Example ``parameter_dict``:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-          "username": "example",
-          "password": "password",
-          "displayname": "X. Ample User",
-          "email": "example@example.com"
-      }
+      >>> params = {
+      ...    "username": "example",
+      ...    "password": "password",
+      ...    "displayname": "X. Ample User",
+      ...    "email": "example@example.com"
+      ...}
+      >>> ts.create_user(params)
+      [{'username': 'example', 'deleted_at': None, 'displayname': 'X. Ample User', 'admin': False, 'created_at': '2015-05-23', 'active': True, 'email': 'example@example.com'}]
+      >>>
 
 ------------------------------------------
 
@@ -631,13 +717,17 @@ TimeSync.\ **update_user(parameter_dict, username)**
     * ``"displayname"``
     * ``"email"``
 
-    Example ``parameter_dict`` to update a user's ``displayname``:
+    Example usage:
 
     .. code-block:: python
 
-      parameter_dict = {
-            "displayname": "Eg Zample Yuser"
-      }
+      >>> params = {
+      ...    "username": "red-leader",
+      ...    "email": "red-leader@yavin.com"
+      ...}
+      >>> ts.update_user(params, "example")
+      [{'username': 'red-leader', 'displayname': 'Mr. Example', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'red-leader@yavin.com'}]
+      >>>
 
 ------------------------------------------
 
@@ -648,26 +738,13 @@ TimeSync.\ **delete_user(username)**
 
     ``username`` is a string containing the username of the user to be deleted.
 
-------------------------------------------
+    **delete_user()** returns a ``[{"status": 200}]`` if successful or an error
+    message if unsuccessful.
 
+    Example usage:
 
-Example usage
--------------
+    .. code-block:: python
 
-.. code-block:: python
-
-    >>> import pymesync
-    >>>
-    >>> ts = pymesync.TimeSync("http://ts.example.com/v1")
-    >>> ts.authenticate("username", "userpass", "password")
-    [{"token": "SOMELONGTOKEN"}]
-    >>> params = {
-    ...    "duration": 12,
-    ...    "project": "ganeti-web-manager",
-    ...    "user": "username",
-    ...    "activities": ["documenting"],
-    ...    "notes": "Worked on docs",
-    ...    "issue_uri": "https://github.com/",
-    ...    "date_worked": "2014-04-17",
-    ...}
-    >>> More to come when implementation is fixed...
+      >>> ts.delete_user("username")
+      [{"status": 200}]
+      >>>
