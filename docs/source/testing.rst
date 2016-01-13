@@ -123,10 +123,10 @@ An (almost) exhaustive example of test mode:
   [{'activities': ['docs', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userone', 'duration': 12, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': 'Worked on documentation.', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}]
   >>>
   >>> ts.delete_time("some-uuid")
-  [{}]
+  [{"status": 200}]
   >>>
   >>> ts.delete_user("username")
-  [{}]
+  [{"status": 200}]
   >>>
 
 
