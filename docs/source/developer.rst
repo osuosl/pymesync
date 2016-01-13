@@ -30,7 +30,7 @@ described in the next section.
 Return Format
 -------------
 
-Pymesync **always** returns a list of one or more python dictionaries.
+Pymesync (almost) **always** returns a list of one or more python dictionaries.
 
 This allows the user to access information using array notation for every
 method. Even error messages are returned in this manner.
@@ -40,6 +40,9 @@ Following this format, the user can use the same logic and syntax to process a
 ``get_<endpoint>()`` method that returns many objects. This is important because
 filtering parameters can be passed to those methods that will get an unknown
 number of objects from TimeSync.
+
+The exception to this rule is for simple data returns like
+``token_expiration_time()`` which returns a python datetime.
 
 Error Messages
 --------------
