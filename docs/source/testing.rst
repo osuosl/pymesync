@@ -53,6 +53,9 @@ An (almost) exhaustive example of test mode:
   >>> ts.authenticate("test-user", "test-pass", "password")
   [{'token': 'TESTTOKEN'}]
   >>>
+  >>> ts.token_expiration_time()
+  [{'expiration': '2016-01-13 11:45:34'}]
+  >>>
   >>> ts.create_time(params)
   [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 12, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
   >>>
