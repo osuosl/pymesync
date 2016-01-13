@@ -1,5 +1,6 @@
 import pymesync
 import unittest
+import datetime
 
 
 class TestMockPymesync(unittest.TestCase):
@@ -20,7 +21,7 @@ class TestMockPymesync(unittest.TestCase):
 
     def test_mock_token_expiration_time(self):
         self.assertEquals(self.ts.token_expiration_time(),
-                          [{'expiration': '2016-01-13 11:45:34'}])
+                          datetime.datetime(2016, 1, 13, 11, 45, 34))
 
     def test_mock_create_time(self):
         parameter_dict = {
