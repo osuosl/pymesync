@@ -2,6 +2,10 @@ def authenticate():
     return [{"token": "TESTTOKEN"}]
 
 
+def token_expiration_time():
+    return [{'expiration': '2016-01-13 11:45:34'}]
+
+
 def create_time(p_dict):
     """Sends time to baseurl (TimeSync)"""
     p_dict["created_at"] = "2015-05-23"
