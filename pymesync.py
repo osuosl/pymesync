@@ -526,6 +526,10 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # Return valid date if in test mode
+        if self.test:
+            return mock_pymesync.token_expiration_time()
+
         # Decode the token, then get the second dict (payload) from the
         # resulting string. The payload contains the expiration time.
         try:
