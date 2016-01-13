@@ -6,7 +6,7 @@ import requests
 import json
 import base64
 import ast
-import time
+import datetime
 
 
 class resp(object):
@@ -1918,10 +1918,10 @@ class TestPymesync(unittest.TestCase):
 
         decoded_payload = base64.b64decode(self.ts.token).split("}", 1)[1]
         exp_int = ast.literal_eval(decoded_payload)['exp'] / 1000
-        exp_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(exp_int))
+        exp_datetime = datetime.datetime.fromtimestamp(exp_int)
 
         self.assertEquals(self.ts.token_expiration_time(),
-                          [{'expiration': exp_str}])
+                          exp_datetime)
 
     def test_token_expiration_invalid(self):
         """Test that token_expiration_time returns correct from an invalid

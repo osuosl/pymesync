@@ -23,7 +23,7 @@ import requests
 import operator
 import base64
 import ast
-import time
+import datetime
 import mock_pymesync
 
 
@@ -545,10 +545,10 @@ class TimeSync(object):
         # Convert the epoch time from ms to s
         exp_int /= 1000
 
-        # Convert and format the epoch time to human-readable local time.
-        exp_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(exp_int))
+        # Convert and format the epoch time to python datetime.
+        exp_datetime = datetime.datetime.fromtimestamp(exp_int)
 
-        return [{"expiration": exp_str}]
+        return exp_datetime
 
 ###############################################################################
 # Internal methods
