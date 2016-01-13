@@ -21,6 +21,9 @@ v1
 import json
 import requests
 import operator
+import base64
+import ast
+import time
 import mock_pymesync
 
 
@@ -511,6 +514,37 @@ class TimeSync(object):
                      "missing username; please add to method call"}]
 
         return self.__delete_object("users", username)
+
+    def token_expiration_time(self):
+        """
+        token_expiration_time()
+
+        Returns the expiration time of the token associated with this object.
+        """
+        # Check that user has authenticated
+        local_auth_error = self.__local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        # Decode the token, then get the second dict (payload) from the
+        # resulting string. The payload contains the expiration time.
+        try:
+            decoded_payload = base64.b64decode(self.token).split("}", 1)[1]
+        except:
+            return [{self.error: "improperly encoded token"}]
+
+        # literal_eval the string representation of a dict to convert it to a
+        # dict, then get the value at 'exp'. The value at 'exp' is epoch time
+        # in ms
+        exp_int = ast.literal_eval(decoded_payload)['exp']
+
+        # Convert the epoch time from ms to s
+        exp_int /= 1000
+
+        # Convert and format the epoch time to human-readable local time.
+        exp_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(exp_int))
+
+        return [{"expiration": exp_str}]
 
 ###############################################################################
 # Internal methods
