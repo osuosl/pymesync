@@ -175,9 +175,9 @@ TimeSync.\ **authenticate(user, password, auth_type)**
 
     .. code-block:: python
 
-    >>> ts.authenticate("example-user", "example-password", "password")
-    [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
-    >>>
+      >>> ts.authenticate("example-user", "example-password", "password")
+      [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
+      >>>
 
 TimeSync.\ **token_expiration_time()**
 
