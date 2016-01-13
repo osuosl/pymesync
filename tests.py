@@ -4,6 +4,9 @@ import mock
 from mock import patch
 import requests
 import json
+import base64
+import ast
+import time
 
 
 class resp(object):
@@ -1912,8 +1915,13 @@ class TestPymesync(unittest.TestCase):
                          "iLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA"
                          "4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW"
                          "7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w==")
+
+        decoded_payload = base64.b64decode(self.ts.token).split("}", 1)[1]
+        exp_int = ast.literal_eval(decoded_payload)['exp'] / 1000
+        exp_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(exp_int))
+
         self.assertEquals(self.ts.token_expiration_time(),
-                          [{'expiration': '2016-01-13 11:45:34'}])
+                          [{'expiration': exp_str}])
 
     def test_token_expiration_invalid(self):
         """Test that token_expiration_time returns correct from an invalid
