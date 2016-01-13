@@ -535,6 +535,10 @@ class TimeSync(object):
 
     def __response_to_python(self, response):
         """Convert response to native python list of objects"""
+        # DELETE returns an empty body if successful
+        if not response.text and response.status_code == 200:
+            return [{"status": 200}]
+
         try:
             python_object = json.loads(str(response.text))
         except ValueError:
