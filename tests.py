@@ -1904,6 +1904,31 @@ class TestPymesync(unittest.TestCase):
                           [{"pymesync error":
                             "missing username; please add to method call"}])
 
+    def test_token_expiration_valid(self):
+        """Test that token_expiration_time returns valid date from a valid
+        token"""
+        self.ts.token = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3M"
+                         "iOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3Q"
+                         "iLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA"
+                         "4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW"
+                         "7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w==")
+        self.assertEquals(self.ts.token_expiration_time(),
+                          [{'expiration': '2016-01-13 11:45:34'}])
+
+    def test_token_expiration_invalid(self):
+        """Test that token_expiration_time returns correct from an invalid
+        token"""
+        self.assertEquals(self.ts.token_expiration_time(),
+                          [{self.ts.error: "improperly encoded token"}])
+
+    def test_token_expiration_no_auth(self):
+        """Test that token_expiration_time returns correct error when user is
+        not authenticated"""
+        self.ts.token = None
+        self.assertEquals(self.ts.token_expiration_time(),
+                          [{self.ts.error: "Not authenticated with TimeSync, "
+                                           "call self.authenticate() first"}])
+
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
