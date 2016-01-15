@@ -36,7 +36,7 @@ An (almost) exhaustive example of test mode:
 
   >>> import pymesync
   >>>
-  >>> ts = pymesync.TimeSync("http://timesync.example.com/v1", test=True)
+  >>> ts = pymesync.TimeSync(baseurl="http://timesync.example.com/v1", test=True)
   >>>
   >>> params = {
   ...             "duration": 12,
@@ -47,7 +47,7 @@ An (almost) exhaustive example of test mode:
   ...             "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
   ...             "date_worked": "2014-04-17"
   ...         }
-  >>> ts.create_time(params)
+  >>> ts.create_time(parameter_dict=params)
   [{'pymesync error': 'Not authenticated with TimeSync, call self.authenticate() first'}]
   >>>
   >>> ts.authenticate(username="test-user", password="test-pass", auth_type="password")
@@ -56,7 +56,7 @@ An (almost) exhaustive example of test mode:
   >>> ts.token_expiration_time()
   datetime.datetime(2016, 1, 13, 11, 45, 34)
   >>>
-  >>> ts.create_time(params)
+  >>> ts.create_time(parameter_dict=params)
   [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 12, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
   >>>
   >>> params = {
@@ -64,7 +64,7 @@ An (almost) exhaustive example of test mode:
   ...             "user": "red-leader",
   ...             "activities": ["hello", "world"],
   ...         }
-  >>> ts.update_time(params, "some-uuid")
+  >>> ts.update_time(parameter_dict=params, uuid="some-uuid")
   [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 19, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
   >>>
   >>> params = {
@@ -73,25 +73,25 @@ An (almost) exhaustive example of test mode:
   ...             "slugs": ["timesync", "time"],
   ...         }
   >>>
-  >>> ts.create_project(params)
+  >>> ts.create_project(parameter_dict=params)
   [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
   >>>
   >>> params = {
   ...             "uri": "https://code.osuosl.org/projects/timesync",
   ...             "name": "pymesync",
   ...         }
-  >>> ts.update_project(params, "ps")
+  >>> ts.update_project(parameter_dict=params, slug="ps")
   [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
   >>>
   >>> params = {
   ...             "name": "Quality Assurance/Testing",
   ...             "slug": "qa"
   ...         }
-  >>> ts.create_activity(params)
+  >>> ts.create_activity(parameter_dict=params)
   [{'uuid': 'cfa07a4f-d446-4078-8d73-2f77560c35c0', 'created_at': '2013-07-27', 'updated_at': None, 'deleted_at': None, 'revision': 1, 'slug': 'qa', 'name': 'Quality Assurance/Testing'}]
   >>>
   >>> params = {"name": "Code in the wild"}
-  >>> ts.update_activity(params, "ciw")
+  >>> ts.update_activity(parameter_dict=params, slug="ciw")
   [{'uuid': '3cf78d25-411c-4d1f-80c8-a09e5e12cae3', 'created_at': '2014-04-16', 'updated_at': '2014-04-17', 'deleted_at': None, 'revision': 2, 'slug': 'ciw', 'name': 'Code in the wild'}]
   >>>
   >>> params = {
@@ -100,14 +100,14 @@ An (almost) exhaustive example of test mode:
   ...             "displayname": "X. Ample User",
   ...             "email": "example@example.com"
   ...         }
-  >>> ts.create_user(params)
+  >>> ts.create_user(parameter_dict=params)
   [{'username': 'example', 'deleted_at': None, 'displayname': 'X. Ample User', 'admin': False, 'created_at': '2015-05-23', 'active': True, 'email': 'example@example.com'}]
   >>>
   >>> params = {
   ...             "username": "red-leader",
   ...             "email": "red-leader@yavin.com"
   ...         }
-  >>> ts.update_user(params, "example")
+  >>> ts.update_user(parameter_dict=params, username="example")
   [{'username': 'red-leader', 'displayname': 'Mr. Example', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'red-leader@yavin.com'}]
   >>>
   >>> ts.get_times()
@@ -125,10 +125,10 @@ An (almost) exhaustive example of test mode:
   >>> ts.get_times(uuid="some-uuid")
   [{'activities': ['docs', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userone', 'duration': 12, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': 'Worked on documentation.', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}]
   >>>
-  >>> ts.delete_time("some-uuid")
+  >>> ts.delete_time(uuid="some-uuid")
   [{"status": 200}]
   >>>
-  >>> ts.delete_user("username")
+  >>> ts.delete_user(username="username")
   [{"status": 200}]
   >>>
 

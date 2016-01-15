@@ -83,8 +83,8 @@ To access pymesync's public methods you must first initiate a TimeSync object
 
     import pymesync
 
-    ts = pymesync.TimeSync(baseurl)
-    ts.authenticate(user, password, auth_type)
+    ts = pymesync.TimeSync(baseurl="http://ts.example.com/v1")
+    ts.authenticate(username="user", password="password", auth_type="password")
 
 Where
 
@@ -103,7 +103,7 @@ You can also optionally include a token in the constructor like so:
 
   import pymesync
 
-  ts = pymesync.TimeSync(baseurl, token="SOMETOKENYOUGOTEARLIER")
+  ts = pymesync.TimeSync(baseurl="http://ts.example.com/v1", token="SOMETOKENYOUGOTEARLIER")
   # ts.authenticate() is not required
 
 This is handy when state is not kept between different parts of your system, but
@@ -238,7 +238,7 @@ TimeSync.\ **create_time(parameter_dict)**
       ...    "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
       ...    "date_worked": "2014-04-17"
       ...}
-      >>> ts.create_time(params)
+      >>> ts.create_time(parameter_dict=params)
       [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 1200, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
       >>>
 
@@ -283,7 +283,7 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
       ...    "user": "red-leader",
       ...    "activities": ["hello", "world"],
       ...}
-      >>> ts.update_time(params, "some-uuid")
+      >>> ts.update_time(parameter_dict=params, uuid="some-uuid")
       [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 1900, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
 
 ------------------------------------------
@@ -373,7 +373,7 @@ TimeSync.\ **delete_time(uuid)**
 
     .. code-block:: python
 
-      >>> ts.delete_time("some-uuid")
+      >>> ts.delete_time(uuid="some-uuid")
       [{"status": 200}]
       >>>
 
@@ -523,7 +523,7 @@ TimeSync.\ **create_project(parameter_dict)**
       ...    "slugs": ["timesync", "time"],
       ...}
       >>>
-      >>> ts.create_project(params)
+      >>> ts.create_project(parameter_dict=params)
       [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
       >>>
 
@@ -564,7 +564,7 @@ TimeSync.\ **update_project(parameter_dict, slug)**
       ...    "uri": "https://code.osuosl.org/projects/timesync",
       ...    "name": "pymesync",
       ...}
-      >>> ts.update_project(params, "ps")
+      >>> ts.update_project(parameter_dict=params, slug="ps")
       [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
       >>>
 
@@ -584,7 +584,7 @@ TimeSync.\ **delete_project(slug)**
 
     .. code-block:: python
 
-      >>> ts.delete_project("some-slug")
+      >>> ts.delete_project(slug="some-slug")
       [{"status": 200}]
       >>>
 
@@ -613,7 +613,7 @@ TimeSync.\ **create_activity(parameter_dict)**
       ...    "name": "Quality Assurance/Testing",
       ...    "slug": "qa"
       ...}
-      >>> ts.create_activity(params)
+      >>> ts.create_activity(parameter_dict=params)
       [{'uuid': 'cfa07a4f-d446-4078-8d73-2f77560c35c0', 'created_at': '2013-07-27', 'updated_at': None, 'deleted_at': None, 'revision': 1, 'slug': 'qa', 'name': 'Quality Assurance/Testing'}]
       >>>
 
@@ -647,7 +647,7 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     .. code-block:: python
 
       >>> params = {"name": "Code in the wild"}
-      >>> ts.update_activity(params, "ciw")
+      >>> ts.update_activity(parameter_dict=params, slug="ciw")
       [{'uuid': '3cf78d25-411c-4d1f-80c8-a09e5e12cae3', 'created_at': '2014-04-16', 'updated_at': '2014-04-17', 'deleted_at': None, 'revision': 2, 'slug': 'ciw', 'name': 'Code in the wild'}]
       >>>
 
@@ -667,7 +667,7 @@ TimeSync.\ **delete_activity(slug)**
 
     .. code-block:: python
 
-      >>> ts.delete_activity("some-slug")
+      >>> ts.delete_activity(slug="some-slug")
       [{"status": 200}]
       >>>
 
@@ -704,7 +704,7 @@ TimeSync.\ **create_user(parameter_dict)**
       ...    "displayname": "X. Ample User",
       ...    "email": "example@example.com"
       ...}
-      >>> ts.create_user(params)
+      >>> ts.create_user(parameter_dict=params)
       [{'username': 'example', 'deleted_at': None, 'displayname': 'X. Ample User', 'admin': False, 'created_at': '2015-05-23', 'active': True, 'email': 'example@example.com'}]
       >>>
 
@@ -740,7 +740,7 @@ TimeSync.\ **update_user(parameter_dict, username)**
       ...    "username": "red-leader",
       ...    "email": "red-leader@yavin.com"
       ...}
-      >>> ts.update_user(params, "example")
+      >>> ts.update_user(parameter_dict=params, username="example")
       [{'username': 'red-leader', 'displayname': 'Mr. Example', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'red-leader@yavin.com'}]
       >>>
 
@@ -760,6 +760,6 @@ TimeSync.\ **delete_user(username)**
 
     .. code-block:: python
 
-      >>> ts.delete_user("username")
+      >>> ts.delete_user(username="username")
       [{"status": 200}]
       >>>
