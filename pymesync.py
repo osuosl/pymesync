@@ -350,8 +350,8 @@ class TimeSync(object):
         # ?token=self.token
         url = "{0}/projects{1}".format(self.baseurl, query_string)
 
-        # Test mode, return list of projects if slug is None, or a list of
-        # projects
+        # Test mode, return list of projects if slug is None, or a single
+        # project
         if self.test:
             return mock_pymesync.get_projects(slug)
 
