@@ -773,6 +773,7 @@ class TimeSync(object):
     def __test_handler(self, parameters, identifier, obj_name, create_object):
         """Handle test methods in test mode for creating or updating an
         object"""
+        # Man I wish python had a switch statement
         if obj_name == "time":
             if create_object:
                 return mock_pymesync.create_time(parameters)
