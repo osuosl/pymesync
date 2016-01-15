@@ -534,7 +534,7 @@ class TimeSync(object):
         # Decode the token, then get the second dict (payload) from the
         # resulting string. The payload contains the expiration time.
         try:
-            decoded_payload = base64.b64decode(self.token).split("}", 1)[1]
+            decoded_payload = base64.b64decode(self.token.split(".", 1)[1])
         except:
             return [{self.error: "improperly encoded token"}]
 
