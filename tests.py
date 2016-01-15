@@ -2064,6 +2064,20 @@ class TestPymesync(unittest.TestCase):
                           [{self.ts.error: "Not authenticated with TimeSync, "
                                            "call self.authenticate() first"}])
 
+    def test_interpret_times(self):
+        """Test that when a string duration is entered, it is converted to an
+        integer. Err if the string is invalid. """
+        params = {
+            "duration": "3h30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.interpret_times(params), 12600)
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
