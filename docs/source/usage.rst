@@ -210,8 +210,10 @@ TimeSync.\ **create_time(time)**
 
     Required:
 
-    * ``"duration"`` - duration of time spent working on project in seconds (per
-      TimeSync API)
+    * ``"duration"`` - duration of time spent working on a project. May be
+      entered as an integer (which will default to seconds) or a string. As a
+      string duration, follow the format ``<val>h<val>m``. An internal method
+      will convert the duration to seconds.
     * ``"project"`` - slug of project worked on
     * ``"user"`` - username of user that did the work, must match ``user``
       specified in instantiation
