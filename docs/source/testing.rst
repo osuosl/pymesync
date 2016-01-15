@@ -21,7 +21,7 @@ To start test mode, it must be set in the constructor with ``test=True``:
   >>> import pymesync
   >>>
   >>> ts = pymesync.TimeSync("http://timesync.example.com/v1", test=True)
-  >>> ts.authenticate("test-user", "test-password", "password")
+  >>> ts.authenticate(username="test-user", password="test-password", auth_type="password")
   [{'token': 'TESTTOKEN'}]
   >>>
 
@@ -50,7 +50,7 @@ An (almost) exhaustive example of test mode:
   >>> ts.create_time(params)
   [{'pymesync error': 'Not authenticated with TimeSync, call self.authenticate() first'}]
   >>>
-  >>> ts.authenticate("test-user", "test-pass", "password")
+  >>> ts.authenticate(username="test-user", password="test-pass", auth_type="password")
   [{'token': 'TESTTOKEN'}]
   >>>
   >>> ts.token_expiration_time()

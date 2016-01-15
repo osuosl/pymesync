@@ -175,7 +175,7 @@ TimeSync.\ **authenticate(user, password, auth_type)**
 
     .. code-block:: python
 
-      >>> ts.authenticate("example-user", "example-password", "password")
+      >>> ts.authenticate(username="example-user", password="example-password", auth_type="password")
       [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
       >>>
 
