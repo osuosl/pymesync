@@ -519,7 +519,8 @@ class TimeSync(object):
         """
         token_expiration_time()
 
-        Returns the expiration time of the token associated with this object.
+        Returns the expiration time of the JWT (JSON Web Token) associated with
+        this object.
         """
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
