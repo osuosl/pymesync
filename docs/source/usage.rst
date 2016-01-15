@@ -179,6 +179,21 @@ TimeSync.\ **authenticate(user, password, auth_type)**
       [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
       >>>
 
+TimeSync.\ **token_expiration_time()**
+
+    Returns a python datetime representing the expiration time of the current
+    authentication token.
+
+    Example:
+
+    .. code-block:: python
+
+      >>> ts.authenticate("username", "user-pass", "password")
+      [{u'token': u'eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3MiOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3QiLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w=='}]
+      >>> ts.token_expiration_time()
+      datetime.datetime(2016, 1, 13, 11, 45, 34)
+      >>>
+
 TimeSync.\ **create_time(parameter_dict)**
 
     Send a time entry to the TimeSync instance at the baseurl provided when

@@ -4,6 +4,9 @@ import mock
 from mock import patch
 import requests
 import json
+import base64
+import ast
+import datetime
 
 
 class resp(object):
@@ -1903,6 +1906,36 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.delete_user(),
                           [{"pymesync error":
                             "missing username; please add to method call"}])
+
+    def test_token_expiration_valid(self):
+        """Test that token_expiration_time returns valid date from a valid
+        token"""
+        self.ts.token = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3M"
+                         "iOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3Q"
+                         "iLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA"
+                         "4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW"
+                         "7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w==")
+
+        decoded_payload = base64.b64decode(self.ts.token.split(".", 1)[1])
+        exp_int = ast.literal_eval(decoded_payload)['exp'] / 1000
+        exp_datetime = datetime.datetime.fromtimestamp(exp_int)
+
+        self.assertEquals(self.ts.token_expiration_time(),
+                          exp_datetime)
+
+    def test_token_expiration_invalid(self):
+        """Test that token_expiration_time returns correct from an invalid
+        token"""
+        self.assertEquals(self.ts.token_expiration_time(),
+                          [{self.ts.error: "improperly encoded token"}])
+
+    def test_token_expiration_no_auth(self):
+        """Test that token_expiration_time returns correct error when user is
+        not authenticated"""
+        self.ts.token = None
+        self.assertEquals(self.ts.token_expiration_time(),
+                          [{self.ts.error: "Not authenticated with TimeSync, "
+                                           "call self.authenticate() first"}])
 
 
 if __name__ == "__main__":

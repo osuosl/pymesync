@@ -1,5 +1,11 @@
+import datetime
+
 def authenticate():
     return [{"token": "TESTTOKEN"}]
+
+
+def token_expiration_time():
+    return datetime.datetime(2016, 1, 13, 11, 45, 34)
 
 
 def create_time(p_dict):
