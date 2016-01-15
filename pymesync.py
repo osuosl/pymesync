@@ -88,14 +88,19 @@ class TimeSync(object):
         self.user = username
         self.password = password
         self.auth_type = auth_type
+
+        # Create the auth block to send to the login endpoint
         auth = {"auth": self.__auth()}
+
+        # Construct the url with the login endpoint
         url = "{}/login".format(self.baseurl)
 
-        # Test mode
+        # Test mode, set self.token and return it from the mocked method
         if self.test:
             self.token = "TESTTOKEN"
             return mock_pymesync.authenticate()
 
+        # Send the request, then convert the resonse to a python dictionary
         try:
             # Success!
             response = requests.post(url, json=auth)
@@ -104,6 +109,9 @@ class TimeSync(object):
             # Request error
             return [{self.error: e}]
 
+        # If TimeSync returns an error, return the error without setting the
+        # token.
+        # Else set the token to the returned token and return the dict.
         if "error" in token_list_dict[0] or "token" not in token_list_dict[0]:
             return token_list_dict
         else:
@@ -261,27 +269,30 @@ class TimeSync(object):
             if key not in self.valid_get_queries:
                 return [{self.error: "invalid query: {}".format(key)}]
 
-        # Construct the query string
+        # Initialize the query string
         query_string = ""
 
+        # If there are filtering parameters, construct them correctly.
+        # Else reinitialize the query string to a ? so we can add the token.
         if kwargs:
             query_string = self.__construct_filter_query(kwargs)
         else:
             query_string = "?"
 
-        # Construct query url
+        # Construct query url, at this point query_string ends with a ?
         url = "{0}/times{1}token={2}".format(self.baseurl,
                                              query_string,
                                              self.token)
 
-        # Test mode
+        # Test mode, return one or many objects depending on if uuid is passed
         if self.test:
             if "uuid" in kwargs.keys():
                 return mock_pymesync.get_times(kwargs["uuid"])
             else:
                 return mock_pymesync.get_times(None)
 
-        # Attempt to GET times
+        # Attempt to GET times, then convert the response to a python
+        # dictionary
         try:
             # Success!
             response = requests.get(url)
@@ -317,26 +328,35 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
-        # Save for later
+        # Save for passing to test mode since __format_endpoints deletes
+        # kwargs["slug"] if it exists
         slug = kwargs["slug"] if "slug" in kwargs.keys() else None
 
         query_string = ""
+
+        # If kwargs exist, create a correct query string
+        # Else, prepare query_string for the token
         if kwargs:
             query_string = self.__format_endpoints(kwargs)
+            # If __format_endpoints returns None, it was passed both slug and
+            # include_deleted, which is not allowed by the TimeSync API
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
         else:
             query_string = "?token={}".format(self.token)
 
-        # Construct query url - query_string is empty if no kwargs
+        # Construct query url - at this point query_string ends with
+        # ?token=self.token
         url = "{0}/projects{1}".format(self.baseurl, query_string)
 
-        # Test mode
+        # Test mode, return list of projects if slug is None, or a list of
+        # projects
         if self.test:
             return mock_pymesync.get_projects(slug)
 
-        # Attempt to GET projects
+        # Attempt to GET projects, then convert the response to a python
+        # dictionary
         try:
             # Success!
             response = requests.get(url)
@@ -372,26 +392,35 @@ class TimeSync(object):
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
-        # Save for later
+        # Save for passing to test mode since __format_endpoints deletes
+        # kwargs["slug"] if it exists
         slug = kwargs["slug"] if "slug" in kwargs.keys() else None
 
         query_string = ""
+
+        # If kwargs exist, create a correct query string
+        # Else, prepare query_string for the token
         if kwargs:
             query_string = self.__format_endpoints(kwargs)
+            # If __format_endpoints returns None, it was passed both slug and
+            # include_deleted, which is not allowed by the TimeSync API
             if query_string is None:
                 error_message = "invalid combination: slug and include_deleted"
                 return [{self.error: error_message}]
         else:
             query_string = "?token={}".format(self.token)
 
-        # Construct query url - query_string is empty if no kwargs
+        # Construct query url - at this point query_string ends with
+        # ?token=self.token
         url = "{0}/activities{1}".format(self.baseurl, query_string)
 
-        # Test mode
+        # Test mode, return list of projects if slug is None, or a list of
+        # projects
         if self.test:
             return mock_pymesync.get_activities(slug)
 
-        # Attempt to GET activities
+        # Attempt to GET activities, then convert the response to a python
+        # dictionary
         try:
             # Success!
             response = requests.get(url)
@@ -413,18 +442,23 @@ class TimeSync(object):
         specific username to be retrieved. If ``username`` is not provided, a
         list containing all users will be returned. Defaults to ``None``.
         """
+        # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
             return [{self.error: local_auth_error}]
 
+        # url should end with /users if no username is passed else
+        # /users/username
         url = "{0}/users/{1}".format(self.baseurl, username) if username else (
               "{}/users".format(self.baseurl))
 
-        # Test mode
+        # Test mode, return one user object if username is passed else return
+        # several user objects
         if self.test:
             return mock_pymesync.get_users(username)
 
-        # Attempt to GET users
+        # Attempt to GET users, then convert the response to a python
+        # dictionary
         try:
             # Success!
             response = requests.get(url)
@@ -539,6 +573,9 @@ class TimeSync(object):
         if not response.text and response.status_code == 200:
             return [{"status": 200}]
 
+        # If response.text is valid JSON, it came from TimeSync. If it isn't
+        # and we got a ValueError, we know we are having trouble connecting to
+        # TimeSync because we are not getting a return from TimeSync.
         try:
             python_object = json.loads(str(response.text))
         except ValueError:
@@ -549,6 +586,7 @@ class TimeSync(object):
             err_msg += "response status was {}".format(response.status_code)
             return [{self.error: err_msg}]
 
+        # Pymesync returns responses as a python dictionary contained in a list
         if not isinstance(python_object, list):
             python_object = [python_object]
 
@@ -578,6 +616,7 @@ class TimeSync(object):
         if query_list:
             query_string += "{}&".format("&".join(query_list))
 
+        # Authenticate and return
         query_string += "token={}".format(self.token)
 
         return query_string
@@ -617,8 +656,10 @@ class TimeSync(object):
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:
                 for slug in param:
+                    # Format each query in the list
                     query_list.append("{0}={1}".format(query, slug))
 
+            # Construct the query_string using the list.
             # Last character will be an & so we can append the token
             for string in query_list:
                 query_string += "{}&".format(string)
@@ -634,8 +675,13 @@ class TimeSync(object):
         if not isinstance(actual, dict):
             return "{} object: must be python dictionary".format(object_name)
 
+        # missing_list contains a list of all the required parameters that were
+        # not passed. It is initialized to all required parameters.
         missing_list = list(self.required_params[object_name])
 
+        # For each key, if it is not required or optional, it is not allowed
+        # If it is requried, remove that parameter from the missing_list, since
+        # it is no longer missing
         for key in actual:
             if (key not in self.required_params[object_name]
                     and key not in self.optional_params[object_name]):
@@ -647,7 +693,8 @@ class TimeSync(object):
                 del(missing_list[missing_list.index(key)])
 
         # If there is anything in missing_list, it is an absent required field
-        if missing_list and create_object:
+        # This only needs to be checked if the create_object flag is passed
+        if create_object and missing_list:
             return "{0} object: missing required field(s): {1}".format(
                 object_name, ", ".join(missing_list))
 
@@ -676,8 +723,12 @@ class TimeSync(object):
         if field_error:
             return [{self.error: field_error}]
 
+        # Since this is a POST request, we need an auth and object objects
         values = {"auth": self.__token_auth(), "object": parameters}
 
+        # Reformat the identifier with the leading '/' so it can be added to
+        # the url. Do this here instead of the url assignment below so we can
+        # set it to "" if it wasn't passed.
         identifier = "/{}".format(identifier) if identifier else ""
 
         # Construct url to post to
@@ -685,10 +736,11 @@ class TimeSync(object):
 
         # Test mode, remove leading '/' from identifier
         if self.test:
-            return self._test_handler(parameters, identifier[1:],
-                                      obj_name, create_object)
+            return self.__test_handler(parameters, identifier[1:],
+                                       obj_name, create_object)
 
-        # Attempt to POST to TimeSync
+        # Attempt to POST to TimeSync, then convert the response to a python
+        # dictionary
         try:
             # Success!
             response = requests.post(url, json=values)
@@ -718,7 +770,7 @@ class TimeSync(object):
             # Request error
             return [{self.error: e}]
 
-    def _test_handler(self, parameters, identifier, obj_name, create_object):
+    def __test_handler(self, parameters, identifier, obj_name, create_object):
         """Handle test methods in test mode for creating or updating an
         object"""
         if obj_name == "time":
