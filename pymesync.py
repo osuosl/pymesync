@@ -142,7 +142,7 @@ class TimeSync(object):
          
           if parameter_dict['duration'] is None:
             error_message = [{self.error: 
-                             "time object: duration contains invalid string"}]
+                              "time object: duration contains invalid string"}]
             return error_message
 
         return self._create_or_update(parameter_dict, None,
@@ -167,7 +167,7 @@ class TimeSync(object):
 
           if parameter_dict['duration'] is None:
             error_message = [{self.error: 
-                             "time object: duration contains invalid string"}]
+                              "time object: duration contains invalid string"}]
             return error_message
 
         return self._create_or_update(parameter_dict, uuid,
@@ -820,11 +820,9 @@ class TimeSync(object):
           # Convert duration to seconds
           seconds = (hours_spent * 3600) + (minutes_spent * 60)
           return seconds
-
         except:
           t = None
-          #error_message = "duration contains invalid string"
-          #return error_message
+          return t
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""

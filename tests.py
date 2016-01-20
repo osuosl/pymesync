@@ -2065,8 +2065,8 @@ class TestPymesync(unittest.TestCase):
                                            "call self.authenticate() first"}])
 
     def test_interpret_times(self):
-        """Test that when a string duration is entered, it is converted to an
-        integer. """
+        """Tests that when a string duration is entered, it is converted to an
+        integer"""
         params = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
@@ -2080,8 +2080,8 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts._interpret_times(params['duration']), 12600)
 
     def test_interpret_times_with_invalid_str(self):
-        """Test that when an invalid string duration is entered, an error
-        message is returned. """
+        """Tests that when an invalid string duration is entered, duration is
+        set to None"""
         params = {
             "duration": "3hh30m",
             "project": "ganeti-web-manager",
