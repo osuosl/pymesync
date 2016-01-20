@@ -2066,7 +2066,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_interpret_times(self):
         """Test that when a string duration is entered, it is converted to an
-        integer. Err if the string is invalid. """
+        integer. """
         params = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
@@ -2077,7 +2077,25 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.interpret_times(params), 12600)
+        self.assertEquals(self.ts._interpret_times(params['duration']), 12600)
+
+    def test_interpret_times_with_invalid_str(self):
+        """Test that when an invalid string duration is entered, an error is
+        returned. """
+        #"""
+        params = {
+            "duration": "3hh30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts._interpret_times(params['duration']),
+                          "duration contains invalid string")
+        #"""
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
