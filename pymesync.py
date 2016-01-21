@@ -138,14 +138,14 @@ class TimeSync(object):
         to TimeSync.
         """
         if type(parameter_dict['duration']) is not int:
-          parameter_dict['duration'] = self._interpret_times(parameter_dict['duration'])
+          parameter_dict['duration'] = self.__interpret_times(parameter_dict['duration'])
          
           if parameter_dict['duration'] is None:
             error_message = [{self.error: 
                               "time object: duration contains invalid string"}]
             return error_message
 
-        return self._create_or_update(parameter_dict, None,
+        return self.__create_or_update(parameter_dict, None,
                                       "time", "times")
 
     def update_time(self, time, uuid):
@@ -163,14 +163,14 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         if type(parameter_dict['duration']) is not int:
-          parameter_dict['duration'] = self._interpret_times(parameter_dict['duration'])
+          parameter_dict['duration'] = self.__interpret_times(parameter_dict['duration'])
 
           if parameter_dict['duration'] is None:
             error_message = [{self.error: 
                               "time object: duration contains invalid string"}]
             return error_message
 
-        return self._create_or_update(parameter_dict, uuid,
+        return self.__create_or_update(parameter_dict, uuid,
                                       "time", "times", False)
 
     def create_project(self, project):
@@ -806,7 +806,7 @@ class TimeSync(object):
             # Request error
             return [{self.error: e}]
 
-    def _interpret_times(self, duration):
+    def __interpret_times(self, duration):
         """When a time_entry is created, a user will enter a time duration as
            one of the parameters of the object. This method will convert that
            entry (if it's entered as a string) into the appropriate integer
