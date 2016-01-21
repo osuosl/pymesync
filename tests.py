@@ -1646,7 +1646,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.update_time(params, "uuid"),
                           [{self.ts.error:
                             "time object: duration contains invalid string"}])
-    
+
     def test_create_time_with_invalid_string_duration(self):
         """Tests that TimeSync.create_time will fail if a string containing
         multiple hours/minutes is entered"""
@@ -1659,7 +1659,7 @@ class TestPymesync(unittest.TestCase):
             "issue_uri": "https://github.com/",
             "date_worked": "2014-04-17",
         }
- 
+
         self.assertEquals(self.ts.create_time(params),
                           [{self.ts.error:
                             "time object: duration contains invalid string"}])
@@ -1676,7 +1676,7 @@ class TestPymesync(unittest.TestCase):
             "issue_uri": "https://github.com/",
             "date_worked": "2014-04-17",
         }
- 
+
         self.assertEquals(self.ts.update_time(params, "uuid"),
                           [{self.ts.error:
                             "time object: duration contains invalid string"}])
@@ -2067,7 +2067,7 @@ class TestPymesync(unittest.TestCase):
     def test_interpret_times(self):
         """Tests that when a string duration is entered, it is converted to an
         integer"""
-        params = {
+        param = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -2077,7 +2077,8 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts._TimeSync__interpret_times(params['duration']), 12600)
+        self.assertEquals(self.ts.
+                          _TimeSync__interpret_times(param['duration']), 12600)
 
     def test_interpret_times_with_invalid_str(self):
         """Tests that when an invalid string duration is entered, duration is
@@ -2092,7 +2093,8 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts._TimeSync__interpret_times(params['duration']), None)
+        self.assertEquals(self.ts.
+                          _TimeSync__interpret_times(params['duration']), None)
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions

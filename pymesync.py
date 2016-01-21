@@ -138,15 +138,16 @@ class TimeSync(object):
         to TimeSync.
         """
         if type(parameter_dict['duration']) is not int:
-          parameter_dict['duration'] = self.__interpret_times(parameter_dict['duration'])
-         
-          if parameter_dict['duration'] is None:
-            error_message = [{self.error: 
+            duration = self.__interpret_times(parameter_dict['duration'])
+            parameter_dict['duration'] = duration
+
+            if parameter_dict['duration'] is None:
+                error_msg = [{self.error:
                               "time object: duration contains invalid string"}]
-            return error_message
+                return error_msg
 
         return self.__create_or_update(parameter_dict, None,
-                                      "time", "times")
+                                       "time", "times")
 
     def update_time(self, time, uuid):
         """
@@ -163,15 +164,16 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         if type(parameter_dict['duration']) is not int:
-          parameter_dict['duration'] = self.__interpret_times(parameter_dict['duration'])
+            duration = self.__interpret_times(parameter_dict['duration'])
+            parameter_dict['duration'] = duration
 
-          if parameter_dict['duration'] is None:
-            error_message = [{self.error: 
+            if parameter_dict['duration'] is None:
+                error_msg = [{self.error:
                               "time object: duration contains invalid string"}]
-            return error_message
+                return error_msg
 
         return self.__create_or_update(parameter_dict, uuid,
-                                      "time", "times", False)
+                                       "time", "times", False)
 
     def create_project(self, project):
         """
@@ -813,16 +815,16 @@ class TimeSync(object):
            equivalent (in seconds).
         """
         try:
-          t = time.strptime(duration, "%Hh%Mm")
-          hours_spent = t.tm_hour
-          minutes_spent = t.tm_min      
-          
-          # Convert duration to seconds
-          seconds = (hours_spent * 3600) + (minutes_spent * 60)
-          return seconds
+            t = time.strptime(duration, "%Hh%Mm")
+            hours_spent = t.tm_hour
+            minutes_spent = t.tm_min
+
+            # Convert duration to seconds
+            seconds = (hours_spent * 3600) + (minutes_spent * 60)
+            return seconds
         except:
-          t = None
-          return t
+            t = None
+            return t
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
