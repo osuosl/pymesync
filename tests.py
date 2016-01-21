@@ -1628,7 +1628,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts.create_time(params),
                           [{self.ts.error:
-                            "time object: duration contains invalid string"}])
+                            "time object: invalid duration string"}])
 
     def test_update_time_with_junk_string_duration(self):
         """Tests that TimeSync.update_time will fail if a string containing no
@@ -1645,7 +1645,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts.update_time(params, "uuid"),
                           [{self.ts.error:
-                            "time object: duration contains invalid string"}])
+                            "time object: invalid duration string"}])
 
     def test_create_time_with_invalid_string_duration(self):
         """Tests that TimeSync.create_time will fail if a string containing
@@ -1662,7 +1662,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts.create_time(params),
                           [{self.ts.error:
-                            "time object: duration contains invalid string"}])
+                            "time object: invalid duration string"}])
 
     def test_update_time_with_invalid_string_duration(self):
         """Tests that TimeSync.update_time will fail if a string containing
@@ -1679,7 +1679,7 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts.update_time(params, "uuid"),
                           [{self.ts.error:
-                            "time object: duration contains invalid string"}])
+                            "time object: invalid duration string"}])
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_project(self, mock_create_or_update):
@@ -2095,6 +2095,37 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts.
                           _TimeSync__interpret_times(params['duration']), None)
+
+    def test_duration_valid(self):
+        """Tests for duration validity"""
+        params = {
+            "duration": 12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.
+                          _TimeSync__check_duration(params['duration']), 12600)
+
+    def test_duration_invalid(self):
+        """Tests for duration validity - if the duration given is a negative
+        int, duration is set to None"""
+        params = {
+            "duration": -12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.
+                          _TimeSync__check_duration(params['duration']), None)
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions

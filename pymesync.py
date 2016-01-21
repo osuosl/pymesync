@@ -143,7 +143,7 @@ class TimeSync(object):
 
             if parameter_dict['duration'] is None:
                 error_msg = [{self.error:
-                              "time object: duration contains invalid string"}]
+                              "time object: invalid duration string"}]
                 return error_msg
 
         return self.__create_or_update(parameter_dict, None,
@@ -169,7 +169,7 @@ class TimeSync(object):
 
             if parameter_dict['duration'] is None:
                 error_msg = [{self.error:
-                              "time object: duration contains invalid string"}]
+                              "time object: invalid duration string"}]
                 return error_msg
 
         return self.__create_or_update(parameter_dict, uuid,
