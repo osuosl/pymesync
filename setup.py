@@ -13,7 +13,7 @@ dependencies = [
 
 setup(
     name='pymesync',
-    version='0.0.1',
+    version='0.0.2',
     install_requires=dependencies,
     author='OSU Open Source Lab',
     author_email='support@osuosl.org',
@@ -21,6 +21,6 @@ setup(
     url='https://github.com/osuosl/pymesync',
     license='Apache Version 2.0',
     description="pymesync - python module for the OSUOSL TimeSync API",
-    long_description="pymesync - Python module for interacting with the "
-                     + "OSUOSL TimeSync API"
+    long_description=("pymesync - Python module for interacting with the "
+                      "OSUOSL TimeSync API")
 )
