@@ -34,18 +34,18 @@ empty list if TimeSync has no records).
 
 |
 
-* **create_time(parameter_dict)** - Sends time to TimeSync baseurl set in
+* **create_time(time)** - Sends time to TimeSync baseurl set in
   constructor
-* **create_project(parameter_dict)** - Send new project to TimeSync
-* **create_activity(parameter_dict)** - Send new activity to TimeSync
-* **create_user(parameter_dict)** - Send a new user to TimeSync
+* **create_project(project)** - Send new project to TimeSync
+* **create_activity(activity)** - Send new activity to TimeSync
+* **create_user(user)** - Send a new user to TimeSync
 
 |
 
-* **update_time(parameter_dict, uuid)** - Update time entry specified by uuid
-* **update_project(parameter_dict, slug)** - Update project specified by slug
-* **update_activity(parameter_dict, slug)** - Update activity specified by slug
-* **update_user(parameter_dict, username)** - Update user specified by username
+* **update_time(time, uuid)** - Update time entry specified by uuid
+* **update_project(project, slug)** - Update project specified by slug
+* **update_activity(activity, slug)** - Update activity specified by slug
+* **update_user(user, username)** - Update user specified by username
 
 |
 
@@ -83,8 +83,8 @@ To access pymesync's public methods you must first initiate a TimeSync object
 
     import pymesync
 
-    ts = pymesync.TimeSync(baseurl)
-    ts.authenticate(user, password, auth_type)
+    ts = pymesync.TimeSync(baseurl="http://ts.example.com/v1")
+    ts.authenticate(username="user", password="password", auth_type="password")
 
 Where
 
@@ -103,7 +103,7 @@ You can also optionally include a token in the constructor like so:
 
   import pymesync
 
-  ts = pymesync.TimeSync(baseurl, token="SOMETOKENYOUGOTEARLIER")
+  ts = pymesync.TimeSync(baseurl="http://ts.example.com/v1", token="SOMETOKENYOUGOTEARLIER")
   # ts.authenticate() is not required
 
 This is handy when state is not kept between different parts of your system, but
@@ -175,7 +175,7 @@ TimeSync.\ **authenticate(user, password, auth_type)**
 
     .. code-block:: python
 
-      >>> ts.authenticate("example-user", "example-password", "password")
+      >>> ts.authenticate(username="example-user", password="example-password", auth_type="password")
       [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
       >>>
 
@@ -188,13 +188,13 @@ TimeSync.\ **token_expiration_time()**
 
     .. code-block:: python
 
-      >>> ts.authenticate("username", "user-pass", "password")
+      >>> ts.authenticate(username="username", password="user-pass", auth_type="password")
       [{u'token': u'eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3MiOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3QiLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w=='}]
       >>> ts.token_expiration_time()
       datetime.datetime(2016, 1, 13, 11, 45, 34)
       >>>
 
-TimeSync.\ **create_time(parameter_dict)**
+TimeSync.\ **create_time(time)**
 
     Send a time entry to the TimeSync instance at the baseurl provided when
     instantiating the TimeSync object. This method will return a list with
@@ -202,11 +202,11 @@ TimeSync.\ **create_time(parameter_dict)**
     dictionary will contain error information if ``create_time()`` was
     unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the time information to
-    send to TimeSync. The syntax is ``"string_key": "string_value"`` with the
-    exception of the key ``"duration"`` which takes an integer value, and the
-    key ``"activities"``, which takes a list of strings containing activity
-    slugs. ``create_time()`` accepts the following fields in ``parameter dict``:
+    ``time`` is a python dictionary containing the time information to send to
+    TimeSync. The syntax is ``"string_key": "string_value"`` with the exception
+    of the key ``"duration"`` which takes an integer value, and the key
+    ``"activities"``, which takes a list of strings containing activity slugs.
+    ``create_time()`` accepts the following fields in ``time``:
 
     Required:
 
@@ -229,7 +229,7 @@ TimeSync.\ **create_time(parameter_dict)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> time = {
       ...    "duration": 1200,
       ...    "user": "example-2",
       ...    "project": "ganeti_web_manager",
@@ -238,13 +238,13 @@ TimeSync.\ **create_time(parameter_dict)**
       ...    "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
       ...    "date_worked": "2014-04-17"
       ...}
-      >>> ts.create_time(params)
+      >>> ts.create_time(time=time)
       [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 1200, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
       >>>
 
 ------------------------------------------
 
-TimeSync.\ **update_time(parameter_dict, uuid)**
+TimeSync.\ **update_time(time, uuid)**
 
     Update a time entry by uuid on the TimeSync instance specified by the
     baseurl provided when instantiating the TimeSync object. This method will
@@ -252,15 +252,15 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
     if successful. The dictionary will contain error information if
     ``update_time()`` was unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the time information to
-    send to TimeSync. The syntax is ``"string_key": "string_value"`` with the
-    exception of the key ``"duration"`` which takes an integer value, and the
-    key ``"activities"``, which takes a list of strings containing activity
-    slugs. You only need to send the fields that you want to update.
+    ``time`` is a python dictionary containing the time information to send to
+    TimeSync. The syntax is ``"string_key": "string_value"`` with the exception
+    of the key ``"duration"`` which takes an integer value, and the key
+    ``"activities"``, which takes a list of strings containing activity slugs.
+    You only need to send the fields that you want to update.
 
     ``uuid`` is a string containing the uuid of the time to be updated.
 
-    ``update_time()`` accepts the following fields in ``parameter dict``:
+    ``update_time()`` accepts the following fields in ``time``:
 
     * ``"duration"`` - duration of time spent working on project in seconds (per
       TimeSync API)
@@ -278,12 +278,12 @@ TimeSync.\ **update_time(parameter_dict, uuid)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> time = {
       ...    "duration": 1900,
       ...    "user": "red-leader",
       ...    "activities": ["hello", "world"],
       ...}
-      >>> ts.update_time(params, "some-uuid")
+      >>> ts.update_time(time=time, uuid="some-uuid")
       [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 1900, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
 
 ------------------------------------------
@@ -373,7 +373,7 @@ TimeSync.\ **delete_time(uuid)**
 
     .. code-block:: python
 
-      >>> ts.delete_time("some-uuid")
+      >>> ts.delete_time(uuid="some-uuid")
       [{"status": 200}]
       >>>
 
@@ -495,7 +495,7 @@ Administrative methods
 
 These methods are available to TimeSync users with administrative permissions.
 
-TimeSync.\ **create_project(parameter_dict)**
+TimeSync.\ **create_project(project)**
 
     Create a project on the TimeSync instance at the baseurl provided when
     instantiating the TimeSync object. This method will return a list with
@@ -503,10 +503,10 @@ TimeSync.\ **create_project(parameter_dict)**
     dictionary will contain error information if ``create_project()`` was
     unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the project
-    information to send to TimeSync. The syntax is ``"key": "value"`` except for
-    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
-    ``parameter_dict`` requires the following fields:
+    ``project`` is a python dictionary containing the project information to
+    send to TimeSync. The syntax is ``"key": "value"`` except for the
+    ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+    ``project`` requires the following fields:
 
     * ``"uri"``
     * ``"name"``
@@ -517,19 +517,19 @@ TimeSync.\ **create_project(parameter_dict)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> project = {
       ...    "uri": "https://code.osuosl.org/projects/timesync",
       ...    "name": "TimeSync API",
       ...    "slugs": ["timesync", "time"],
       ...}
       >>>
-      >>> ts.create_project(params)
+      >>> ts.create_project(project=project)
       [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
       >>>
 
 ------------------------------------------
 
-TimeSync.\ **update_project(parameter_dict, slug)**
+TimeSync.\ **update_project(project, slug)**
 
     Update an existing project by slug on the TimeSync instance specified by the
     baseurl provided when instantiating the TimeSync object. This method will
@@ -537,9 +537,9 @@ TimeSync.\ **update_project(parameter_dict, slug)**
     if successful. The dictionary will contain error information if
     ``update_project()`` was unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the project
-    information to send to TimeSync. The syntax is ``"key": "value"`` except for
-    the ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
+    ``project`` is a python dictionary containing the project information to
+    send to TimeSync. The syntax is ``"key": "value"`` except for the
+    ``"slugs"`` field, which is ``"slugs": ["slug1", "slug2", "slug3"]``.
 
     ``slug`` is a string containing the slug of the project to be updated.
 
@@ -547,9 +547,9 @@ TimeSync.\ **update_project(parameter_dict, slug)**
     ``"slugs"`` is set to ``[]`` (empty array), the value will be set to the
     empty string/array.
 
-    You only need to pass the fields you want to update in ``parameter_dict``.
+    You only need to pass the fields you want to update in ``project``.
 
-    ``parameter_dict`` accepts the following fields:
+    ``project`` accepts the following fields:
 
     * ``"uri"``
     * ``"name"``
@@ -560,11 +560,11 @@ TimeSync.\ **update_project(parameter_dict, slug)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> project = {
       ...    "uri": "https://code.osuosl.org/projects/timesync",
       ...    "name": "pymesync",
       ...}
-      >>> ts.update_project(params, "ps")
+      >>> ts.update_project(project=project, slug="ps")
       [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
       >>>
 
@@ -584,13 +584,13 @@ TimeSync.\ **delete_project(slug)**
 
     .. code-block:: python
 
-      >>> ts.delete_project("some-slug")
+      >>> ts.delete_project(slug="some-slug")
       [{"status": 200}]
       >>>
 
 ------------------------------------------
 
-TimeSync.\ **create_activity(parameter_dict)**
+TimeSync.\ **create_activity(activity)**
 
     Create an activity on the TimeSync instance at the baseurl provided when
     instantiating the TimeSync object. This method will return a list with
@@ -598,9 +598,9 @@ TimeSync.\ **create_activity(parameter_dict)**
     The dictionary will contain error information if ``create_activity()`` was
     unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the activity
-    information to send to TimeSync. The syntax is ``"key": "value"``.
-    ``parameter_dict`` requires the following fields:
+    ``activity`` is a python dictionary containing the activity information to
+    send to TimeSync. The syntax is ``"key": "value"``. ``activity`` requires
+    the following fields:
 
     * ``"name"``
     * ``"slug"``
@@ -609,17 +609,17 @@ TimeSync.\ **create_activity(parameter_dict)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> activity = {
       ...    "name": "Quality Assurance/Testing",
       ...    "slug": "qa"
       ...}
-      >>> ts.create_activity(params)
+      >>> ts.create_activity(activity=activity)
       [{'uuid': 'cfa07a4f-d446-4078-8d73-2f77560c35c0', 'created_at': '2013-07-27', 'updated_at': None, 'deleted_at': None, 'revision': 1, 'slug': 'qa', 'name': 'Quality Assurance/Testing'}]
       >>>
 
 ------------------------------------------
 
-TimeSync.\ **update_activity(parameter_dict, slug)**
+TimeSync.\ **update_activity(activity, slug)**
 
     Update an existing activity by slug on the TimeSync instance specified by
     the baseurl provided when instantiating the TimeSync object. This method
@@ -627,17 +627,17 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
     activity if successful. The dictionary will contain error information if
     ``update_activity()`` was unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the activity
-    information to send to TimeSync. The syntax is ``"key": "value"``.
+    ``activity`` is a python dictionary containing the activity information to
+    send to TimeSync. The syntax is ``"key": "value"``.
 
     ``slug`` is a string containing the slug of the activity to be updated.
 
-    If ``"name"`` or ``"slug"`` in ``parameter_dict`` are set to ``""``
-    (empty string), the value will be set to the empty string.
+    If ``"name"`` or ``"slug"`` in ``activity`` are set to ``""`` (empty
+    string), the value will be set to the empty string.
 
-    You only need to pass the fields you want to update in ``parameter_dict``.
+    You only need to pass the fields you want to update in ``activity``.
 
-    ``parameter_dict`` accepts the following fields to update an activity:
+    ``activity`` accepts the following fields to update an activity:
 
     * ``"name"``
     * ``"slug"``
@@ -646,8 +646,8 @@ TimeSync.\ **update_activity(parameter_dict, slug)**
 
     .. code-block:: python
 
-      >>> params = {"name": "Code in the wild"}
-      >>> ts.update_activity(params, "ciw")
+      >>> activity = {"name": "Code in the wild"}
+      >>> ts.update_activity(activity=activity, slug="ciw")
       [{'uuid': '3cf78d25-411c-4d1f-80c8-a09e5e12cae3', 'created_at': '2014-04-16', 'updated_at': '2014-04-17', 'deleted_at': None, 'revision': 2, 'slug': 'ciw', 'name': 'Code in the wild'}]
       >>>
 
@@ -667,14 +667,14 @@ TimeSync.\ **delete_activity(slug)**
 
     .. code-block:: python
 
-      >>> ts.delete_activity("some-slug")
+      >>> ts.delete_activity(slug="some-slug")
       [{"status": 200}]
       >>>
 
 
 ------------------------------------------
 
-TimeSync.\ **create_user(parameter_dict)**
+TimeSync.\ **create_user(user)**
 
     Create a user on the TimeSync instance at the baseurl provided when
     instantiating the TimeSync object. This method will return a list with
@@ -682,9 +682,9 @@ TimeSync.\ **create_user(parameter_dict)**
     The dictionary will contain error information if ``create_user()`` was
     unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the user
-    information to send to TimeSync. The syntax is ``"key": "value"``.
-    ``parameter_dict`` requires the following fields:
+    ``user`` is a python dictionary containing the user information to send to
+    TimeSync. The syntax is ``"key": "value"``. ``user`` requires the following
+    fields:
 
     * ``"username"``
     * ``"password"``
@@ -698,19 +698,19 @@ TimeSync.\ **create_user(parameter_dict)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> user = {
       ...    "username": "example",
       ...    "password": "password",
       ...    "displayname": "X. Ample User",
       ...    "email": "example@example.com"
       ...}
-      >>> ts.create_user(params)
+      >>> ts.create_user(user=user)
       [{'username': 'example', 'deleted_at': None, 'displayname': 'X. Ample User', 'admin': False, 'created_at': '2015-05-23', 'active': True, 'email': 'example@example.com'}]
       >>>
 
 ------------------------------------------
 
-TimeSync.\ **update_user(parameter_dict, username)**
+TimeSync.\ **update_user(user, username)**
 
     Update an existing user by ``username`` on the TimeSync instance specified
     by the baseurl provided when instantiating the TimeSync object. This method
@@ -718,14 +718,14 @@ TimeSync.\ **update_user(parameter_dict, username)**
     user if successful. The dictionary will contain error information if
     ``update_user()`` was unsuccessful.
 
-    ``parameter_dict`` is a python dictionary containing the user
-    information to send to TimeSync. The syntax is ``"key": "value"``.
+    ``user`` is a python dictionary containing the user information to send to
+    TimeSync. The syntax is ``"key": "value"``.
 
     ``username`` is a string containing the username of the user to be updated.
 
-    You only need to pass the fields you want to update in ``parameter_dict``.
+    You only need to pass the fields you want to update in ``user``.
 
-    ``parameter_dict`` accepts the following fields to update an activity:
+    ``user`` accepts the following fields to update a user object:
 
     * ``"username"``
     * ``"password"``
@@ -736,11 +736,11 @@ TimeSync.\ **update_user(parameter_dict, username)**
 
     .. code-block:: python
 
-      >>> params = {
+      >>> user = {
       ...    "username": "red-leader",
       ...    "email": "red-leader@yavin.com"
       ...}
-      >>> ts.update_user(params, "example")
+      >>> ts.update_user(user=user, username="example")
       [{'username': 'red-leader', 'displayname': 'Mr. Example', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'red-leader@yavin.com'}]
       >>>
 
@@ -760,6 +760,6 @@ TimeSync.\ **delete_user(username)**
 
     .. code-block:: python
 
-      >>> ts.delete_user("username")
+      >>> ts.delete_user(username="username")
       [{"status": 200}]
       >>>

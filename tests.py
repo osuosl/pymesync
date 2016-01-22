@@ -48,7 +48,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create time with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -61,14 +61,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": time,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, None, "time", "times")
+        self.ts._TimeSync__create_or_update(time, None, "time", "times")
 
         # Test it
         requests.post.assert_called_with("http://ts.example.com/v1/times",
@@ -79,7 +79,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update time with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -95,14 +95,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             'auth': self.ts._TimeSync__token_auth(),
-            'object': params,
+            'object': time,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, uuid, "time", "times")
+        self.ts._TimeSync__create_or_update(time, uuid, "time", "times")
 
         # Test it
         requests.post.assert_called_with(
@@ -115,7 +115,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update time with one
         valid parameter"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
         }
 
@@ -125,15 +125,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             'auth': self.ts._TimeSync__token_auth(),
-            'object': params,
+            'object': time,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, uuid, "time",
-                                            "times", False)
+        self.ts._TimeSync__create_or_update(time, uuid, "time", "times", False)
 
         # Test it
         requests.post.assert_called_with(
@@ -144,7 +143,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create time with
         invalid field"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -155,7 +154,7 @@ class TestPymesync(unittest.TestCase):
             "bad": "field"
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+        self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
                           [{self.ts.error:
                             "time object: invalid field: bad"}])
@@ -164,7 +163,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create time with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "user": "example-user",
             "notes": "Worked on docs",
@@ -172,7 +171,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+        self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
                           [{self.ts.error:
                             "time object: missing required field(s): "
@@ -182,7 +181,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update to create time with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -190,15 +189,15 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        params_to_test = dict(params)
+        time_to_test = dict(time)
 
-        for key in params:
-            del(params_to_test[key])
+        for key in time:
+            del(time_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
-                              params_to_test, None, "time", "times"),
+                              time_to_test, None, "time", "times"),
                               [{self.ts.error: "time object: "
                                 "missing required field(s): {}".format(key)}])
-            params_to_test = dict(params)
+            time_to_test = dict(time)
 
     def test_create_or_update_create_time_type_error(self):
         """Tests TimeSync._TimeSync__create_or_update for create time with
@@ -218,7 +217,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_or_update_create_time_catch_request_error(self, m):
         """Tests TimeSync._TimeSync__create_or_update for create time with
         request error"""
-        params = {
+        time = {
             "duration": 12,
             "project": "ganet_web_manager",
             "user": "example-user",
@@ -233,14 +232,14 @@ class TestPymesync(unittest.TestCase):
         requests.post = actual_post
 
         self.assertRaises(Exception, self.ts._TimeSync__create_or_update(
-            params, None, "time", "times"))
+            time, None, "time", "times"))
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_user_valid(self, m_resp_python):
         """Tests TimeSync._TimeSync__create_or_update for create user with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
@@ -250,14 +249,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": user,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, None, "user", "users")
+        self.ts._TimeSync__create_or_update(user, None, "user", "users")
 
         # Test it
         requests.post.assert_called_with("http://ts.example.com/v1/users",
@@ -268,7 +267,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update user with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
@@ -281,14 +280,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             'auth': self.ts._TimeSync__token_auth(),
-            'object': params,
+            'object': user,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, username, "user",
+        self.ts._TimeSync__create_or_update(user, username, "user",
                                             "users", False)
 
         # Test it
@@ -302,7 +301,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update user with one valid
         parameter"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "displayname": "Example User",
         }
 
@@ -312,14 +311,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             'auth': self.ts._TimeSync__token_auth(),
-            'object': params,
+            'object': user,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, username, "user",
+        self.ts._TimeSync__create_or_update(user, username, "user",
                                             "users", False)
 
         # Test it
@@ -331,7 +330,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create user with invalid
         field"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
@@ -339,7 +338,7 @@ class TestPymesync(unittest.TestCase):
             "bad": "field",
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+        self.assertEquals(self.ts._TimeSync__create_or_update(user, None,
                                                               "user", "users"),
                           [{self.ts.error:
                             "user object: invalid field: bad"}])
@@ -348,12 +347,12 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create user with missing
         required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "displayname": "Example User",
             "email": "example.user@example.com",
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+        self.assertEquals(self.ts._TimeSync__create_or_update(user, None,
                                                               "user", "users"),
                           [{self.ts.error:
                             "user object: missing required field(s): "
@@ -363,20 +362,20 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update to create user with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
         }
 
-        params_to_test = dict(params)
+        user_to_test = dict(user)
 
-        for key in params:
-            del(params_to_test[key])
+        for key in user:
+            del(user_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
-                              params_to_test, None, "user", "users"),
+                              user_to_test, None, "user", "users"),
                               [{self.ts.error: "user object: "
                                 "missing required field(s): {}".format(key)}])
-            params_to_test = dict(params)
+            user_to_test = dict(user)
 
     def test_create_or_update_create_user_type_error(self):
         """Tests TimeSync._TimeSync__create_or_update for create user with incorrect
@@ -396,7 +395,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_or_update_create_user_catch_request_error(self, m):
         """Tests TimeSync._TimeSync__create_or_update for create user with
         request error"""
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
@@ -407,15 +406,16 @@ class TestPymesync(unittest.TestCase):
         # we need to use the actual post method
         requests.post = actual_post
 
-        self.assertRaises(Exception, self.ts._TimeSync__create_or_update(
-                          params, None, "user", "users"))
+        self.assertRaises(Exception,
+                          self.ts._TimeSync__create_or_update(
+                              user, None, "user", "users"))
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_project_valid(self, m_resp_python):
         """Tests TimeSync._TimeSync__create_or_update for create project with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
@@ -424,14 +424,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": project,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, None,
+        self.ts._TimeSync__create_or_update(project, None,
                                             "project", "projects")
 
         # Test it
@@ -443,7 +443,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update project with
         valid parameters"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
@@ -452,14 +452,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": project,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, "slug",
+        self.ts._TimeSync__create_or_update(project, "slug",
                                             "project", "projects")
 
         # Test it
@@ -473,21 +473,21 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update project with
         one valid parameter"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "slugs": ["timesync", "time"],
         }
 
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": project,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, "slug", "project",
+        self.ts._TimeSync__create_or_update(project, "slug", "project",
                                             "projects", False)
 
         # Test it
@@ -499,14 +499,14 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create project with
         invalid field"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
             "bad": "field"
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(project,
                                                               None,
                                                               "project",
                                                               "projects"),
@@ -517,11 +517,11 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create project with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "slugs": ["timesync", "time"],
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(project,
                                                               None,
                                                               "project",
                                                               "project"),
@@ -532,20 +532,20 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create project with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
 
-        params_to_test = dict(params)
+        project_to_test = dict(project)
 
-        for key in params:
-            del(params_to_test[key])
+        for key in project:
+            del(project_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
-                              params_to_test, None, "project", "projects"),
+                              project_to_test, None, "project", "projects"),
                               [{self.ts.error: "project object: "
                                 "missing required field(s): {}".format(key)}])
-            params_to_test = dict(params)
+            project_to_test = dict(project)
 
     def test_create_or_update_create_project_type_error(self):
         """Tests TimeSync._TimeSync__create_or_update for create project with
@@ -566,7 +566,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
         valid data"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
@@ -574,14 +574,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": project,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, None,
+        self.ts._TimeSync__create_or_update(project, None,
                                             "activity", "activities")
 
         # Test it
@@ -593,7 +593,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update activity with
         valid parameters"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
@@ -601,14 +601,14 @@ class TestPymesync(unittest.TestCase):
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": activity,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, "slug",
+        self.ts._TimeSync__create_or_update(activity, "slug",
                                             "activity", "activities")
 
         # Test it
@@ -622,21 +622,21 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update activity with
         one valid parameter"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "slug": "qa",
         }
 
         # Format content for assert_called_with test
         content = {
             "auth": self.ts._TimeSync__token_auth(),
-            "object": params,
+            "object": activity,
         }
 
         # Mock requests.post so it doesn't actually post to TimeSync
         requests.post = mock.create_autospec(requests.post)
 
         # Send it
-        self.ts._TimeSync__create_or_update(params, "slug", "activity",
+        self.ts._TimeSync__create_or_update(activity, "slug", "activity",
                                             "activities", False)
 
         # Test it
@@ -648,13 +648,13 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
         invalid field"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
             "bad": "field",
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(activity,
                                                               None,
                                                               "activity",
                                                               "activites"),
@@ -665,11 +665,11 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
         }
 
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(activity,
                                                               None,
                                                               "activity",
                                                               "activities"),
@@ -680,20 +680,21 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
         missing required fields"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
 
-        params_to_test = dict(params)
+        activity_to_test = dict(activity)
 
-        for key in params:
-            del(params_to_test[key])
+        for key in activity:
+            del(activity_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
-                              params_to_test, None, "activity", "activities"),
+                              activity_to_test, None,
+                              "activity", "activities"),
                               [{self.ts.error: "activity object: "
                                 "missing required field(s): {}".format(key)}])
-            params_to_test = dict(params)
+            activity_to_test = dict(activity)
 
     def test_create_or_update_create_activity_type_error(self):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
@@ -712,7 +713,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create time with no
         auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -725,7 +726,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params, None,
+        self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
                           [{self.ts.error: "Not authenticated with "
                             "TimeSync, call self.authenticate() first"}])
@@ -735,7 +736,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create project with no
         auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
@@ -744,7 +745,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(project,
                                                               None,
                                                               "project",
                                                               "projects"),
@@ -756,7 +757,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
         no auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
@@ -764,7 +765,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(activity,
                                                               None,
                                                               "activity",
                                                               "activities"),
@@ -776,7 +777,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update time with no
         auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -789,7 +790,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(time,
                                                               None,
                                                               "time",
                                                               "times",
@@ -802,7 +803,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update project with
         no auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
@@ -811,7 +812,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(project,
                                                               None,
                                                               "project",
                                                               "project",
@@ -824,7 +825,7 @@ class TestPymesync(unittest.TestCase):
         """Tests TimeSync._TimeSync__create_or_update for update activity with
         no auth"""
         # Parameters to be sent to TimeSync
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
@@ -832,7 +833,7 @@ class TestPymesync(unittest.TestCase):
         self.ts.token = None
 
         # Send it
-        self.assertEquals(self.ts._TimeSync__create_or_update(params,
+        self.assertEquals(self.ts._TimeSync__create_or_update(activity,
                                                               None,
                                                               "activity",
                                                               "activities",
@@ -1521,7 +1522,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_time(self, mock_create_or_update):
         """Tests that TimeSync.create_time calls _create_or_update with correct
         parameters"""
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1531,15 +1532,15 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.ts.create_time(params)
+        self.ts.create_time(time)
 
-        mock_create_or_update.assert_called_with(params, None, "time", "times")
+        mock_create_or_update.assert_called_with(time, None, "time", "times")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_time(self, mock_create_or_update):
         """Tests that TimeSync.update_time calls _create_or_update with correct
         parameters"""
-        params = {
+        time = {
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1549,93 +1550,93 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.ts.update_time(params, "uuid")
+        self.ts.update_time(time, "uuid")
 
-        mock_create_or_update.assert_called_with(params, "uuid", "time",
+        mock_create_or_update.assert_called_with(time, "uuid", "time",
                                                  "times", False)
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_project(self, mock_create_or_update):
         """Tests that TimeSync.create_project calls _create_or_update with
         correct parameters"""
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
 
-        self.ts.create_project(params)
-        mock_create_or_update.assert_called_with(params, None,
+        self.ts.create_project(project)
+        mock_create_or_update.assert_called_with(project, None,
                                                  "project", "projects")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_project(self, mock_create_or_update):
         """Tests that TimeSync.update_time calls _create_or_update with correct
         parameters"""
-        params = {
+        project = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
         }
 
-        self.ts.update_project(params, "slug")
-        mock_create_or_update.assert_called_with(params, "slug", "project",
+        self.ts.update_project(project, "slug")
+        mock_create_or_update.assert_called_with(project, "slug", "project",
                                                  "projects", False)
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_activity(self, mock_create_or_update):
         """Tests that TimeSync.create_activity calls _create_or_update with
         correct parameters"""
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
 
-        self.ts.create_activity(params)
-        mock_create_or_update.assert_called_with(params, None,
+        self.ts.create_activity(activity)
+        mock_create_or_update.assert_called_with(activity, None,
                                                  "activity", "activities")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_activity(self, mock_create_or_update):
         """Tests that TimeSync.update_activity calls _create_or_update with
         correct parameters"""
-        params = {
+        activity = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
         }
 
-        self.ts.update_activity(params, "slug")
-        mock_create_or_update.assert_called_with(params, "slug", "activity",
+        self.ts.update_activity(activity, "slug")
+        mock_create_or_update.assert_called_with(activity, "slug", "activity",
                                                  "activities", False)
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_user(self, mock_create_or_update):
         """Tests that TimeSync.create_user calls _create_or_update with correct
         parameters"""
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
             "email": "example.user@example.com",
         }
 
-        self.ts.create_user(params)
+        self.ts.create_user(user)
 
-        mock_create_or_update.assert_called_with(params, None, "user", "users")
+        mock_create_or_update.assert_called_with(user, None, "user", "users")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_user(self, mock_create_or_update):
         """Tests that TimeSync.update_user calls _create_or_update with correct
         parameters"""
-        params = {
+        user = {
             "username": "example-user",
             "password": "password",
             "displayname": "Example User",
             "email": "example.user@example.com",
         }
 
-        self.ts.update_user(params, "example")
-        mock_create_or_update.assert_called_with(params, "example", "user",
+        self.ts.update_user(user, "example")
+        mock_create_or_update.assert_called_with(user, "example", "user",
                                                  "users", False)
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
