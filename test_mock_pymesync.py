@@ -73,6 +73,56 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.update_time(parameter_dict, "fake-uuid"),
                           updated_param)
 
+    def test_mock_create_time_with_string_duration(self):
+        parameter_dict = {
+            "duration": "3h30m",
+            "user": "example-2",
+            "project": "ganeti_web_manager",
+            "activities": ["docs"],
+            "notes": "Worked on documentation toward settings configuration.",
+            "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
+            "date_worked": "2014-04-17"
+        }
+
+        expected_result = [{
+            "duration": 12600,
+            "user": "example-2",
+            "project": "ganeti_web_manager",
+            "activities": ["docs"],
+            "notes": "Worked on documentation toward settings configuration.",
+            "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues",
+            "date_worked": "2014-04-17",
+            "created_at": "2015-05-23",
+            "updated_at": None,
+            "deleted_at": None,
+            "uuid": "838853e3-3635-4076-a26f-7efr4e60981f",
+            "revision": 1
+        }]
+        self.assertEquals(self.ts.create_time(parameter_dict), expected_result)
+
+    def test_mock_update_time_with_string_duration(self):
+        parameter_dict = {
+            "duration": "3h35m",
+            "user": "red-leader",
+            "activities": ["hello", "world"],
+        }
+        updated_param = [{
+            "duration": 12900,
+            "user": "red-leader",
+            "activities": ["hello", "world"],
+            "project": ["ganeti"],
+            "notes": None,
+            "issue_uri": "https://github.com/osuosl/ganeti_webmgr/issues/56",
+            "date_worked": "2015-08-07",
+            "created_at": "2014-06-12",
+            "updated_at": "2015-10-18",
+            "deleted_at": None,
+            "uuid": "fake-uuid",
+            "revision": 2
+        }]
+        self.assertEquals(self.ts.update_time(parameter_dict, "fake-uuid"),
+                          updated_param)
+
     def test_mock_create_project(self):
         parameter_dict = {
             "uri": "https://code.osuosl.org/projects/timesync",
