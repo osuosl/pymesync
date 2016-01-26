@@ -137,14 +137,17 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
-        if type(parameter_dict['duration']) is not int:
-            duration = self.__interpret_times(parameter_dict['duration'])
+        if (parameter_dict['duration'] < 0):
+            duration = self.__duration_to_seconds(parameter_dict['duration'])
+            return duration
+
+        if not isinstance(parameter_dict['duration'], int):
+            duration = self.__duration_to_seconds(parameter_dict['duration'])
             parameter_dict['duration'] = duration
 
-            if parameter_dict['duration'] is None:
-                error_msg = [{self.error:
-                              "time object: invalid duration string"}]
-                return error_msg
+            # Duration at this point contains an error_msg if it's not an int
+            if not isinstance(parameter_dict['duration'], int):
+                return duration
 
         return self.__create_or_update(parameter_dict, None,
                                        "time", "times")
@@ -163,14 +166,17 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        if type(parameter_dict['duration']) is not int:
-            duration = self.__interpret_times(parameter_dict['duration'])
+        if (parameter_dict['duration'] < 0):
+            duration = self.__duration_to_seconds(parameter_dict['duration'])
+            return duration
+
+        if not isinstance(parameter_dict['duration'], int):
+            duration = self.__duration_to_seconds(parameter_dict['duration'])
             parameter_dict['duration'] = duration
 
-            if parameter_dict['duration'] is None:
-                error_msg = [{self.error:
-                              "time object: invalid duration string"}]
-                return error_msg
+            # Duration at this point contains an error_msg if it's not an int
+            if not isinstance(parameter_dict['duration'], int):
+                return duration
 
         return self.__create_or_update(parameter_dict, uuid,
                                        "time", "times", False)
@@ -808,23 +814,30 @@ class TimeSync(object):
             # Request error
             return [{self.error: e}]
 
-    def __interpret_times(self, duration):
+    def __duration_to_seconds(self, duration):
         """When a time_entry is created, a user will enter a time duration as
            one of the parameters of the object. This method will convert that
            entry (if it's entered as a string) into the appropriate integer
            equivalent (in seconds).
         """
         try:
+            # If an integer is being passed to this function, it's probably
+            # a negative value, so return an error message
+            if isinstance(duration, int):
+                error_msg = [{self.error:
+                              "time object: duration cannot be negative"}]
+                return error_msg
+
             t = time.strptime(duration, "%Hh%Mm")
             hours_spent = t.tm_hour
             minutes_spent = t.tm_min
 
             # Convert duration to seconds
-            seconds = (hours_spent * 3600) + (minutes_spent * 60)
-            return seconds
+            return (hours_spent * 3600) + (minutes_spent * 60)
         except:
-            t = None
-            return t
+            error_msg = [{self.error:
+                          "time object: invalid duration string"}]
+            return error_msg
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
