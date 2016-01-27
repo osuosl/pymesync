@@ -137,19 +137,18 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
-        if parameter_dict['duration'] < 0:
+        if time['duration'] < 0:
             return [{self.error: "time object: duration cannot be negative"}]
 
-        if not isinstance(parameter_dict['duration'], int):
-            duration = self.__duration_to_seconds(parameter_dict['duration'])
-            parameter_dict['duration'] = duration
+        if not isinstance(time['duration'], int):
+            duration = self.__duration_to_seconds(time['duration'])
+            time['duration'] = duration
 
             # Duration at this point contains an error_msg if it's not an int
-            if not isinstance(parameter_dict['duration'], int):
+            if not isinstance(time['duration'], int):
                 return duration
 
-        return self.__create_or_update(parameter_dict, None,
-                                       "time", "times")
+        return self.__create_or_update(time, None, "time", "times")
 
     def update_time(self, time, uuid):
         """
@@ -165,19 +164,18 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        if parameter_dict['duration'] < 0:
+        if time['duration'] < 0:
             return [{self.error: "time object: duration cannot be negative"}]
 
-        if not isinstance(parameter_dict['duration'], int):
-            duration = self.__duration_to_seconds(parameter_dict['duration'])
-            parameter_dict['duration'] = duration
+        if not isinstance(time['duration'], int):
+            duration = self.__duration_to_seconds(time['duration'])
+            time['duration'] = duration
 
             # Duration at this point contains an error_msg if it's not an int
-            if not isinstance(parameter_dict['duration'], int):
+            if not isinstance(time['duration'], int):
                 return duration
 
-        return self.__create_or_update(parameter_dict, uuid,
-                                       "time", "times", False)
+        return self.__create_or_update(time, uuid, "time", "times", False)
 
     def create_project(self, project):
         """

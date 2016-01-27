@@ -73,6 +73,23 @@ An (almost) exhaustive example of test mode:
   ...    "slugs": ["timesync", "time"],
   ...}
   >>>
+  >>> ts.create_time(time=time)
+  [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': '3m', 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
+  >>>
+  >>> time = {
+  ...    "duration": 300,
+  ...    "user": "red-leader",
+  ...    "activities": ["hello", "world"],
+  ...}
+  >>> ts.update_time(time=time, uuid="some-uuid")
+  [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': '5m', 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
+  >>>
+  >>> project = {
+  ...    "uri": "https://code.osuosl.org/projects/timesync",
+  ...    "name": "TimeSync API",
+  ...    "slugs": ["timesync", "time"],
+  ...}
+  >>>
   >>> ts.create_project(project=project)
   [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
   >>>
