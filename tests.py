@@ -1558,7 +1558,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_time_with_negative_duration(self):
         """Tests that TimeSync.create_time will return an error if a negative
         duration is passed in"""
-        params = {
+        time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1568,14 +1568,14 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.create_time(params),
+        self.assertEquals(self.ts.create_time(time),
                           [{self.ts.error:
                             "time object: duration cannot be negative"}])
 
     def test_update_time_with_negative_duration(self):
         """Tests that TimeSync.update_time calls _create_or_update with correct
         parameters"""
-        params = {
+        time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1585,7 +1585,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.update_time(params, "uuid"),
+        self.assertEquals(self.ts.update_time(time, "uuid"),
                           [{self.ts.error:
                             "time object: duration cannot be negative"}])
 
@@ -1593,7 +1593,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_time_with_string_duration(self, mock_create_or_update):
         """Tests that TimeSync.create_time will convert a string duration to
         the correct number of seconds"""
-        params = {
+        time = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1603,7 +1603,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.ts.create_time(params)
+        self.ts.create_time(time)
 
         expected = {
             "duration": 12600,
@@ -1622,7 +1622,7 @@ class TestPymesync(unittest.TestCase):
     def test_update_time_with_string_duration(self, mock_create_or_update):
         """Tests that TimeSync.update_time will convert a string duration to
         the correct number of seconds"""
-        params = {
+        time = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1632,7 +1632,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.ts.update_time(params, "uuid")
+        self.ts.update_time(time, "uuid")
 
         expected = {
             "duration": 12600,
@@ -1650,7 +1650,7 @@ class TestPymesync(unittest.TestCase):
     def test_create_time_with_junk_string_duration(self):
         """Tests that TimeSync.create_time will fail if a string containing no
         hours/minutes is entered"""
-        params = {
+        time = {
             "duration": "junktime",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1660,14 +1660,14 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.create_time(params),
+        self.assertEquals(self.ts.create_time(time),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
     def test_update_time_with_junk_string_duration(self):
         """Tests that TimeSync.update_time will fail if a string containing no
         hours/minutes is entered"""
-        params = {
+        time = {
             "duration": "junktime",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1677,14 +1677,14 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.update_time(params, "uuid"),
+        self.assertEquals(self.ts.update_time(time, "uuid"),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
     def test_create_time_with_invalid_string_duration(self):
         """Tests that TimeSync.create_time will fail if a string containing
         multiple hours/minutes is entered"""
-        params = {
+        time = {
             "duration": "3h30m15h",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1694,14 +1694,14 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.create_time(params),
+        self.assertEquals(self.ts.create_time(time),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
     def test_update_time_with_invalid_string_duration(self):
         """Tests that TimeSync.update_time will fail if a string containing
         multiple hours/minutes is entered"""
-        params = {
+        time = {
             "duration": "3h30m15h",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -1711,7 +1711,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.update_time(params, "uuid"),
+        self.assertEquals(self.ts.update_time(time, "uuid"),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
@@ -2101,7 +2101,7 @@ class TestPymesync(unittest.TestCase):
     def test_duration_to_seconds(self):
         """Tests that when a string duration is entered, it is converted to an
         integer"""
-        param = {
+        time = {
             "duration": "3h30m",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -2112,12 +2112,12 @@ class TestPymesync(unittest.TestCase):
         }
 
         self.assertEquals(self.ts._TimeSync__duration_to_seconds
-                          (param['duration']), 12600)
+                          (time['duration']), 12600)
 
     def test_duration_to_seconds_with_invalid_str(self):
         """Tests that when an invalid string duration is entered, duration is
         set to None"""
-        params = {
+        time = {
             "duration": "3hh30m",
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -2128,14 +2128,14 @@ class TestPymesync(unittest.TestCase):
         }
 
         self.assertEquals(self.ts._TimeSync__duration_to_seconds
-                          (params['duration']),
+                          (time['duration']),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
     def test_duration_invalid(self):
         """Tests for duration validity - if the duration given is a negative
         int, duration is set to None"""
-        params = {
+        time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
             "user": "example-user",
@@ -2145,7 +2145,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts.create_time(params),
+        self.assertEquals(self.ts.create_time(time),
                           [{self.ts.error:
                             "time object: duration cannot be negative"}])
 
