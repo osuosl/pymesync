@@ -1555,8 +1555,7 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(time, "uuid", "time",
                                                  "times", False)
 
-    @patch("pymesync.TimeSync._TimeSync__create_or_update")
-    def test_create_time_with_negative_duration(self, mock_create_or_update):
+    def test_create_time_with_negative_duration(self):
         """Tests that TimeSync.create_time will return an error if a negative
         duration is passed in"""
         params = {
@@ -1569,14 +1568,11 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.ts.create_time(params)
-
         self.assertEquals(self.ts.create_time(params),
                           [{self.ts.error:
                             "time object: duration cannot be negative"}])
 
-    @patch("pymesync.TimeSync._TimeSync__create_or_update")
-    def test_update_time_with_negative_duration(self, mock_create_or_update):
+    def test_update_time_with_negative_duration(self):
         """Tests that TimeSync.update_time calls _create_or_update with correct
         parameters"""
         params = {
@@ -1588,8 +1584,6 @@ class TestPymesync(unittest.TestCase):
             "issue_uri": "https://github.com/",
             "date_worked": "2014-04-17",
         }
-
-        self.ts.update_time(params, "uuid")
 
         self.assertEquals(self.ts.update_time(params, "uuid"),
                           [{self.ts.error:
@@ -2151,8 +2145,7 @@ class TestPymesync(unittest.TestCase):
             "date_worked": "2014-04-17",
         }
 
-        self.assertEquals(self.ts._TimeSync__duration_to_seconds
-                          (params['duration']),
+        self.assertEquals(self.ts.create_time(params),
                           [{self.ts.error:
                             "time object: duration cannot be negative"}])
 

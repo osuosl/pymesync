@@ -137,9 +137,8 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
-        if (parameter_dict['duration'] < 0):
-            duration = self.__duration_to_seconds(parameter_dict['duration'])
-            return duration
+        if parameter_dict['duration'] < 0:
+            return [{self.error: "time object: duration cannot be negative"}]
 
         if not isinstance(parameter_dict['duration'], int):
             duration = self.__duration_to_seconds(parameter_dict['duration'])
@@ -166,9 +165,8 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        if (parameter_dict['duration'] < 0):
-            duration = self.__duration_to_seconds(parameter_dict['duration'])
-            return duration
+        if parameter_dict['duration'] < 0:
+            return [{self.error: "time object: duration cannot be negative"}]
 
         if not isinstance(parameter_dict['duration'], int):
             duration = self.__duration_to_seconds(parameter_dict['duration'])
@@ -821,13 +819,6 @@ class TimeSync(object):
            equivalent (in seconds).
         """
         try:
-            # If an integer is being passed to this function, it's probably
-            # a negative value, so return an error message
-            if isinstance(duration, int):
-                error_msg = [{self.error:
-                              "time object: duration cannot be negative"}]
-                return error_msg
-
             t = time.strptime(duration, "%Hh%Mm")
             hours_spent = t.tm_hour
             minutes_spent = t.tm_min
@@ -835,8 +826,7 @@ class TimeSync(object):
             # Convert duration to seconds
             return (hours_spent * 3600) + (minutes_spent * 60)
         except:
-            error_msg = [{self.error:
-                          "time object: invalid duration string"}]
+            error_msg = [{self.error: "time object: invalid duration string"}]
             return error_msg
 
     def __delete_object(self, endpoint, identifier):
