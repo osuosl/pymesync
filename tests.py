@@ -1555,6 +1555,166 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(time, "uuid", "time",
                                                  "times", False)
 
+    def test_create_time_with_negative_duration(self):
+        """Tests that TimeSync.create_time will return an error if a negative
+        duration is passed"""
+        time = {
+            "duration": -12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.create_time(time),
+                          [{self.ts.error:
+                            "time object: duration cannot be negative"}])
+
+    def test_update_time_with_negative_duration(self):
+        """Tests that TimeSync.update_time will return an error if a negative
+        duration is passed"""
+        time = {
+            "duration": -12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.update_time(time, "uuid"),
+                          [{self.ts.error:
+                            "time object: duration cannot be negative"}])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_create_time_with_string_duration(self, mock_create_or_update):
+        """Tests that TimeSync.create_time will convert a string duration to
+        the correct number of seconds"""
+        time = {
+            "duration": "3h30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.create_time(time)
+
+        expected = {
+            "duration": 12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        mock_create_or_update.assert_called_with(expected, None, "time",
+                                                 "times")
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_update_time_with_string_duration(self, mock_create_or_update):
+        """Tests that TimeSync.update_time will convert a string duration to
+        the correct number of seconds"""
+        time = {
+            "duration": "3h30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.ts.update_time(time, "uuid")
+
+        expected = {
+            "duration": 12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        mock_create_or_update.assert_called_with(expected, "uuid", "time",
+                                                 "times", False)
+
+    def test_create_time_with_junk_string_duration(self):
+        """Tests that TimeSync.create_time will fail if a string containing no
+        hours/minutes is entered"""
+        time = {
+            "duration": "junktime",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.create_time(time),
+                          [{self.ts.error:
+                            "time object: invalid duration string"}])
+
+    def test_update_time_with_junk_string_duration(self):
+        """Tests that TimeSync.update_time will fail if a string containing no
+        hours/minutes is entered"""
+        time = {
+            "duration": "junktime",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.update_time(time, "uuid"),
+                          [{self.ts.error:
+                            "time object: invalid duration string"}])
+
+    def test_create_time_with_invalid_string_duration(self):
+        """Tests that TimeSync.create_time will fail if a string containing
+        multiple hours/minutes is entered"""
+        time = {
+            "duration": "3h30m15h",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.create_time(time),
+                          [{self.ts.error:
+                            "time object: invalid duration string"}])
+
+    def test_update_time_with_invalid_string_duration(self):
+        """Tests that TimeSync.update_time will fail if a string containing
+        multiple hours/minutes is entered"""
+        time = {
+            "duration": "3h30m15h",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.update_time(time, "uuid"),
+                          [{self.ts.error:
+                            "time object: invalid duration string"}])
+
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_project(self, mock_create_or_update):
         """Tests that TimeSync.create_project calls _create_or_update with
@@ -1938,6 +2098,56 @@ class TestPymesync(unittest.TestCase):
                           [{self.ts.error: "Not authenticated with TimeSync, "
                                            "call self.authenticate() first"}])
 
+    def test_duration_to_seconds(self):
+        """Tests that when a string duration is entered, it is converted to an
+        integer"""
+        time = {
+            "duration": "3h30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts._TimeSync__duration_to_seconds
+                          (time['duration']), 12600)
+
+    def test_duration_to_seconds_with_invalid_str(self):
+        """Tests that when an invalid string duration is entered, an error
+        message is returned"""
+        time = {
+            "duration": "3hh30m",
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts._TimeSync__duration_to_seconds
+                          (time['duration']),
+                          [{self.ts.error:
+                            "time object: invalid duration string"}])
+
+    def test_duration_invalid(self):
+        """Tests for duration validity - if the duration given is a negative
+        int, an error message is returned"""
+        time = {
+            "duration": -12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.create_time(time),
+                          [{self.ts.error:
+                            "time object: duration cannot be negative"}])
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions

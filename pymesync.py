@@ -28,6 +28,7 @@ import base64
 import ast
 import datetime
 import mock_pymesync
+import time
 
 
 class TimeSync(object):
@@ -136,6 +137,17 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
+        if time['duration'] < 0:
+            return [{self.error: "time object: duration cannot be negative"}]
+
+        if not isinstance(time['duration'], int):
+            duration = self.__duration_to_seconds(time['duration'])
+            time['duration'] = duration
+
+            # Duration at this point contains an error_msg if it's not an int
+            if not isinstance(time['duration'], int):
+                return duration
+
         return self.__create_or_update(time, None, "time", "times")
 
     def update_time(self, time, uuid):
@@ -152,6 +164,17 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
+        if time['duration'] < 0:
+            return [{self.error: "time object: duration cannot be negative"}]
+
+        if not isinstance(time['duration'], int):
+            duration = self.__duration_to_seconds(time['duration'])
+            time['duration'] = duration
+
+            # Duration at this point contains an error_msg if it's not an int
+            if not isinstance(time['duration'], int):
+                return duration
+
         return self.__create_or_update(time, uuid, "time", "times", False)
 
     def create_project(self, project):
@@ -786,6 +809,23 @@ class TimeSync(object):
         except requests.exceptions.RequestException as e:
             # Request error
             return [{self.error: e}]
+
+    def __duration_to_seconds(self, duration):
+        """When a time_entry is created, a user will enter a time duration as
+           one of the parameters of the object. This method will convert that
+           entry (if it's entered as a string) into the appropriate integer
+           equivalent (in seconds).
+        """
+        try:
+            t = time.strptime(duration, "%Hh%Mm")
+            hours_spent = t.tm_hour
+            minutes_spent = t.tm_min
+
+            # Convert duration to seconds
+            return (hours_spent * 3600) + (minutes_spent * 60)
+        except:
+            error_msg = [{self.error: "time object: invalid duration string"}]
+            return error_msg
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
