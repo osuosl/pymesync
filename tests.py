@@ -1557,7 +1557,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_create_time_with_negative_duration(self):
         """Tests that TimeSync.create_time will return an error if a negative
-        duration is passed in"""
+        duration is passed"""
         time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
@@ -1573,8 +1573,8 @@ class TestPymesync(unittest.TestCase):
                             "time object: duration cannot be negative"}])
 
     def test_update_time_with_negative_duration(self):
-        """Tests that TimeSync.update_time calls _create_or_update with correct
-        parameters"""
+        """Tests that TimeSync.update_time will return an error if a negative
+        duration is passed"""
         time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
@@ -2115,8 +2115,8 @@ class TestPymesync(unittest.TestCase):
                           (time['duration']), 12600)
 
     def test_duration_to_seconds_with_invalid_str(self):
-        """Tests that when an invalid string duration is entered, duration is
-        set to None"""
+        """Tests that when an invalid string duration is entered, an error
+        message is returned"""
         time = {
             "duration": "3hh30m",
             "project": "ganeti-web-manager",
@@ -2134,7 +2134,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_duration_invalid(self):
         """Tests for duration validity - if the duration given is a negative
-        int, duration is set to None"""
+        int, an error message is returned"""
         time = {
             "duration": -12600,
             "project": "ganeti-web-manager",
