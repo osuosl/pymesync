@@ -13,9 +13,9 @@ Allows for interactions with the TimeSync API
 - update_activity(activity, slug) - Updates activity by slug
 - create_user(user) - Creates a user
 - update_user(user, username) - Updates user by username
-- get_times(**kwargs) - Get times from TimeSync
-- get_projects(**kwargs) - Get project information from TimeSync
-- get_activities(**kwargs) - Get activity information from TimeSync
+- get_times(query_parameters) - Get times from TimeSync
+- get_projects(query_parameters) - Get project information from TimeSync
+- get_activities(query_parameters) - Get activity information from TimeSync
 - get_users(username) - Get user information from TimeSync
 
 Supported TimeSync versions:
@@ -271,18 +271,20 @@ class TimeSync(object):
         """
         return self.__create_or_update(user, username, "user", "users", False)
 
-    def get_times(self, **kwargs):
+    def get_times(self, query_parameters=None):
         """
-        get_times([kwargs])
+        get_times(query_parameters)
 
-        Request time entries filtered by parameters passed to ``kwargs``.
-        Returns a list of python objects representing the JSON time information
-        returned by TimeSync or an error message if unsuccessful.
+        Request time entries filtered by parameters passed in
+        ``query_parameters``. Returns a list of python objects representing the
+        JSON time information returned by TimeSync or an error message if
+        unsuccessful.
 
-        ``kwargs`` contains the optional query parameters described in the
-        TimeSync documentation. If ``kwargs`` is empty, ``get_times()`` will
-        return all times in the database. The syntax for each argument is
-        ``query=["parameter"]``.
+        ``query_parameters`` is a python dictionary containing the optional
+        query parameters described in the TimeSync documentation. If
+        ``query_parameters`` is empty or None, ``get_times()`` will return all
+        times in the database. The syntax for each argument is
+        ``{"query": ["parameter"]}``.
         """
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
@@ -290,17 +292,18 @@ class TimeSync(object):
             return [{self.error: local_auth_error}]
 
         # Check for key error
-        for key in kwargs.keys():
-            if key not in self.valid_get_queries:
-                return [{self.error: "invalid query: {}".format(key)}]
+        if query_parameters:
+            for key in query_parameters:
+                if key not in self.valid_get_queries:
+                    return [{self.error: "invalid query: {}".format(key)}]
 
         # Initialize the query string
         query_string = ""
 
         # If there are filtering parameters, construct them correctly.
         # Else reinitialize the query string to a ? so we can add the token.
-        if kwargs:
-            query_string = self.__construct_filter_query(kwargs)
+        if query_parameters:
+            query_string = self.__construct_filter_query(query_parameters)
         else:
             query_string = "?"
 
@@ -311,8 +314,8 @@ class TimeSync(object):
 
         # Test mode, return one or many objects depending on if uuid is passed
         if self.test:
-            if "uuid" in kwargs.keys():
-                return mock_pymesync.get_times(kwargs["uuid"])
+            if query_parameters and "uuid" in query_parameters:
+                return mock_pymesync.get_times(query_parameters["uuid"])
             else:
                 return mock_pymesync.get_times(None)
 
@@ -326,24 +329,25 @@ class TimeSync(object):
             # Request Error
             return [{self.error: e}]
 
-    def get_projects(self, **kwargs):
+    def get_projects(self, query_parameters=None):
         """
-        get_projects([kwargs])
+        get_projects(query_parameters)
 
         Request project information filtered by parameters passed to
-        ``kwargs``. Returns a list of python objects representing the JSON
-        project information returned by TimeSync or an error message if
+        ``query_parameters``. Returns a list of python objects representing the
+        JSON project information returned by TimeSync or an error message if
         unsuccessful.
 
-        ``kwargs`` contains the optional query parameters described in the
-        TimeSync documentation. If ``kwargs`` is empty, ``get_projects()`` will
-        return all projects in the database. The syntax for each argument is
-        ``query="parameter"`` or ``bool_query=<boolean>``.
+        ``query_parameters`` is a python dict containing the optional query
+        parameters described in the TimeSync documentation. If
+        ``query_parameters`` is empty or None, ``get_projects()`` will return
+        all projects in the database. The syntax for each argument is
+        ``{"query": "parameter"}`` or ``{"bool_query": <boolean>}``.
 
         Optional parameters:
-        slug="<slug>"
-        include_deleted=<boolean>
-        revisions=<boolean>
+        "slug": "<slug>"
+        "include_deleted": <boolean>
+        "revisions": <boolean>
 
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
@@ -355,14 +359,17 @@ class TimeSync(object):
 
         # Save for passing to test mode since __format_endpoints deletes
         # kwargs["slug"] if it exists
-        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+        if query_parameters and "slug" in query_parameters:
+            slug = query_parameters["slug"]
+        else:
+            slug = None
 
         query_string = ""
 
         # If kwargs exist, create a correct query string
         # Else, prepare query_string for the token
-        if kwargs:
-            query_string = self.__format_endpoints(kwargs)
+        if query_parameters:
+            query_string = self.__format_endpoints(query_parameters)
             # If __format_endpoints returns None, it was passed both slug and
             # include_deleted, which is not allowed by the TimeSync API
             if query_string is None:
@@ -390,24 +397,25 @@ class TimeSync(object):
             # Request Error
             return [{self.error: e}]
 
-    def get_activities(self, **kwargs):
+    def get_activities(self, query_parameters=None):
         """
-        get_activities([kwargs])
+        get_activities(query_parameters)
 
         Request activity information filtered by parameters passed to
-        ``kwargs``. Returns a list of python objects representing the JSON
-        activity information returned by TimeSync or an error message if
-        unsuccessful.
+        ``query_parameters``. Returns a list of python objects representing
+        the JSON activity information returned by TimeSync or an error message
+        if unsuccessful.
 
-        ``kwargs`` contains the optional query parameters described in the
-        TimeSync documentation. If ``kwargs`` is empty, ``get_activities()``
-        will return all activities in the database. The syntax for each
-        argument is ``query="parameter"`` or ``bool_query=<boolean>``.
+        ``query_parameters`` is a dictionary containing the optional query
+        parameters described in the TimeSync documentation. If
+        ``query_parameters`` is empty or None, ``get_activities()`` will
+        return all activities in the database. The syntax for each argument is
+        ``{"query": "parameter"}`` or ``{"bool_query": <boolean>}``.
 
         Optional parameters:
-        slug="<slug>"
-        include_deleted=<boolean>
-        revisions=<boolean>
+        "slug": "<slug>"
+        "include_deleted": <boolean>
+        "revisions": <boolean>
 
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
@@ -419,14 +427,17 @@ class TimeSync(object):
 
         # Save for passing to test mode since __format_endpoints deletes
         # kwargs["slug"] if it exists
-        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+        if query_parameters and "slug" in query_parameters:
+            slug = query_parameters["slug"]
+        else:
+            slug = None
 
         query_string = ""
 
         # If kwargs exist, create a correct query string
         # Else, prepare query_string for the token
-        if kwargs:
-            query_string = self.__format_endpoints(kwargs)
+        if query_parameters:
+            query_string = self.__format_endpoints(query_parameters)
             # If __format_endpoints returns None, it was passed both slug and
             # include_deleted, which is not allowed by the TimeSync API
             if query_string is None:
@@ -660,10 +671,10 @@ class TimeSync(object):
         query_list = []
 
         # The following combination is not allowed
-        if "slug" in queries.keys() and "include_deleted" in queries.keys():
+        if "slug" in queries and "include_deleted" in queries:
             return None
         # slug goes first, then delete it so it doesn't show up after the ?
-        elif "slug" in queries.keys():
+        elif "slug" in queries:
             query_string = "/{}?".format(queries["slug"])
             del(queries["slug"])
 
