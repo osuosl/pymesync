@@ -275,7 +275,7 @@ class TimeSync(object):
         """
         get_times(query_parameters)
 
-        Request time entries filtered by parameters passed in 
+        Request time entries filtered by parameters passed in
         ``query_parameters``. Returns a list of python objects representing the
         JSON time information returned by TimeSync or an error message if
         unsuccessful.

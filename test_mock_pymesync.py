@@ -353,7 +353,8 @@ class TestMockPymesync(unittest.TestCase):
             }
         }]
 
-        self.assertEquals(self.ts.get_projects(slug="ganeti"), expected_result)
+        self.assertEquals(self.ts.get_projects({"slug": "ganeti"}),
+                          expected_result)
 
     def test_mock_get_projects_no_slug(self):
         expected_result = [
@@ -444,7 +445,7 @@ class TestMockPymesync(unittest.TestCase):
             "updated_at": None
         }]
 
-        self.assertEquals(self.ts.get_activities(slug="docudocs"),
+        self.assertEquals(self.ts.get_activities({"slug": "docudocs"}),
                           expected_result)
 
     def test_mock_get_activities_no_slug(self):
