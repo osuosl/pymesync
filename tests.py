@@ -861,7 +861,7 @@ class TestPymesync(unittest.TestCase):
                                                              self.ts.token)
 
         # Send it
-        self.ts.get_times(user=[self.ts.user])
+        self.ts.get_times({"user": [self.ts.user]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -876,7 +876,7 @@ class TestPymesync(unittest.TestCase):
                                                        self.ts.token)
 
         # Send it
-        self.ts.get_times(project=["gwm"])
+        self.ts.get_times({"project": ["gwm"]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -891,7 +891,7 @@ class TestPymesync(unittest.TestCase):
                                                         self.ts.token)
 
         # Send it
-        self.ts.get_times(activity=["dev"])
+        self.ts.get_times({"activity": ["dev"]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -906,7 +906,7 @@ class TestPymesync(unittest.TestCase):
                                                             self.ts.token)
 
         # Send it
-        self.ts.get_times(start=["2015-07-23"])
+        self.ts.get_times({"start": ["2015-07-23"]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -921,7 +921,7 @@ class TestPymesync(unittest.TestCase):
                                                           self.ts.token)
 
         # Send it
-        self.ts.get_times(end=["2015-07-23"])
+        self.ts.get_times({"end": ["2015-07-23"]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -936,7 +936,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(include_revisions=True)
+        self.ts.get_times({"include_revisions": True})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -952,7 +952,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(include_revisions=False)
+        self.ts.get_times({"include_revisions": False})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -967,7 +967,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(include_deleted=True)
+        self.ts.get_times({"include_deleted": True})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -983,7 +983,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(include_deleted=False)
+        self.ts.get_times({"include_deleted": False})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -999,7 +999,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(project=["gwm"], activity=["dev"])
+        self.ts.get_times({"project": ["gwm"], "activity": ["dev"]})
 
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple parameters are sorted alphabetically
@@ -1018,7 +1018,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, token_string)
 
         # Send it
-        self.ts.get_times(activity=["dev", "rev", "hd"])
+        self.ts.get_times({"activity": ["dev", "rev", "hd"]})
 
         # Test that requests.get was called with baseurl and correct parameters
         # Multiple parameters are sorted alphabetically
@@ -1034,7 +1034,7 @@ class TestPymesync(unittest.TestCase):
                                                        self.ts.token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432")
+        self.ts.get_times({"uuid": "sadfasdg432"})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -1049,7 +1049,7 @@ class TestPymesync(unittest.TestCase):
                                                        self.ts.token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432", activity=["dev"])
+        self.ts.get_times({"uuid": "sadfasdg432", "activity": ["dev"]})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -1065,7 +1065,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432", include_revisions=True)
+        self.ts.get_times({"uuid": "sadfasdg432", "include_revisions": True})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -1081,7 +1081,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432", include_deleted=True)
+        self.ts.get_times({"uuid": "sadfasdg432", "include_deleted": True})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -1103,9 +1103,9 @@ class TestPymesync(unittest.TestCase):
                                            queries, token)
 
         # Send it
-        self.ts.get_times(uuid="sadfasdg432",
-                          include_revisions=True,
-                          include_deleted=True)
+        self.ts.get_times({"uuid": "sadfasdg432",
+                           "include_revisions": True,
+                           "include_deleted": True})
 
         # Test that requests.get was called with baseurl and correct parameter
         requests.get.assert_called_with(url)
@@ -1128,7 +1128,7 @@ class TestPymesync(unittest.TestCase):
     def test_get_times_bad_query(self):
         """Tests TimeSync.get_times with an invalid query parameter"""
         # Should return the error
-        self.assertEquals(self.ts.get_times(bad=["query"]),
+        self.assertEquals(self.ts.get_times({"bad": ["query"]}),
                           [{self.ts.error: "invalid query: bad"}])
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
