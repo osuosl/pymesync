@@ -50,8 +50,8 @@ empty list if TimeSync has no records).
 |
 
 * **get_times(query_parameters)** - Get times from TimeSync
-* **get_projects(\**kwargs)** - Get project information from TimeSync
-* **get_activities(\**kwargs)** - Get activity information from TimeSync
+* **get_projects(query_parameters)** - Get project information from TimeSync
+* **get_activities(query_parameters)** - Get activity information from TimeSync
 * **get_users(username=None)** - Get user information from TimeSync
 
 |
@@ -315,7 +315,7 @@ TimeSync.\ **update_time(time, uuid)**
 
 ------------------------------------------
 
-TimeSync.\ **get_times(query_parameters)**
+TimeSync.\ **get_times(query_parameters=None)**
 
     Request time entries from the TimeSync instance specified by the baseurl
     provided when instantiating the TimeSync object. The time entries are
@@ -408,34 +408,35 @@ TimeSync.\ **delete_time(uuid)**
 
 ------------------------------------------
 
-TimeSync.\ **get_projects(\**kwargs)**
+TimeSync.\ **get_projects(query_parameters=None)**
 
     Request project entries from the TimeSync instance specified by the baseurl
     provided when instantiating the TimeSync object. The project entries are
-    filtered by parameters passed to ``kwargs``. Returns a list of python
-    dictionaries containing the project information returned by TimeSync or an
-    error message if unsuccessful.
+    filtered by parameters passed in ``query_parameters``. Returns a list of
+    python dictionaries containing the project information returned by TimeSync
+    or an error message if unsuccessful.
 
-    ``kwargs`` contains the optional query parameters described in the
-    `TimeSync documentation`_. If ``kwargs`` is empty, ``get_projects()`` will
-    return all projects in the database. The syntax for each argument is
-    ``query="parameter"`` or ``bool_query=<boolean>``.
+    ``query_parameters`` is a dict containing the optional query parameters
+    described in the `TimeSync documentation`_. If ``query_parameters`` is
+    empty, ``get_projects()`` will return all projects in the database. The
+    syntax for each argument is ``{"query": "parameter"}`` or
+    ``{"bool_query": <boolean>}``.
 
     The optional parameters currently supported by the TimeSync API are:
 
     * ``slug`` - filter project request by project slug
 
-      - example: ``slug='gwm'``
+      - example: ``{"slug": "gwm"}``
 
     * ``include_deleted`` - tell TimeSync whether to include deleted projects in
       request. Default is ``False`` and cannot be combined with a ``slug``.
 
-      - example: ``include_deleted=True``
+      - example: ``{"include_deleted": True}``
 
     * ``include_revisions`` - tell TimeSync whether to include past revisions of
       projects in request. Default is ``False``
 
-      - example: ``include_revisions=True``
+      - example: ``{"include_revisions": True}``
 
     Example usage:
 
@@ -452,34 +453,35 @@ TimeSync.\ **get_projects(\**kwargs)**
 
 ------------------------------------------
 
-TimeSync.\ **get_activities(\**kwargs)**
+TimeSync.\ **get_activities(query_parameters=None)**
 
     Request activity entries from the TimeSync instance specified by the baseurl
     provided when instantiating the TimeSync object. The activity entries are
-    filtered by parameters passed to ``kwargs``. Returns a list of python
-    dictionaries containing the activity information returned by TimeSync or an
-    error message if unsuccessful.
+    filtered by parameters passed in ``query_parameters``. Returns a list of
+    python dictionaries containing the activity information returned by TimeSync
+    or an error message if unsuccessful.
 
-    ``kwargs`` contains the optional query parameters described in the
-    `TimeSync documentation`_. If ``kwargs`` is empty, ``get_activities()`` will
-    return all activities in the database. The syntax for each argument is
-    ``query="parameter"`` or ``bool_query=<boolean>``.
+    ``query_parameters`` contains the optional query parameters described in the
+    `TimeSync documentation`_. If ``query_parameters`` is empty,
+    ``get_activities()`` will return all activities in the database. The syntax
+    for each argument is ``{"query": "parameter"}`` or
+    ``{"bool_query": <boolean>}``.
 
     The optional parameters currently supported by the TimeSync API are:
 
     * ``slug`` - filter activity request by activity slug
 
-      - example: ``slug='code'``
+      - example: ``{"slug": "code"}``
 
     * ``include_deleted`` - tell TimeSync whether to include deleted activities
       in request. Default is ``False`` and cannot be combined with a ``slug``.
 
-      - example: ``include_deleted=True``
+      - example: ``{"include_deleted": True}``
 
     * ``include_revisions`` - tell TimeSync whether to include past revisions of
       activities in request. Default is ``False``
 
-      - example: ``include_revisions=True``
+      - example: ``{"include_revisions": True}``
 
     Example usage:
 
