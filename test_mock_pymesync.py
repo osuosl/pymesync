@@ -278,7 +278,7 @@ class TestMockPymesync(unittest.TestCase):
             "uuid": "example-uuid"
         }]
 
-        self.assertEquals(self.ts.get_times(uuid="example-uuid"),
+        self.assertEquals(self.ts.get_times({"uuid": "example-uuid"}),
                           expected_result)
 
     def test_mock_get_times_no_uuid(self):
