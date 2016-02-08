@@ -345,9 +345,9 @@ class TimeSync(object):
         ``{"query": "parameter"}`` or ``{"bool_query": <boolean>}``.
 
         Optional parameters:
-        slug="<slug>"
-        include_deleted=<boolean>
-        revisions=<boolean>
+        "slug": "<slug>"
+        "include_deleted": <boolean>
+        "revisions": <boolean>
 
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
@@ -397,24 +397,25 @@ class TimeSync(object):
             # Request Error
             return [{self.error: e}]
 
-    def get_activities(self, **kwargs):
+    def get_activities(self, query_parameters=None):
         """
-        get_activities([kwargs])
+        get_activities(query_parameters)
 
         Request activity information filtered by parameters passed to
-        ``kwargs``. Returns a list of python objects representing the JSON
-        activity information returned by TimeSync or an error message if
-        unsuccessful.
+        ``query_parameters``. Returns a list of python objects representing
+        the JSON activity information returned by TimeSync or an error message
+        if unsuccessful.
 
-        ``kwargs`` contains the optional query parameters described in the
-        TimeSync documentation. If ``kwargs`` is empty, ``get_activities()``
-        will return all activities in the database. The syntax for each
-        argument is ``query="parameter"`` or ``bool_query=<boolean>``.
+        ``query_parameters`` is a dictionary containing the optional query
+        parameters described in the TimeSync documentation. If
+        ``query_parameters`` is empty or None, ``get_activities()`` will
+        return all activities in the database. The syntax for each argument is
+        ``{"query": "parameter"}`` or ``{"bool_query": <boolean>}``.
 
         Optional parameters:
-        slug="<slug>"
-        include_deleted=<boolean>
-        revisions=<boolean>
+        "slug": "<slug>"
+        "include_deleted": <boolean>
+        "revisions": <boolean>
 
         Does not accept a slug combined with include_deleted, but does accept
         any other combination.
@@ -426,14 +427,17 @@ class TimeSync(object):
 
         # Save for passing to test mode since __format_endpoints deletes
         # kwargs["slug"] if it exists
-        slug = kwargs["slug"] if "slug" in kwargs.keys() else None
+        if query_parameters and "slug" in query_parameters:
+            slug = query_parameters["slug"]
+        else:
+            slug = None
 
         query_string = ""
 
         # If kwargs exist, create a correct query string
         # Else, prepare query_string for the token
-        if kwargs:
-            query_string = self.__format_endpoints(kwargs)
+        if query_parameters:
+            query_string = self.__format_endpoints(query_parameters)
             # If __format_endpoints returns None, it was passed both slug and
             # include_deleted, which is not allowed by the TimeSync API
             if query_string is None:
