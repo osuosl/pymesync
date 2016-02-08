@@ -1156,7 +1156,7 @@ class TestPymesync(unittest.TestCase):
                                                   self.ts.token)
 
         # Send it
-        self.ts.get_projects(slug="gwm")
+        self.ts.get_projects({"slug": "gwm"})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1171,7 +1171,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_projects(include_revisions=True)
+        self.ts.get_projects({"include_revisions": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1186,7 +1186,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_projects(slug="gwm", include_revisions=True)
+        self.ts.get_projects({"slug": "gwm", "include_revisions": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1201,7 +1201,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_projects(include_deleted=True)
+        self.ts.get_projects({"include_deleted": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1214,16 +1214,16 @@ class TestPymesync(unittest.TestCase):
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
-        self.assertEquals(self.ts.get_projects(slug="gwm",
-                                               include_deleted=True),
+        self.assertEquals(self.ts.get_projects({"slug": "gwm",
+                                                "include_deleted": True}),
                           [{self.ts.error:
                            "invalid combination: slug and include_deleted"}])
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_get_projects_include_deleted_include_revisions(self,
                                                             m_resp_python):
-        """Tests TimeSync.get_projects with include_revisions and include_deleted
-        queries"""
+        """Tests TimeSync.get_projects with include_revisions and
+        include_deleted queries"""
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
@@ -1233,7 +1233,8 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, endpoint, token_string)
 
         # Send it
-        self.ts.get_projects(include_revisions=True, include_deleted=True)
+        self.ts.get_projects({"include_revisions": True,
+                              "include_deleted": True})
 
         # Test that requests.get was called with correct parameters
         requests.get.assert_called_with(url)
@@ -1262,7 +1263,7 @@ class TestPymesync(unittest.TestCase):
                                                      self.ts.token)
 
         # Send it
-        self.ts.get_activities(slug="code")
+        self.ts.get_activities({"slug": "code"})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1277,7 +1278,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_activities(include_revisions=True)
+        self.ts.get_activities({"include_revisions": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1292,7 +1293,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_activities(slug="code", include_revisions=True)
+        self.ts.get_activities({"slug": "code", "include_revisions": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1307,7 +1308,7 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, self.ts.token)
 
         # Send it
-        self.ts.get_activities(include_deleted=True)
+        self.ts.get_activities({"include_deleted": True})
 
         # Test that requests.get was called correctly
         requests.get.assert_called_with(url)
@@ -1320,8 +1321,8 @@ class TestPymesync(unittest.TestCase):
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
-        self.assertEquals(self.ts.get_activities(slug="code",
-                                                 include_deleted=True),
+        self.assertEquals(self.ts.get_activities({"slug": "code",
+                                                  "include_deleted": True}),
                           [{self.ts.error:
                            "invalid combination: slug and include_deleted"}])
 
@@ -1339,7 +1340,8 @@ class TestPymesync(unittest.TestCase):
             self.ts.baseurl, endpoint, token_string)
 
         # Send it
-        self.ts.get_activities(include_revisions=True, include_deleted=True)
+        self.ts.get_activities({"include_revisions": True,
+                                "include_deleted": True})
 
         # Test that requests.get was called with correct parameters
         requests.get.assert_called_with(url)
