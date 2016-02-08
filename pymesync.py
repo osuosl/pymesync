@@ -271,7 +271,7 @@ class TimeSync(object):
         """
         return self.__create_or_update(user, username, "user", "users", False)
 
-    def get_times(self, **kwargs):
+    def get_times(self, query_parameters=None):
         """
         get_times([kwargs])
 
@@ -290,17 +290,18 @@ class TimeSync(object):
             return [{self.error: local_auth_error}]
 
         # Check for key error
-        for key in kwargs.keys():
-            if key not in self.valid_get_queries:
-                return [{self.error: "invalid query: {}".format(key)}]
+        if query_parameters:
+            for key in query_parameters:
+                if key not in self.valid_get_queries:
+                    return [{self.error: "invalid query: {}".format(key)}]
 
         # Initialize the query string
         query_string = ""
 
         # If there are filtering parameters, construct them correctly.
         # Else reinitialize the query string to a ? so we can add the token.
-        if kwargs:
-            query_string = self.__construct_filter_query(kwargs)
+        if query_parameters:
+            query_string = self.__construct_filter_query(query_parameters)
         else:
             query_string = "?"
 
@@ -311,8 +312,8 @@ class TimeSync(object):
 
         # Test mode, return one or many objects depending on if uuid is passed
         if self.test:
-            if "uuid" in kwargs.keys():
-                return mock_pymesync.get_times(kwargs["uuid"])
+            if query_parameters and "uuid" in query_parameters:
+                return mock_pymesync.get_times(query_parameters["uuid"])
             else:
                 return mock_pymesync.get_times(None)
 
