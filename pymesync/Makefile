@@ -14,10 +14,10 @@ clean:
 	      rm *.pyc
 
 test:
-	      $(PY) tests.py
+	      $(PY) tests.py && $(PY) test_mock_pymesync.py
 
 flake:
-	      flake8 pymesync.py tests.py
+	      flake8 pymesync.py tests.py test_mock_pymesync.py
 
 verify:
-				$(PY) tests.py && flake8 pymesync.py tests.py
+				$(PY) tests.py && $(PY) test_mock_pymesync.py && flake8 pymesync.py tests.py test_mock_pymesync.py

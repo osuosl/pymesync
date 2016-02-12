@@ -1,0 +1,3 @@
+[submodule "timesync"]
+	path = timesync
+	url = https://github.com/osuosl/timesync
