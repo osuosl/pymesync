@@ -3,6 +3,8 @@ pymesync
 
 Python module for TimeSync
 
+Pymesync documentation can be found on `readthedocs`_
+
 We use virtualenv for development and testing:
 
 .. code-block::
@@ -31,3 +33,6 @@ or
 .. code-block::
 
   (venv) $ make verify   # Runs tests and flake8
+
+
+.. _readthedocs: http://pymesync.readthedocs.org/en/latest/

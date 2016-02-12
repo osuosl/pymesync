@@ -68,9 +68,16 @@ empty list if TimeSync has no records).
 Install pymesync
 ----------------
 
-Future implementation will allow you to simply ``pip install pymesync``, but for
-now you need to copy or clone the pymesync `source code`_ into your project and
-``pip install -r requirements.txt`` in a virtualenv.
+Pymesync is on PyPi, so you can simply ``pip install pymesync``. We recommend
+you use `virtualenv`_, like so:
+
+.. code-block::
+
+  virtualenv venv
+  source venv/bin/activate
+  pip install pymesync
+
+.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
 .. _source code: https://github.com/osuosl/pymesync
 
