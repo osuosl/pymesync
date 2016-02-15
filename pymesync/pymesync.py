@@ -55,7 +55,8 @@ class TimeSync(object):
             "time": ["notes", "issue_uri"],
             "project": ["uri"],
             "activity": [],
-            "user": ["displayname", "email"],
+            "user": ["displayname", "email", "admin", "spectator",
+                     "manager", "admin", "meta", "active"],
         }
 
     def authenticate(self, username=None, password=None, auth_type=None):
@@ -253,6 +254,11 @@ class TimeSync(object):
         ``user`` is a python dictionary containing the user information to send
         to TimeSync.
         """
+        for perm in ["admin", "manager", "spectator", "active"]:
+            if perm in user and not isinstance(user[perm], bool):
+                return [{self.error: "user object: "
+                         "{} must be True or False".format(perm)}]
+
         return self.__create_or_update(user, None, "user", "users")
 
     def update_user(self, user, username):
