@@ -731,6 +731,10 @@ TimeSync.\ **create_user(user)**
 
     * ``"displayname"``
     * ``"email"``
+    * ``"admin"`` - sitewide permission, must be a boolean
+    * ``"spectator"`` - sitewide permission , must be a boolean
+    * ``"manager"`` - sitewide permission, must be a boolean
+    * ``"active"`` - user status, usually set internally, must be a boolean
 
     Example usage:
 
