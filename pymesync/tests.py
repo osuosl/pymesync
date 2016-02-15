@@ -1787,6 +1787,46 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(user, None, "user", "users")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_create_user_valid_perms(self, mock_create_or_update):
+        """Tests that TimeSync.create_user calls _create_or_update with correct
+        parameters and valid permission fields"""
+        user = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+            "admin": False,
+            "spectator": False,
+            "manager": True,
+        }
+
+        self.ts.create_user(user)
+
+        mock_create_or_update.assert_called_with(user, None, "user", "users")
+
+    def test_create_user_invalid_admin(self):
+        """Tests that TimeSync.create_user returns error with invalid perm
+        field"""
+        user = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+            "admin": True,
+            "spectator": False,
+            "manager": True,
+            "active": True,
+        }
+
+        user_to_test = dict(user)
+        for perm in ["admin", "spectator", "manager", "active"]:
+            user_to_test = dict(user)
+            user_to_test[perm] = "invalid"
+            self.assertEquals(self.ts.create_user(user_to_test),
+                              [{self.ts.error: "user object: {} must be "
+                                               "True or False".format(perm)}])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_user(self, mock_create_or_update):
         """Tests that TimeSync.update_user calls _create_or_update with correct
         parameters"""
