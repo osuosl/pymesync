@@ -128,6 +128,10 @@ class TestMockPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
         expected_result = [{
@@ -140,16 +144,8 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "revision": 1,
             "users": {
-                "members": [
-                    "patcht",
-                    "tschuy"
-                ],
-                "spectators": [
-                    "tschuy"
-                ],
-                "managers": [
-                    "tschuy"
-                ]
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
             }
         }]
 
