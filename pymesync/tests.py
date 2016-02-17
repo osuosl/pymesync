@@ -419,6 +419,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
         # Format content for assert_called_with test
@@ -447,6 +451,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
         # Format content for assert_called_with test
@@ -503,6 +511,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            },
             "bad": "field"
         }
 
