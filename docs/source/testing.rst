@@ -92,17 +92,22 @@ An (almost) exhaustive example of test mode:
   ...    "uri": "https://code.osuosl.org/projects/timesync",
   ...    "name": "TimeSync API",
   ...    "slugs": ["timesync", "time"],
+  ...    "users": {"tschuy": {"member": True, "spectator": False, "manager": True},
+  ...              "mrsj": {"member": True, "spectator": False, "manager": False},
+  ...              "patcht": {"member": True, "spectator": False, "manager": True},
+  ...              "oz": {"member": False, "spectator": True, "manager": False}
+  ...             }
   ...}
   >>>
   >>> ts.create_project(project=project)
-  [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
+  [{'users': {'tschuy': {'member': true, 'spectator': false, 'manager': true}, 'mrsj': {'member': true, 'spectator': false, 'manager': false}, 'patcht': {'member': true, 'spectator': false, 'manager': true}, 'oz': {'member': false, 'spectator': true, 'manager': false}}, 'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
   >>>
   >>> project = {
   ...    "uri": "https://code.osuosl.org/projects/timesync",
   ...    "name": "pymesync",
   ...}
   >>> ts.update_project(project=project, slug="ps")
-  [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
+  [{'users': {'tschuy': {'member': true, 'spectator': true, 'manager': false}, 'mrsj': {'member': true, 'spectator': false, 'manager': true}}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
   >>>
   >>> activity = {
   ...    "name": "Quality Assurance/Testing",
