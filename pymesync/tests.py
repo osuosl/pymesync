@@ -2209,15 +2209,34 @@ class TestPymesync(unittest.TestCase):
             'deleted_at': null,\
             'updated_at': '2014-07-20',\
             'users': {\
-                'malcolm': ['member', 'manager'],\
-                'jayne': ['member'],\
-                'kaylee': ['member'],\
-                'zoe': ['member'],\
-                'hoban': ['member'],\
-                'simon': ['spectator'],\
-                'river': ['spectator'],\
-                'derrial': ['spectator'],\
-                'inara': ['spectator']}\
+                'malcolm': {'member': true,\
+                            'manager': true,\
+                            'spectator': false},\
+                'jayne':   {'member': true,\
+                            'manager': false,\
+                            'spectator': false},\
+                'kaylee':  {'member': true,\
+                            'manager': false,\
+                            'spectator': false},\
+                'zoe':     {'member': true,\
+                            'manager': false,\
+                            'spectator: false},\
+                'hoban':   {'member': true,\
+                            'manager': false,\
+                            'spectator': false},\
+                'simon':   {'member': false,\
+                            'manager': false,\
+                            'spectator': true},\
+                'river':   {'member': false,\
+                            'manager': false,\
+                            'spectator': true},\
+                'derrial': {'member': false,\
+                            'manager': false,\
+                            'spectator': true},\
+                'inara':   {'member': false,\
+                            'manager': false,\
+                            'spectator': false}\
+            }\
         }"
         expected_result = {
             'malcolm': ['member', 'manager'],
@@ -2261,122 +2280,6 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.project_users(),
                           {self.ts.error: "Missing project slug, please"
                                           "include in method call"})
-
-    def test_project_users_valid_manager(self):
-        """Test project_users method with a valid project object returned from
-        TimeSync and user_type = manager"""
-        project = "pyme"
-        response = resp()
-        response.status_code = 200
-        response.text = "{\
-            'uri': 'https://github.com/osuosl/pymesync',\
-            'name': 'pymesync',\
-            'slugs': ['pyme', 'ps', 'pymesync'],\
-            'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb',\
-            'revision': 4,\
-            'created_at': '2014-07-17',\
-            'deleted_at': null,\
-            'updated_at': '2014-07-20',\
-            'users': {\
-                'malcolm': ['member', 'manager'],\
-                'jayne': ['member'],\
-                'kaylee': ['member'],\
-                'zoe': ['member'],\
-                'hoban': ['member'],\
-                'simon': ['spectator'],\
-                'river': ['spectator'],\
-                'derrial': ['spectator'],\
-                'inara': ['spectator']}\
-        }"
-        expected_result = ['malcolm']
-
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
-
-        self.assertEquals(self.ts.project_users(project=project,
-                                                user_type="manager"),
-                          expected_result)
-
-    def test_project_users_valid_member(self):
-        """Test project_users method with a valid project object returned from
-        TimeSync and user_type = member"""
-        project = "pyme"
-        response = resp()
-        response.status_code = 200
-        response.text = "{\
-            'uri': 'https://github.com/osuosl/pymesync',\
-            'name': 'pymesync',\
-            'slugs': ['pyme', 'ps', 'pymesync'],\
-            'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb',\
-            'revision': 4,\
-            'created_at': '2014-07-17',\
-            'deleted_at': null,\
-            'updated_at': '2014-07-20',\
-            'users': {\
-                'malcolm': ['member', 'manager'],\
-                'jayne': ['member'],\
-                'kaylee': ['member'],\
-                'zoe': ['member'],\
-                'hoban': ['member'],\
-                'simon': ['spectator'],\
-                'river': ['spectator'],\
-                'derrial': ['spectator'],\
-                'inara': ['spectator']}\
-        }"
-        expected_result = ['malcolm', 'jayne', 'kaylee', 'zoe', 'hoban']
-
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
-
-        self.assertEquals(self.ts.project_users(project=project,
-                                                user_type="member"),
-                          expected_result)
-
-    def test_project_users_valid_spectator(self):
-        """Test project_users method with a valid project object returned from
-        TimeSync"""
-        project = "pyme"
-        response = resp()
-        response.status_code = 200
-        response.text = "{\
-            'uri': 'https://github.com/osuosl/pymesync',\
-            'name': 'pymesync',\
-            'slugs': ['pyme', 'ps', 'pymesync'],\
-            'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb',\
-            'revision': 4,\
-            'created_at': '2014-07-17',\
-            'deleted_at': null,\
-            'updated_at': '2014-07-20',\
-            'users': {\
-                'malcolm': ['member', 'manager'],\
-                'jayne': ['member'],\
-                'kaylee': ['member'],\
-                'zoe': ['member'],\
-                'hoban': ['member'],\
-                'simon': ['spectator'],\
-                'river': ['spectator'],\
-                'derrial': ['spectator'],\
-                'inara': ['spectator']}\
-        }"
-        expected_result = ['simon', 'river', 'derrial', 'inara']
-
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
-
-        self.assertEquals(self.ts.project_users(project=project,
-                                                user_type="spectator"),
-                          expected_result)
-
-    def test_project_users_bad_user_type_parameter(self):
-        """Test project_users method with no project object passed as a
-        parameter, should return an error"""
-        self.assertEquals(self.ts.project_users(project="pyme",
-                                                user_type="bad"),
-                          {self.ts.error: "invalid user_type bad, must be "
-                                          "manager, member, or spectator"})
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
