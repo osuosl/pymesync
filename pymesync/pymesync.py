@@ -469,7 +469,7 @@ class TimeSync(object):
             return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return [{self.error, e}]
+            return [{self.error: e}]
 
     def get_users(self, username=None):
         """
@@ -507,7 +507,7 @@ class TimeSync(object):
             return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return [{self.error, e}]
+            return [{self.error: e}]
 
     def delete_time(self, uuid=None):
         """
@@ -623,6 +623,59 @@ class TimeSync(object):
         exp_datetime = datetime.datetime.fromtimestamp(exp_int)
 
         return exp_datetime
+
+    def project_users(self, project=None):
+        """
+        project_users(project)
+
+        Returns a dict of users for the specified project containing usernames
+        mapped to their list of permissions for the project.
+        """
+        # Check that user has authenticated
+        local_auth_error = self.__local_auth_error()
+        if local_auth_error:
+            return [{self.error: local_auth_error}]
+
+        # Check that a project slug was passed
+        if not project:
+            return [{self.error: "Missing project slug, please "
+                                 "include in method call"}]
+
+        # Construct query url
+        url = "{0}/projects/{1}?token={2}".format(self.baseurl,
+                                                  project,
+                                                  self.token)
+        # Return valid user object if in test mode
+        if self.test:
+            return mock_pymesync.project_users()
+
+        # Try to get the project object
+        try:
+            # Success!
+            response = requests.get(url)
+            project_object = self.__response_to_python(response)
+        except requests.exceptions.RequestException as e:
+            # Request Error
+            return [{self.error: e}]
+
+        # Create the user dict to return
+        # There was an error, don't do anything with it, return as a list
+        if "error" in project_object[0]:
+            return [project_object[0]]
+
+        # Get the user object from the project
+        users = project_object[0]["users"]
+
+        # Convert the nested permissions dict to a list containing only
+        # relevant (true) permissions
+        for user in users:
+            perm = []
+            for permission in users[user]:
+                if users[user][permission] is True:
+                    perm.append(permission)
+            users[user] = perm
+
+        return users
 
 ###############################################################################
 # Internal methods
