@@ -45,17 +45,9 @@ def update_time(p_dict, uuid):
 def create_project(p_dict):
     """Creates project"""
     p_dict["users"] = {
-        "members": [
-            "patcht",
-            "tschuy"
-        ],
-        "spectators": [
-            "tschuy"
-        ],
-        "managers": [
-            "tschuy"
-        ]
-    }
+        "mrsj": {"member": True, "spectator": True, "manager": True},
+        "tschuy": {"member": True, "spectator": False, "manager": False}
+    } if "users" not in p_dict else p_dict["users"]
     p_dict["uuid"] = "309eae69-21dc-4538-9fdc-e6892a9c4dd4"
     p_dict["revision"] = 1
     p_dict["created_at"] = "2015-05-23"

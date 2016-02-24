@@ -306,7 +306,7 @@ TimeSync.\ **update_time(time, uuid)**
       internal method will convert the duration to seconds.
     * ``"project"`` - slug of project worked on
     * ``"user"`` - username of user that did the work, must match ``user``
-      specified in instantiation
+      specified in ``authenticate()``
     * ``"activities"`` - list of slugs identifying the activies worked on for
       this time entry
     * ``"date_worked"`` - date worked for this time entry in the form
@@ -464,7 +464,7 @@ TimeSync.\ **get_projects(query_parameters=None)**
     .. code-block:: python
 
       >>> ts.get_projects()
-      [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb', 'deleted_at': None, 'name': 'Ganeti Web Manager', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 4, 'uri': 'https://code.osuosl.org/projects/ganeti-webmgr', 'slugs': ['gwm']}, {'users': {'managers': ['tschuy'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj']}, 'uuid': 'a034806c-rrrr-bbbb-8de8-514575f31bfb', 'deleted_at': None, 'name': 'TimeSync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['timesync', 'ts']}, {'users': {'managers': ['mrsj'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj', 'MaraJade', 'thai']}, 'uuid': 'a034806c-ssss-cccc-8de8-514575f31bfb', 'deleted_at': None, 'name': 'pymesync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 1, 'uri': 'https://code.osuosl.org/projects/pymesync', 'slugs': ['pymesync', 'ps']}]
+      [{'users': {'tschuy': {'member': true, 'spectator': false, 'manager': false}, 'mrsj': {'member': true, 'spectator': false, 'manager': true}, 'oz': {'member': false, 'spectator': true, 'manager': false}}, 'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb', 'deleted_at': None, 'name': 'Ganeti Web Manager', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 4, 'uri': 'https://code.osuosl.org/projects/ganeti-webmgr', 'slugs': ['gwm']}, {'users': {'managers': ['tschuy'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj']}, 'uuid': 'a034806c-rrrr-bbbb-8de8-514575f31bfb', 'deleted_at': None, 'name': 'TimeSync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['timesync', 'ts']}, {'users': {'managers': ['mrsj'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj', 'MaraJade', 'thai']}, 'uuid': 'a034806c-ssss-cccc-8de8-514575f31bfb', 'deleted_at': None, 'name': 'pymesync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 1, 'uri': 'https://code.osuosl.org/projects/pymesync', 'slugs': ['pymesync', 'ps']}]
       >>>
 
     .. warning::
@@ -563,7 +563,11 @@ TimeSync.\ **create_project(project)**
     * ``"uri"``
     * ``"name"``
     * ``"slugs"`` - this must be a list of strings
-    * ``"owner"``
+
+    Optionally include a users field to add users to the project:
+
+    * ``"users"`` - this must be a python dictionary containing individual user
+                    permissions. See example below.
 
     Example usage:
 
@@ -573,10 +577,15 @@ TimeSync.\ **create_project(project)**
       ...    "uri": "https://code.osuosl.org/projects/timesync",
       ...    "name": "TimeSync API",
       ...    "slugs": ["timesync", "time"],
+      ...    "users": {"tschuy": {"member": True, "spectator": False, "manager": True},
+      ...              "mrsj": {"member": True, "spectator": False, "manager": False},
+      ...              "patcht": {"member": True, "spectator": False, "manager": True},
+      ...              "oz": {"member": False, "spectator": True, "manager": False}
+      ...             }
       ...}
       >>>
       >>> ts.create_project(project=project)
-      [{'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
+      [{'users': {'tschuy': {'member': true, 'spectator': false, 'manager': true}, 'mrsj': {'member': true, 'spectator': false, 'manager': false}, 'patcht': {'member': true, 'spectator': false, 'manager': true}, 'oz': {'member': false, 'spectator': true, 'manager': false}}, 'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
       >>>
 
 ------------------------------------------
@@ -606,7 +615,7 @@ TimeSync.\ **update_project(project, slug)**
     * ``"uri"``
     * ``"name"``
     * ``"slugs"`` - this must be a list of strings
-    * ``"owner"``
+    * ``"user"``
 
     Example usage:
 
@@ -617,7 +626,7 @@ TimeSync.\ **update_project(project, slug)**
       ...    "name": "pymesync",
       ...}
       >>> ts.update_project(project=project, slug="ps")
-      [{'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
+      [{'users': {'tschuy': {'member': true, 'spectator': true, 'manager': true}, 'patcht': {'member': true, 'spectator': false, 'manager': false}}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
       >>>
 
 ------------------------------------------

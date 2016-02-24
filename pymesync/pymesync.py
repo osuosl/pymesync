@@ -53,7 +53,7 @@ class TimeSync(object):
         }
         self.optional_params = {
             "time": ["notes", "issue_uri"],
-            "project": ["uri"],
+            "project": ["uri", "users"],
             "activity": [],
             "user": ["displayname", "email", "admin", "spectator",
                      "manager", "admin", "meta", "active"],
