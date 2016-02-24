@@ -543,22 +543,23 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.delete_user("junk"), [{"status": 200}])
 
     def test_mock_project_users(self):
-        expected_result = {
-            'malcolm': ['member', 'manager'],
-            'jayne': ['member'],
-            'kaylee': ['member'],
-            'zoe': ['member'],
-            'hoban': ['member'],
-            'simon': ['spectator'],
-            'river': ['spectator'],
-            'derrial': ['spectator'],
-            'inara': ['spectator']
-        }
+        expected_result = [{
+            u'malcolm': [u'member', u'manager'],
+            u'jayne':   [u'member'],
+            u'kaylee':  [u'member'],
+            u'zoe':     [u'member'],
+            u'hoban':   [u'member'],
+            u'simon':   [u'spectator'],
+            u'river':   [u'spectator'],
+            u'derrial': [u'spectator'],
+            u'inara':   [u'spectator']
+        }]
+
         self.assertEquals(self.ts.project_users(project="ff"), expected_result)
 
     def test_mock_project_users_no_slug(self):
-        expected_result = {self.ts.error: "Missing project slug, please"
-                                          "include in method call"}
+        expected_result = [{self.ts.error: "Missing project slug, please "
+                                           "include in method call"}]
         self.assertEquals(self.ts.project_users(), expected_result)
 
 

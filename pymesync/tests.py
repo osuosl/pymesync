@@ -14,7 +14,6 @@ class resp(object):
     def __init__(self):
         self.text = None
         self.status_code = None
-        self.error = None
 
 
 class TestPymesync(unittest.TestCase):
@@ -1515,7 +1514,7 @@ class TestPymesync(unittest.TestCase):
 
     def test_response_to_python_empty_response(self):
         """Check that __response_to_python returns correctly for delete_*
-        methods"""
+G       methods"""
         response = resp()
         response.text = ""
         response.status_code = 200
@@ -2199,58 +2198,58 @@ class TestPymesync(unittest.TestCase):
         project = "pyme"
         response = resp()
         response.status_code = 200
-        response.text = "{\
-            'uri': 'https://github.com/osuosl/pymesync',\
-            'name': 'pymesync',\
-            'slugs': ['pyme', 'ps', 'pymesync'],\
-            'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb',\
-            'revision': 4,\
-            'created_at': '2014-07-17',\
-            'deleted_at': null,\
-            'updated_at': '2014-07-20',\
-            'users': {\
-                'malcolm': {'member': true,\
-                            'manager': true,\
-                            'spectator': false},\
-                'jayne':   {'member': true,\
-                            'manager': false,\
-                            'spectator': false},\
-                'kaylee':  {'member': true,\
-                            'manager': false,\
-                            'spectator': false},\
-                'zoe':     {'member': true,\
-                            'manager': false,\
-                            'spectator: false},\
-                'hoban':   {'member': true,\
-                            'manager': false,\
-                            'spectator': false},\
-                'simon':   {'member': false,\
-                            'manager': false,\
-                            'spectator': true},\
-                'river':   {'member': false,\
-                            'manager': false,\
-                            'spectator': true},\
-                'derrial': {'member': false,\
-                            'manager': false,\
-                            'spectator': true},\
-                'inara':   {'member': false,\
-                            'manager': false,\
-                            'spectator': false}\
-            }\
-        }"
+        response.text = json.dumps({
+            "uri": "https://github.com/osuosl/pymesync",
+            "name": "pymesync",
+            "slugs": ["pyme", "ps", "pymesync"],
+            "uuid": "a034806c-00db-4fe1-8de8-514575f31bfb",
+            "revision": 4,
+            "created_at": "2014-07-17",
+            "deleted_at": None,
+            "updated_at": "2014-07-20",
+            "users": {
+                "malcolm": {"member": True,
+                            "manager": True,
+                            "spectator": True},
+                "jayne":   {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "kaylee":  {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "zoe":     {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "hoban":   {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "simon":   {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "river":   {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "derrial": {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "inara":   {"member": False,
+                            "manager": False,
+                            "spectator": True}
+            }
+        })
         expected_result = {
-            'malcolm': ['member', 'manager'],
-            'jayne': ['member'],
-            'kaylee': ['member'],
-            'zoe': ['member'],
-            'hoban': ['member'],
-            'simon': ['spectator'],
-            'river': ['spectator'],
-            'derrial': ['spectator'],
-            'inara': ['spectator']
+            u'malcolm': [u'member', u'manager', u'spectator'],
+            u'jayne':   [u'member'],
+            u'kaylee':  [u'member'],
+            u'zoe':     [u'member'],
+            u'hoban':   [u'member'],
+            u'simon':   [u'spectator'],
+            u'river':   [u'spectator'],
+            u'derrial': [u'spectator'],
+            u'inara':   [u'spectator']
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get so it doesn't actually post to TimeSync
         requests.get = mock.create_autospec(requests.get,
                                             return_value=response)
 
@@ -2260,26 +2259,28 @@ class TestPymesync(unittest.TestCase):
     def test_project_users_error_response(self):
         """Test project_users method with an error object returned from
         TimeSync"""
-        project = "pymes"
+        proj = "pymes"
         response = resp()
         response.status_code = 404
-        response.error = "Object not found"
-        response.text = "Nonexistent project"
-        expected_result = {self.ts.error: "project pymes does not exist"}
+        response.text = json.dumps({
+            "error": "Object not found",
+            "text": "Nonexistent project"
+        })
 
-        # Mock requests.post so it doesn't actually post to TimeSync
+        # Mock requests.get so it doesn't actually post to TimeSync
         requests.get = mock.create_autospec(requests.get,
                                             return_value=response)
 
-        self.assertEquals(self.ts.project_users(project=project),
-                          expected_result)
+        self.assertEquals(self.ts.project_users(project=proj),
+                          [{u"error": u"Object not found",
+                            u"text": u"Nonexistent project"}])
 
     def test_project_users_no_project_parameter(self):
         """Test project_users method with no project object passed as a
         parameter, should return an error"""
         self.assertEquals(self.ts.project_users(),
-                          {self.ts.error: "Missing project slug, please"
-                                          "include in method call"})
+                          [{self.ts.error: "Missing project slug, please "
+                                           "include in method call"}])
 
 if __name__ == "__main__":
     actual_post = requests.post  # Save this for testing exceptions
