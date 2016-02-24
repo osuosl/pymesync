@@ -395,4 +395,4 @@ def project_users():
         u'inara':   [u'spectator']
     }
 
-    return [users]
+    return users
