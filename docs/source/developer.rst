@@ -42,7 +42,8 @@ filtering parameters can be passed to those methods that will get an unknown
 number of objects from TimeSync.
 
 The exception to this rule is for simple data returns like
-``token_expiration_time()`` which returns a python datetime.
+``token_expiration_time()``, which returns a python datetime, or
+``project_users()``, which return a python dictionary.
 
 Error Messages
 --------------

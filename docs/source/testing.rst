@@ -152,6 +152,9 @@ An (almost) exhaustive example of test mode:
   >>> ts.delete_user(username="username")
   [{"status": 200}]
   >>>
+  >>> ts.project_users(project="ff")
+  {'malcolm': ['member', 'manager'], 'jayne': ['member'], 'kaylee': ['member'], 'zoe': ['member'], 'hoban': ['member'], 'simon': ['spectator'], 'river': ['spectator'], 'derrial': ['spectator'], 'inara': ['spectator']}
+  >>>
 
 
 .. _TimeSync API: http://timesync.readthedocs.org/en/latest/

@@ -379,3 +379,20 @@ def get_users(username):
 def delete_object():
     """Delete an object from TimeSync"""
     return [{"status": 200}]
+
+
+def project_users():
+    """Return list of users and permissions from TimeSync"""
+    users = {
+        u'malcolm': [u'member', u'manager'],
+        u'jayne':   [u'member'],
+        u'kaylee':  [u'member'],
+        u'zoe':     [u'member'],
+        u'hoban':   [u'member'],
+        u'simon':   [u'spectator'],
+        u'river':   [u'spectator'],
+        u'derrial': [u'spectator'],
+        u'inara':   [u'spectator']
+    }
+
+    return users

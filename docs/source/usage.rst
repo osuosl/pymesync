@@ -71,7 +71,7 @@ Install pymesync
 Pymesync is on PyPi, so you can simply ``pip install pymesync``. We recommend
 you use `virtualenv`_, like so:
 
-.. code-block::
+.. code-block:: none
 
   virtualenv venv
   source venv/bin/activate
@@ -199,6 +199,20 @@ TimeSync.\ **token_expiration_time()**
       [{u'token': u'eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3MiOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3QiLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w=='}]
       >>> ts.token_expiration_time()
       datetime.datetime(2016, 1, 13, 11, 45, 34)
+      >>>
+
+TimeSync.\ **project_users(project)**
+
+    Returns a dictionary containing the user field of the specified project.
+
+    ``project`` is a string containing the desired project slug.
+
+    Example:
+
+    .. code-block:: python
+
+      >> ts.project_users(project="pyme")
+      {'malcolm': ['member', 'manager'], 'jayne': ['member'], 'kaylee': ['member'], 'zoe': ['member'], 'hoban': ['member'], 'simon': ['spectator'], 'river': ['spectator'], 'derrial': ['spectator'], 'inara': ['spectator']}
       >>>
 
 TimeSync.\ **create_time(time)**
@@ -331,7 +345,7 @@ TimeSync.\ **get_times(query_parameters=None)**
     an error message if unsuccessful.
 
     ``query_parameters`` is a python dictionary containing the optional query
-    parameters described in the `TimeSync documentation`_. If 
+    parameters described in the `TimeSync documentation`_. If
     ``query_parameters`` is missing, it defaults to ``None``, in which case
     ``get_times()`` will return all times the current user is authorized to see.
     The syntax for each argument is ``{"query": ["parameter1", "parameter2"]}``
