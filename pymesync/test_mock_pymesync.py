@@ -554,8 +554,8 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.project_users(project="ff"), expected_result)
 
     def test_mock_project_users_no_slug(self):
-        expected_result = [{self.ts.error: "Missing project slug, please "
-                                           "include in method call"}]
+        expected_result = {self.ts.error: "Missing project slug, please "
+                                          "include in method call"}
         self.assertEquals(self.ts.project_users(), expected_result)
 
 

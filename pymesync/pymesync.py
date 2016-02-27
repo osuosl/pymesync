@@ -120,10 +120,10 @@ class TimeSync(object):
         # If TimeSync returns an error, return the error without setting the
         # token.
         # Else set the token to the returned token and return the dict.
-        if "error" in token_list_dict[0] or "token" not in token_list_dict[0]:
+        if "error" in token_list_dict or "token" not in token_list_dict:
             return token_list_dict
         else:
-            self.token = token_list_dict[0]["token"]
+            self.token = token_list_dict["token"]
             return token_list_dict
 
     def create_time(self, time):
@@ -149,7 +149,7 @@ class TimeSync(object):
             if not isinstance(time['duration'], int):
                 return duration
 
-        return self.__create_or_update(time, None, "time", "times")
+        return [self.__create_or_update(time, None, "time", "times")]
 
     def update_time(self, time, uuid):
         """
@@ -176,7 +176,7 @@ class TimeSync(object):
             if not isinstance(time['duration'], int):
                 return duration
 
-        return self.__create_or_update(time, uuid, "time", "times", False)
+        return [self.__create_or_update(time, uuid, "time", "times", False)]
 
     def create_project(self, project):
         """
@@ -190,7 +190,7 @@ class TimeSync(object):
         ``project`` is a python dictionary containing the project information
         to send to TimeSync.
         """
-        return self.__create_or_update(project, None, "project", "projects")
+        return [self.__create_or_update(project, None, "project", "projects")]
 
     def update_project(self, project, slug):
         """
@@ -206,8 +206,8 @@ class TimeSync(object):
         to send to TimeSync.
         ``slug`` contains the slug for a project entry to update.
         """
-        return self.__create_or_update(project, slug, "project", "projects",
-                                       False)
+        return [self.__create_or_update(project, slug, "project", "projects",
+                                       False)]
 
     def create_activity(self, activity):
         """
@@ -221,8 +221,8 @@ class TimeSync(object):
         ``activity`` is a python dictionary containing the activity information
         to send to TimeSync.
         """
-        return self.__create_or_update(activity, None,
-                                       "activity", "activities")
+        return [self.__create_or_update(activity, None,
+                                       "activity", "activities")]
 
     def update_activity(self, activity, slug):
         """
@@ -238,9 +238,9 @@ class TimeSync(object):
         to send to TimeSync.
         ``slug`` contains the slug for an activity entry to update.
         """
-        return self.__create_or_update(activity, slug,
+        return [self.__create_or_update(activity, slug,
                                        "activity", "activities",
-                                       False)
+                                       False)]
 
     def create_user(self, user):
         """
@@ -259,7 +259,7 @@ class TimeSync(object):
                 return [{self.error: "user object: "
                          "{} must be True or False".format(perm)}]
 
-        return self.__create_or_update(user, None, "user", "users")
+        return [self.__create_or_update(user, None, "user", "users")]
 
     def update_user(self, user, username):
         """
@@ -275,7 +275,7 @@ class TimeSync(object):
         to TimeSync.
         ``username`` contains the username for a user to update.
         """
-        return self.__create_or_update(user, username, "user", "users", False)
+        return [self.__create_or_update(user, username, "user", "users", False)]
 
     def get_times(self, query_parameters=None):
         """
@@ -522,10 +522,10 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         if not uuid:
-            return [{self.error: "missing uuid; please add to method call"}]
+            return {self.error: "missing uuid; please add to method call"}
 
         return self.__delete_object("times", uuid)
 
@@ -541,10 +541,10 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         if not slug:
-            return [{self.error: "missing slug; please add to method call"}]
+            return {self.error: "missing slug; please add to method call"}
 
         return self.__delete_object("projects", slug)
 
@@ -560,10 +560,10 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         if not slug:
-            return [{self.error: "missing slug; please add to method call"}]
+            return {self.error: "missing slug; please add to method call"}
 
         return self.__delete_object("activities", slug)
 
@@ -580,11 +580,11 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         if not username:
-            return [{self.error:
-                     "missing username; please add to method call"}]
+            return {self.error:
+                    "missing username; please add to method call"}
 
         return self.__delete_object("users", username)
 
@@ -598,7 +598,7 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         # Return valid date if in test mode
         if self.test:
@@ -609,7 +609,7 @@ class TimeSync(object):
         try:
             decoded_payload = base64.b64decode(self.token.split(".", 1)[1])
         except:
-            return [{self.error: "improperly encoded token"}]
+            return {self.error: "improperly encoded token"}
 
         # literal_eval the string representation of a dict to convert it to a
         # dict, then get the value at 'exp'. The value at 'exp' is epoch time
@@ -634,12 +634,12 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         # Check that a project slug was passed
         if not project:
-            return [{self.error: "Missing project slug, please "
-                                 "include in method call"}]
+            return {self.error: "Missing project slug, please "
+                                "include in method call"}
 
         # Construct query url
         url = "{0}/projects/{1}?token={2}".format(self.baseurl,
@@ -656,15 +656,15 @@ class TimeSync(object):
             project_object = self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
-            return [{self.error: e}]
+            return {self.error: e}
 
         # Create the user dict to return
         # There was an error, don't do anything with it, return as a list
-        if "error" in project_object[0]:
-            return [project_object[0]]
+        if "error" in project_object:
+            return project_object
 
         # Get the user object from the project
-        users = project_object[0]["users"]
+        users = project_object["users"]
 
         # Convert the nested permissions dict to a list containing only
         # relevant (true) permissions
@@ -702,7 +702,7 @@ class TimeSync(object):
         """Convert response to native python list of objects"""
         # DELETE returns an empty body if successful
         if not response.text and response.status_code == 200:
-            return [{"status": 200}]
+            return {"status": 200}
 
         # If response.text is valid JSON, it came from TimeSync. If it isn't
         # and we got a ValueError, we know we are having trouble connecting to
@@ -715,11 +715,7 @@ class TimeSync(object):
             err_msg = "connection to TimeSync failed at baseurl {} - ".format(
                 self.baseurl)
             err_msg += "response status was {}".format(response.status_code)
-            return [{self.error: err_msg}]
-
-        # Pymesync returns responses as a python dictionary contained in a list
-        if not isinstance(python_object, list):
-            python_object = [python_object]
+            return {self.error: err_msg}
 
         return python_object
 
@@ -845,14 +841,14 @@ class TimeSync(object):
         # Check that user has authenticated
         local_auth_error = self.__local_auth_error()
         if local_auth_error:
-            return [{self.error: local_auth_error}]
+            return {self.error: local_auth_error}
 
         # Check that object contains required fields and no bad fields
         field_error = self.__get_field_errors(object_fields,
                                               object_name,
                                               create_object)
         if field_error:
-            return [{self.error: field_error}]
+            return {self.error: field_error}
 
         # Since this is a POST request, we need an auth and object objects
         values = {"auth": self.__token_auth(), "object": object_fields}
@@ -878,7 +874,7 @@ class TimeSync(object):
             return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
-            return [{self.error: e}]
+            return {self.error: e}
 
     def __duration_to_seconds(self, duration):
         """When a time_entry is created, a user will enter a time duration as
@@ -916,7 +912,7 @@ class TimeSync(object):
             return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
-            return [{self.error: e}]
+            return {self.error: e}
 
     def __test_handler(self, parameters, identifier, obj_name, create_object):
         """Handle test methods in test mode for creating or updating an
