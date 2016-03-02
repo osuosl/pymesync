@@ -86,10 +86,9 @@ class TimeSync(object):
             arg_error_list.append("auth_type")
 
         if arg_error_list:
-            return [
-                {self.error: "Missing {}; please add to method call".format(
-                    ", ".join(arg_error_list))}
-            ]
+            return {self.error: "Missing {}; "
+                                "please add to method call".format(
+                                    ", ".join(arg_error_list))}
 
         del(arg_error_list)
 
@@ -112,19 +111,19 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.post(url, json=auth)
-            token_list_dict = self.__response_to_python(response)
+            token_response = self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request error
-            return [{self.error: e}]
+            return {self.error: e}
 
         # If TimeSync returns an error, return the error without setting the
         # token.
         # Else set the token to the returned token and return the dict.
-        if "error" in token_list_dict or "token" not in token_list_dict:
-            return token_list_dict
+        if "error" in token_response or "token" not in token_response:
+            return token_response
         else:
-            self.token = token_list_dict["token"]
-            return token_list_dict
+            self.token = token_response["token"]
+            return token_response
 
     def create_time(self, time):
         """
@@ -139,7 +138,7 @@ class TimeSync(object):
         to TimeSync.
         """
         if time['duration'] < 0:
-            return [{self.error: "time object: duration cannot be negative"}]
+            return {self.error: "time object: duration cannot be negative"}
 
         if not isinstance(time['duration'], int):
             duration = self.__duration_to_seconds(time['duration'])
@@ -149,7 +148,7 @@ class TimeSync(object):
             if not isinstance(time['duration'], int):
                 return duration
 
-        return [self.__create_or_update(time, None, "time", "times")]
+        return self.__create_or_update(time, None, "time", "times")
 
     def update_time(self, time, uuid):
         """
@@ -166,7 +165,7 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         if time['duration'] < 0:
-            return [{self.error: "time object: duration cannot be negative"}]
+            return {self.error: "time object: duration cannot be negative"}
 
         if not isinstance(time['duration'], int):
             duration = self.__duration_to_seconds(time['duration'])
@@ -176,7 +175,7 @@ class TimeSync(object):
             if not isinstance(time['duration'], int):
                 return duration
 
-        return [self.__create_or_update(time, uuid, "time", "times", False)]
+        return self.__create_or_update(time, uuid, "time", "times", False)
 
     def create_project(self, project):
         """
@@ -190,7 +189,7 @@ class TimeSync(object):
         ``project`` is a python dictionary containing the project information
         to send to TimeSync.
         """
-        return [self.__create_or_update(project, None, "project", "projects")]
+        return self.__create_or_update(project, None, "project", "projects")
 
     def update_project(self, project, slug):
         """
@@ -206,8 +205,8 @@ class TimeSync(object):
         to send to TimeSync.
         ``slug`` contains the slug for a project entry to update.
         """
-        return [self.__create_or_update(project, slug, "project", "projects",
-                                       False)]
+        return self.__create_or_update(project, slug, "project", "projects",
+                                       False)
 
     def create_activity(self, activity):
         """
@@ -221,8 +220,8 @@ class TimeSync(object):
         ``activity`` is a python dictionary containing the activity information
         to send to TimeSync.
         """
-        return [self.__create_or_update(activity, None,
-                                       "activity", "activities")]
+        return self.__create_or_update(activity, None,
+                                       "activity", "activities")
 
     def update_activity(self, activity, slug):
         """
@@ -238,9 +237,9 @@ class TimeSync(object):
         to send to TimeSync.
         ``slug`` contains the slug for an activity entry to update.
         """
-        return [self.__create_or_update(activity, slug,
+        return self.__create_or_update(activity, slug,
                                        "activity", "activities",
-                                       False)]
+                                       False)
 
     def create_user(self, user):
         """
@@ -256,10 +255,10 @@ class TimeSync(object):
         """
         for perm in ["admin", "manager", "spectator", "active"]:
             if perm in user and not isinstance(user[perm], bool):
-                return [{self.error: "user object: "
-                         "{} must be True or False".format(perm)}]
+                return {self.error: "user object: "
+                        "{} must be True or False".format(perm)}
 
-        return [self.__create_or_update(user, None, "user", "users")]
+        return self.__create_or_update(user, None, "user", "users")
 
     def update_user(self, user, username):
         """
@@ -275,7 +274,7 @@ class TimeSync(object):
         to TimeSync.
         ``username`` contains the username for a user to update.
         """
-        return [self.__create_or_update(user, username, "user", "users", False)]
+        return self.__create_or_update(user, username, "user", "users", False)
 
     def get_times(self, query_parameters=None):
         """
@@ -330,7 +329,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            return [self.__response_to_python(response)]
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -398,7 +397,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            return [self.__response_to_python(response)]
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -466,7 +465,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            return [self.__response_to_python(response)]
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -504,7 +503,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            return [self.__response_to_python(response)]
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]

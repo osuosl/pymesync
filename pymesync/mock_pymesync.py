@@ -1,7 +1,7 @@
 import datetime
 
 def authenticate():
-    return [{"token": "TESTTOKEN"}]
+    return {"token": "TESTTOKEN"}
 
 
 def token_expiration_time():
@@ -17,7 +17,7 @@ def create_time(p_dict):
     p_dict["revision"] = 1
     p_dict["notes"] = p_dict["notes"] if p_dict["notes"] else None
     p_dict["issue_uri"] = p_dict["issue_uri"] if p_dict["issue_uri"] else None
-    return [p_dict]
+    return p_dict
 
 
 def update_time(p_dict, uuid):
@@ -39,7 +39,7 @@ def update_time(p_dict, uuid):
         "uuid": uuid,
         "revision": 2
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_project(p_dict):
@@ -54,7 +54,7 @@ def create_project(p_dict):
     p_dict["updated_at"] = None
     p_dict["deleted_at"] = None
     p_dict["uri"] = p_dict["uri"] if "uri" in p_dict else None
-    return [p_dict]
+    return p_dict
 
 
 def update_project(p_dict, slug):
@@ -81,7 +81,7 @@ def update_project(p_dict, slug):
             ]
         }
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_activity(p_dict):
@@ -91,7 +91,7 @@ def create_activity(p_dict):
     p_dict["updated_at"] = None
     p_dict["deleted_at"] = None
     p_dict["revision"] = 1
-    return [p_dict]
+    return p_dict
 
 
 def update_activity(p_dict, slug):
@@ -105,7 +105,7 @@ def update_activity(p_dict, slug):
         "deleted_at": None,
         "revision": 2
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_user(p_dict):
@@ -115,7 +115,7 @@ def create_user(p_dict):
     p_dict["created_at"] = "2015-05-23"
     p_dict["deleted_at"] = None
     del(p_dict["password"])
-    return [p_dict]
+    return p_dict
 
 
 def update_user(p_dict, username):
@@ -131,7 +131,7 @@ def update_user(p_dict, username):
         "created_at": "2015-02-29",
         "deleted_at": None
     }
-    return [updated_param]
+    return updated_param
 
 
 def get_times(uuid):
