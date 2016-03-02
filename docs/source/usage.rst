@@ -26,8 +26,8 @@ Pymesync currently supports the following TimeSync API versions:
 
 * v1
 
-All of these methods return a list of one or more python dictionaries (or an
-empty list if TimeSync has no records).
+All of these methods return a python dictionary (or a list of zero or more
+python dictionaries in the case of the ``get_*`` methods).
 
 * **authenticate(username, password, auth_type)** - Authenticates a pymesync
   object with a TimeSync implementation
@@ -120,20 +120,21 @@ of code.
 .. note::
 
   If you attempt to get, create, or update objects before authenticating,
-  pymesync will return this error:
+  pymesync will return this error (get methods will return this error nested in
+  a list):
 
   .. code-block:: python
 
-    [{"pymesync error": "Not authenticated with TimeSync, call self.authenticate() first"}]
+    {"pymesync error": "Not authenticated with TimeSync, call self.authenticate() first"}
 
 Errors
 ------
 
-Pymesync returns errors the same way it returns successes for whatever method is
-in use. This means that most of the time errors are returned as a Python
-dictionary inside a list. If the error is a local pymesync error, the
-key for the error message will be ``"pymesync error"``. If the error is from
-TimeSync, the dictionary will contain the same keys described in the
+Pymesync returns errors the same way it returns successes for whatever method
+is in use. This means that most of the time errors are returned as a Python
+dictionary, except in the case of get methods. If the error is a local pymesync
+error, the key for the error message will be ``"pymesync error"``. If the error
+is from TimeSync, the dictionary will contain the same keys described in the
 `TimeSync error documentation`_, but as a python dictionary.
 
 If there is an error connecting with the TimeSync instance specified by the
@@ -174,25 +175,25 @@ TimeSync.\ **authenticate(user, password, auth_type)**
     TimeSync implementation uses for login, such as ``"password"``, or
     ``"ldap"``.
 
-    **authenticate()** will return a list containing a python dictionary. If
-    authentication was successful, the list will look like this:
+    **authenticate()** will return a python dictionary. If authentication was 
+    successful, the dictionary will look like this:
 
     .. code-block:: python
 
-      [{"token": "SOMELONGTOKEN"}]
+      {"token": "SOMELONGTOKEN"}
 
-    If authentication was unsuccessful, the list will contain an error message:
+    If authentication was unsuccessful, the dict will contain an error message:
 
     .. code-block:: python
 
-      [{"status": 401, "error": "Authentication failure", "text": "Invalid username or password"}]
+      {"status": 401, "error": "Authentication failure", "text": "Invalid username or password"}
 
     Example:
 
     .. code-block:: python
 
       >>> ts.authenticate(username="example-user", password="example-password", auth_type="password")
-      [{u'token': u'eyJ0eXAi...XSnv0ghQ=='}]
+      {u'token': u'eyJ0eXAi...XSnv0ghQ=='}
       >>>
 
 TimeSync.\ **token_expiration_time()**
@@ -200,12 +201,14 @@ TimeSync.\ **token_expiration_time()**
     Returns a python datetime representing the expiration time of the current
     authentication token.
 
+    If an error occurs, the error is returned in a single python dict.
+
     Example:
 
     .. code-block:: python
 
       >>> ts.authenticate(username="username", password="user-pass", auth_type="password")
-      [{u'token': u'eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3MiOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3QiLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w=='}]
+      {u'token': u'eyJ0eXAiOiJKV1QiLCJhbGciOiJITUFDLVNIQTUxMiJ9.eyJpc3MiOiJvc3Vvc2wtdGltZXN5bmMtc3RhZ2luZyIsInN1YiI6InRlc3QiLCJleHAiOjE0NTI3MTQzMzQwODcsImlhdCI6MTQ1MjcxMjUzNDA4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w=='}
       >>> ts.token_expiration_time()
       datetime.datetime(2016, 1, 13, 11, 45, 34)
       >>>
@@ -221,16 +224,15 @@ TimeSync.\ **project_users(project)**
     .. code-block:: python
 
       >> ts.project_users(project="pyme")
-      {'malcolm': ['member', 'manager'], 'jayne': ['member'], 'kaylee': ['member'], 'zoe': ['member'], 'hoban': ['member'], 'simon': ['spectator'], 'river': ['spectator'], 'derrial': ['spectator'], 'inara': ['spectator']}
+      {u'malcolm': [u'member', u'manager'], u'jayne': [u'member'], u'kaylee': [u'member'], u'zoe': [u'member'], u'hoban': [u'member'], u'simon': [u'spectator'], u'river': [u'spectator'], u'derrial': [u'spectator'], u'inara': [u'spectator']}
       >>>
 
 TimeSync.\ **create_time(time)**
 
     Send a time entry to the TimeSync instance at the baseurl provided when
-    instantiating the TimeSync object. This method will return a list with
-    a single python dictionary containing the created entry if successful. The
-    dictionary will contain error information if ``create_time()`` was
-    unsuccessful.
+    instantiating the TimeSync object. This method will return a single python
+    dictionary containing the created entry if successful. The dictionary will
+    contain error information if ``create_time()`` was unsuccessful.
 
     ``time`` is a python dictionary containing the time information to send to
     TimeSync. The syntax is ``"string_key": "string_value"`` with the exception
@@ -271,7 +273,7 @@ TimeSync.\ **create_time(time)**
       ...    "date_worked": "2014-04-17"
       ...}
       >>> ts.create_time(time=time)
-      [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 1200, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
+      {u'activities': [u'docs'], u'deleted_at': None, u'date_worked': u'2014-04-17', u'uuid': u'838853e3-3635-4076-a26f-7efr4e60981f', u'notes': u'Worked on documentation toward settings configuration.', u'updated_at': None, u'project': u'ganeti_web_manager', u'user': u'example-2', u'duration': 1200, u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr/issues', u'created_at': u'2015-05-23', u'revision': 1}
       >>>
 
     .. code-block:: python
@@ -286,7 +288,7 @@ TimeSync.\ **create_time(time)**
       ...    "date_worked": "2014-04-17"
       ...}
       >>> ts.create_time(time=time)
-      [{'activities': ['docs'], 'deleted_at': None, 'date_worked': '2014-04-17', 'uuid': '838853e3-3635-4076-a26f-7efr4e60981f', 'notes': 'Worked on documentation toward settings configuration.', 'updated_at': None, 'project': 'ganeti_web_manager', 'user': 'example-2', 'duration': 12600, 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues', 'created_at': '2015-05-23', 'revision': 1}]
+      {u'activities': [u'docs'], u'deleted_at': None, u'date_worked': u'2014-04-17', u'uuid': u'838853e3-3635-4076-a26f-7efr4e60981f', u'notes': u'Worked on documentation toward settings configuration.', u'updated_at': None, u'project': u'ganeti_web_manager', u'user': u'example-2', u'duration': 12600, u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr/issues', u'created_at': u'2015-05-23', u'revision': 1}
       >>>
 
 ------------------------------------------
@@ -295,9 +297,9 @@ TimeSync.\ **update_time(time, uuid)**
 
     Update a time entry by uuid on the TimeSync instance specified by the
     baseurl provided when instantiating the TimeSync object. This method will
-    return a list with a single python dictionary containing the updated entry
-    if successful. The dictionary will contain error information if
-    ``update_time()`` was unsuccessful.
+    return a python dictionary containing the updated entry if successful. The
+    dictionary will contain error information if ``update_time()`` was
+    unsuccessful.
 
     ``time`` is a python dictionary containing the time information to send to
     TimeSync. The syntax is ``"string_key": "string_value"`` with the exception
@@ -333,7 +335,7 @@ TimeSync.\ **update_time(time, uuid)**
       ...    "activities": ["hello", "world"],
       ...}
       >>> ts.update_time(time=time, uuid="some-uuid")
-      [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 1900, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 2}]
+      {u'activities': [u'hello', u'world'], u'date_worked': u'2015-08-07', u'updated_at': u'2015-10-18', u'user': u'red-leader', u'duration': 1900, u'deleted_at': None, u'uuid': u'some-uuid', u'notes': None, u'project': [u'ganeti'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr/issues/56', u'created_at': u'2014-06-12', u'revision': 2}
 
       >>> time = {
       ...    "duration": "3h35m",
@@ -341,7 +343,7 @@ TimeSync.\ **update_time(time, uuid)**
       ...    "activities": ["hello", "world"],
       ...}
       >>> ts.update_time(time=time, uuid="some-uuid")
-      [{'activities': ['hello', 'world'], 'date_worked': '2015-08-07', 'updated_at': '2015-10-18', 'user': 'red-leader', 'duration': 12900, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': None, 'project': ['ganeti'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr/issues/56', 'created_at': '2014-06-12', 'revision': 3}]
+      {u'activities': [u'hello', u'world'], u'date_worked': u'2015-08-07', u'updated_at': u'2015-10-18', u'user': u'red-leader', u'duration': 12900, u'deleted_at': None, u'uuid': u'some-uuid', u'notes': None, u'project': [u'ganeti'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr/issues/56', u'created_at': u'2014-06-12', u'revision': 3}
 
 ------------------------------------------
 
@@ -406,15 +408,15 @@ TimeSync.\ **get_times(query_parameters=None)**
     .. code-block:: python
 
       >>> ts.get_times()
-      [{'activities': ['docs', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userone', 'duration': 1200, 'deleted_at': None, 'uuid': 'c3706e79-1c9a-4765-8d7f-89b4544cad56', 'notes': 'Worked on documentation.', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}, {'activities': ['code', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'usertwo', 'duration': 1300, 'deleted_at': None, 'uuid': '12345676-1c9a-rrrr-bbbb-89b4544cad56', 'notes': 'Worked on coding', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}, {'activities': ['code'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userthree', 'duration': 1400, 'deleted_at': None, 'uuid': '12345676-1c9a-ssss-cccc-89b4544cad56', 'notes': 'Worked on coding', 'project': ['timesync', 'ts'], 'issue_uri': 'https://github.com/osuosl/timesync', 'created_at': '2014-04-17', 'revision': 1}]
+      [{u'activities': [u'docs', u'planning'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'userone', u'duration': 1200, u'deleted_at': None, u'uuid': u'c3706e79-1c9a-4765-8d7f-89b4544cad56', u'notes': u'Worked on documentation.', u'project': [u'ganeti-webmgr', u'gwm'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr', u'created_at': u'2014-04-17', u'revision': 1}, {u'activities': [u'code', u'planning'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'usertwo', u'duration': 1300, u'deleted_at': None, u'uuid': u'12345676-1c9a-rrrr-bbbb-89b4544cad56', u'notes': u'Worked on coding', u'project': [u'ganeti-webmgr', u'gwm'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr', u'created_at': u'2014-04-17', u'revision': 1}, {u'activities': [u'code'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'userthree', u'duration': 1400, u'deleted_at': None, u'uuid': u'12345676-1c9a-ssss-cccc-89b4544cad56', u'notes': u'Worked on coding', u'project': [u'timesync', u'ts'], u'issue_uri': u'https://github.com/osuosl/timesync', u'created_at': u'2014-04-17', u'revision': 1}]
       >>>
 
     .. warning::
 
       If the ``uuid`` parameter is passed all other parameters will be ignored
       except for ``include_deleted`` and ``include_revisions``. For example,
-      ``ts.get_times(uuid="time-entry-uuid", user=["bob"])`` is equivalent to
-      ``ts.get_times(uuid="time-entry-uuid")``.
+      ``ts.get_times({"uuid": "time-entry-uuid", "user": ["bob", "rob"]})`` is
+      equivalent to ``ts.get_times({"uuid": "time-entry-uuid"})``.
 
 ------------------------------------------
 
@@ -425,7 +427,7 @@ TimeSync.\ **delete_time(uuid)**
 
     ``uuid`` is a string containing the uuid of the time entry to be deleted.
 
-    **delete_time()** returns a ``[{"status": 200}]`` if successful or an error
+    **delete_time()** returns a ``{"status": 200}`` if successful or an error
     message if unsuccessful.
 
     Example usage:
@@ -433,7 +435,7 @@ TimeSync.\ **delete_time(uuid)**
     .. code-block:: python
 
       >>> ts.delete_time(uuid="some-uuid")
-      [{"status": 200}]
+      {"status": 200}
       >>>
 
 ------------------------------------------
@@ -473,7 +475,7 @@ TimeSync.\ **get_projects(query_parameters=None)**
     .. code-block:: python
 
       >>> ts.get_projects()
-      [{'users': {'tschuy': {'member': true, 'spectator': false, 'manager': false}, 'mrsj': {'member': true, 'spectator': false, 'manager': true}, 'oz': {'member': false, 'spectator': true, 'manager': false}}, 'uuid': 'a034806c-00db-4fe1-8de8-514575f31bfb', 'deleted_at': None, 'name': 'Ganeti Web Manager', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 4, 'uri': 'https://code.osuosl.org/projects/ganeti-webmgr', 'slugs': ['gwm']}, {'users': {'managers': ['tschuy'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj']}, 'uuid': 'a034806c-rrrr-bbbb-8de8-514575f31bfb', 'deleted_at': None, 'name': 'TimeSync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['timesync', 'ts']}, {'users': {'managers': ['mrsj'], 'spectators': ['tschuy', 'mrsj'], 'members': ['patcht', 'tschuy', 'mrsj', 'MaraJade', 'thai']}, 'uuid': 'a034806c-ssss-cccc-8de8-514575f31bfb', 'deleted_at': None, 'name': 'pymesync', 'updated_at': '2014-07-20', 'created_at': '2014-07-17', 'revision': 1, 'uri': 'https://code.osuosl.org/projects/pymesync', 'slugs': ['pymesync', 'ps']}]
+      [{u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': false}, u'mrsj': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'uuid': u'a034806c-00db-4fe1-8de8-514575f31bfb', u'deleted_at': None, u'name': u'Ganeti Web Manager', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 4, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'slugs': [u'gwm']}, {u'users': {u'managers': [u'tschuy'], u'spectators': [u'tschuy', u'mrsj'], u'members': [u'patcht', u'tschuy', u'mrsj']}, u'uuid': u'a034806c-rrrr-bbbb-8de8-514575f31bfb', u'deleted_at': None, u'name': u'TimeSync', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 2, u'uri': u'https://code.osuosl.org/projects/timesync', u'slugs': [u'timesync', u'ts']}, {u'users': {u'managers': [u'mrsj'], u'spectators': [u'tschuy', u'mrsj'], u'members': [u'patcht', u'tschuy', u'mrsj', u'MaraJade', u'thai']}, u'uuid': u'a034806c-ssss-cccc-8de8-514575f31bfb', u'deleted_at': None, u'name': u'pymesync', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 1, u'uri': u'https://code.osuosl.org/projects/pymesync', u'slugs': [u'pymesync', u'ps']}]
       >>>
 
     .. warning::
@@ -518,7 +520,7 @@ TimeSync.\ **get_activities(query_parameters=None)**
     .. code-block:: python
 
       >>> ts.get_activities()
-      [{'uuid': 'adf036f5-3d49-4a84-bef9-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Documentation', 'deleted_at': None, 'slugs': ['docs'], 'revision': 5}, {'uuid': 'adf036f5-3d49-bbbb-rrrr-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Coding', 'deleted_at': None, 'slugs': ['code', 'dev'], 'revision': 1}, {'uuid': 'adf036f5-3d49-cccc-ssss-062b46380bbf', 'created_at': '2014-04-17', 'updated_at': None, 'name': 'Planning', 'deleted_at': None, 'slugs': ['plan', 'prep'], 'revision': 1}]
+      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slugs': [u'docs'], u'revision': 5}, {u'uuid': u'adf036f5-3d49-bbbb-rrrr-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Coding', u'deleted_at': None, u'slugs': [u'code', u'dev'], u'revision': 1}, {u'uuid': u'adf036f5-3d49-cccc-ssss-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Planning', u'deleted_at': None, u'slugs': [u'plan', u'prep'], u'revision': 1}]
       >>>
 
     .. warning::
@@ -544,7 +546,7 @@ TimeSync.\ **get_users(username=None)**
     .. code-block:: python
 
       >>> ts.get_users()
-      [{'username': 'userone', 'displayname': 'One Is The Loneliest Number', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampleone@example.com'}, {'username': 'usertwo', 'displayname': 'Two Can Be As Bad As One', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampletwo@example.com'}, {'username': 'userthree', 'displayname': "Yes It's The Saddest Experience", 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplethree@example.com'}, {'username': 'userfour', 'displayname': "You'll Ever Do", 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplefour@example.com'}]
+      [{u'username': u'userone', u'displayname': u'One Is The Loneliest Number', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'displayname': u'Two Can Be As Bad As One', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'displayname': "Yes It's The Saddest Experience", u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'displayname': "You'll Ever Do", u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
       >>>
 
 ------------------------------------------
@@ -559,10 +561,9 @@ These methods are available to TimeSync users with administrative permissions.
 TimeSync.\ **create_project(project)**
 
     Create a project on the TimeSync instance at the baseurl provided when
-    instantiating the TimeSync object. This method will return a list with
-    a single python dictionary containing the created project if successful. The
-    dictionary will contain error information if ``create_project()`` was
-    unsuccessful.
+    instantiating the TimeSync object. This method will return a single python
+    dictionary containing the created project if successful. The dictionary
+    will contain error information if ``create_project()`` was unsuccessful.
 
     ``project`` is a python dictionary containing the project information to
     send to TimeSync. The syntax is ``"key": "value"`` except for the
@@ -594,7 +595,7 @@ TimeSync.\ **create_project(project)**
       ...}
       >>>
       >>> ts.create_project(project=project)
-      [{'users': {'tschuy': {'member': true, 'spectator': false, 'manager': true}, 'mrsj': {'member': true, 'spectator': false, 'manager': false}, 'patcht': {'member': true, 'spectator': false, 'manager': true}, 'oz': {'member': false, 'spectator': true, 'manager': false}}, 'deleted_at': None, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'updated_at': None, 'created_at': '2015-05-23', 'uri': 'https://code.osuosl.org/projects/timesync', 'name': 'TimeSync API', 'revision': 1, 'slugs': ['timesync', 'time'], 'users': {'managers': ['tschuy'], 'spectators': ['tschuy'], 'members': ['patcht', 'tschuy']}}]
+      {u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': true}, u'mrsj': {u'member': true, u'spectator': false, u'manager': false}, u'patcht': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'deleted_at': None, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'updated_at': None, u'created_at': u'2015-05-23', u'uri': u'https://code.osuosl.org/projects/timesync', u'name': u'TimeSync API', u'revision': 1, u'slugs': [u'timesync', u'time'], u'users': {u'managers': [u'tschuy'], u'spectators': [u'tschuy'], u'members': [u'patcht', u'tschuy']}}
       >>>
 
 ------------------------------------------
@@ -603,9 +604,9 @@ TimeSync.\ **update_project(project, slug)**
 
     Update an existing project by slug on the TimeSync instance specified by the
     baseurl provided when instantiating the TimeSync object. This method will
-    return a list with a single python dictionary containing the updated project
-    if successful. The dictionary will contain error information if
-    ``update_project()`` was unsuccessful.
+    return a python dictionary containing the updated project if successful.
+    The dictionary will contain error information if ``update_project()`` was
+    unsuccessful.
 
     ``project`` is a python dictionary containing the project information to
     send to TimeSync. The syntax is ``"key": "value"`` except for the
@@ -635,7 +636,7 @@ TimeSync.\ **update_project(project, slug)**
       ...    "name": "pymesync",
       ...}
       >>> ts.update_project(project=project, slug="ps")
-      [{'users': {'tschuy': {'member': true, 'spectator': true, 'manager': true}, 'patcht': {'member': true, 'spectator': false, 'manager': false}}, 'uuid': '309eae69-21dc-4538-9fdc-e6892a9c4dd4', 'name': 'pymesync', 'updated_at': '2014-04-18', 'created_at': '2014-04-16', 'deleted_at': None, 'revision': 2, 'uri': 'https://code.osuosl.org/projects/timesync', 'slugs': ['ps']}]
+      {u'users': {u'tschuy': {u'member': True, u'spectator': True, u'manager': True}, u'patcht': {u'member': True, u'spectator': False, u'manager': False}}, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'name': u'pymesync', u'updated_at': u'2014-04-18', u'created_at': u'2014-04-16', u'deleted_at': None, u'revision': 2, u'uri': u'https://code.osuosl.org/projects/timesync', u'slugs': [u'ps']}]
       >>>
 
 ------------------------------------------
@@ -647,7 +648,7 @@ TimeSync.\ **delete_project(slug)**
 
     ``slug`` is a string containing the slug of the project to be deleted.
 
-    **delete_project()** returns a ``[{"status": 200}]`` if successful or an
+    **delete_project()** returns a ``{"status": 200}`` if successful or an
     error message if unsuccessful.
 
     Example usage:
@@ -655,7 +656,7 @@ TimeSync.\ **delete_project(slug)**
     .. code-block:: python
 
       >>> ts.delete_project(slug="some-slug")
-      [{"status": 200}]
+      {u'status': 200}]
       >>>
 
 ------------------------------------------
@@ -663,10 +664,9 @@ TimeSync.\ **delete_project(slug)**
 TimeSync.\ **create_activity(activity)**
 
     Create an activity on the TimeSync instance at the baseurl provided when
-    instantiating the TimeSync object. This method will return a list with
-    a single python dictionary containing the created activity if successful.
-    The dictionary will contain error information if ``create_activity()`` was
-    unsuccessful.
+    instantiating the TimeSync object. This method will return a python
+    dictionary containing the created activity if successful. The dictionary
+    will contain error information if ``create_activity()`` was unsuccessful.
 
     ``activity`` is a python dictionary containing the activity information to
     send to TimeSync. The syntax is ``"key": "value"``. ``activity`` requires
@@ -684,7 +684,7 @@ TimeSync.\ **create_activity(activity)**
       ...    "slug": "qa"
       ...}
       >>> ts.create_activity(activity=activity)
-      [{'uuid': 'cfa07a4f-d446-4078-8d73-2f77560c35c0', 'created_at': '2013-07-27', 'updated_at': None, 'deleted_at': None, 'revision': 1, 'slug': 'qa', 'name': 'Quality Assurance/Testing'}]
+      {u'uuid': u'cfa07a4f-d446-4078-8d73-2f77560c35c0', u'created_at': u'2013-07-27', u'updated_at': None, u'deleted_at': None, u'revision': 1, u'slug': u'qa', u'name': u'Quality Assurance/Testing'}
       >>>
 
 ------------------------------------------
@@ -693,8 +693,8 @@ TimeSync.\ **update_activity(activity, slug)**
 
     Update an existing activity by slug on the TimeSync instance specified by
     the baseurl provided when instantiating the TimeSync object. This method
-    will return a list with a single python dictionary containing the updated
-    activity if successful. The dictionary will contain error information if
+    will return a python dictionary containing the updated activity if
+    successful. The dictionary will contain error information if
     ``update_activity()`` was unsuccessful.
 
     ``activity`` is a python dictionary containing the activity information to
@@ -718,7 +718,7 @@ TimeSync.\ **update_activity(activity, slug)**
 
       >>> activity = {"name": "Code in the wild"}
       >>> ts.update_activity(activity=activity, slug="ciw")
-      [{'uuid': '3cf78d25-411c-4d1f-80c8-a09e5e12cae3', 'created_at': '2014-04-16', 'updated_at': '2014-04-17', 'deleted_at': None, 'revision': 2, 'slug': 'ciw', 'name': 'Code in the wild'}]
+      {u'uuid': u'3cf78d25-411c-4d1f-80c8-a09e5e12cae3', u'created_at': u'2014-04-16', u'updated_at': u'2014-04-17', u'deleted_at': None, u'revision': 2, u'slug': u'ciw', u'name': u'Code in the wild'}
       >>>
 
 ------------------------------------------
@@ -730,7 +730,7 @@ TimeSync.\ **delete_activity(slug)**
 
     ``slug`` is a string containing the slug of the activity to be deleted.
 
-    **delete_activity()** returns a ``[{"status": 200}]`` if successful or an
+    **delete_activity()** returns a ``{"status": 200}`` if successful or an
     error message if unsuccessful.
 
     Example usage:
@@ -738,7 +738,7 @@ TimeSync.\ **delete_activity(slug)**
     .. code-block:: python
 
       >>> ts.delete_activity(slug="some-slug")
-      [{"status": 200}]
+      {u'status': 200}
       >>>
 
 
@@ -747,10 +747,9 @@ TimeSync.\ **delete_activity(slug)**
 TimeSync.\ **create_user(user)**
 
     Create a user on the TimeSync instance at the baseurl provided when
-    instantiating the TimeSync object. This method will return a list with
-    a single python dictionary containing the created user if successful.
-    The dictionary will contain error information if ``create_user()`` was
-    unsuccessful.
+    instantiating the TimeSync object. This method will return a python
+    dictionary containing the created user if successful. The dictionary will
+    contain error information if ``create_user()`` was unsuccessful.
 
     ``user`` is a python dictionary containing the user information to send to
     TimeSync. The syntax is ``"key": "value"``. ``user`` requires the following
@@ -779,7 +778,7 @@ TimeSync.\ **create_user(user)**
       ...    "email": "example@example.com"
       ...}
       >>> ts.create_user(user=user)
-      [{'username': 'example', 'deleted_at': None, 'displayname': 'X. Ample User', 'admin': False, 'created_at': '2015-05-23', 'active': True, 'email': 'example@example.com'}]
+      {u'username': u'example', u'deleted_at': None, u'displayname': u'X. Ample User', u'admin': False, u'created_at': u'2015-05-23', u'active': True, u'email': u'example@example.com'}
       >>>
 
 ------------------------------------------
@@ -788,9 +787,9 @@ TimeSync.\ **update_user(user, username)**
 
     Update an existing user by ``username`` on the TimeSync instance specified
     by the baseurl provided when instantiating the TimeSync object. This method
-    will return a list with a single python dictionary containing the updated
-    user if successful. The dictionary will contain error information if
-    ``update_user()`` was unsuccessful.
+    will return a python dictionary containing the updated user if successful.
+    The dictionary will contain error information if ``update_user()`` was
+    unsuccessful.
 
     ``user`` is a python dictionary containing the user information to send to
     TimeSync. The syntax is ``"key": "value"``.
@@ -815,7 +814,7 @@ TimeSync.\ **update_user(user, username)**
       ...    "email": "red-leader@yavin.com"
       ...}
       >>> ts.update_user(user=user, username="example")
-      [{'username': 'red-leader', 'displayname': 'Mr. Example', 'admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'red-leader@yavin.com'}]
+      {u'username': u'red-leader', u'displayname': u'Mr. Example', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'red-leader@yavin.com'}
       >>>
 
 ------------------------------------------
@@ -827,7 +826,7 @@ TimeSync.\ **delete_user(username)**
 
     ``username`` is a string containing the username of the user to be deleted.
 
-    **delete_user()** returns a ``[{"status": 200}]`` if successful or an error
+    **delete_user()** returns a ``{"status": 200}`` if successful or an error
     message if unsuccessful.
 
     Example usage:
@@ -835,5 +834,5 @@ TimeSync.\ **delete_user(username)**
     .. code-block:: python
 
       >>> ts.delete_user(username="username")
-      [{"status": 200}]
+      {u'status": 200}
       >>>
