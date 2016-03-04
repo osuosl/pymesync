@@ -546,7 +546,7 @@ TimeSync.\ **get_users(username=None)**
     .. code-block:: python
 
       >>> ts.get_users()
-      [{u'username': u'userone', u'displayname': u'One Is The Loneliest Number', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'displayname': u'Two Can Be As Bad As One', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'displayname': "Yes It's The Saddest Experience", u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'displayname': "You'll Ever Do", u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
+      [{u'username': u'userone', u'displayname': u'One Is The Loneliest Number', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'displayname': u'Two Can Be As Bad As One', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'displayname': u'Yes Its The Saddest Experience', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'displayname': u'Youll Ever Do', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
       >>>
 
 ------------------------------------------
@@ -595,7 +595,7 @@ TimeSync.\ **create_project(project)**
       ...}
       >>>
       >>> ts.create_project(project=project)
-      {u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': true}, u'mrsj': {u'member': true, u'spectator': false, u'manager': false}, u'patcht': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'deleted_at': None, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'updated_at': None, u'created_at': u'2015-05-23', u'uri': u'https://code.osuosl.org/projects/timesync', u'name': u'TimeSync API', u'revision': 1, u'slugs': [u'timesync', u'time'], u'users': {u'managers': [u'tschuy'], u'spectators': [u'tschuy'], u'members': [u'patcht', u'tschuy']}}
+      {u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': true}, u'mrsj': {u'member': true, u'spectator': false, u'manager': false}, u'patcht': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'deleted_at': None, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'updated_at': None, u'created_at': u'2015-05-23', u'uri': u'https://code.osuosl.org/projects/timesync', u'name': u'TimeSync API', u'revision': 1, u'slugs': [u'timesync', u'time']}
       >>>
 
 ------------------------------------------
@@ -656,7 +656,7 @@ TimeSync.\ **delete_project(slug)**
     .. code-block:: python
 
       >>> ts.delete_project(slug="some-slug")
-      {u'status': 200}]
+      {u'status': 200}
       >>>
 
 ------------------------------------------
