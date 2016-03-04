@@ -25,6 +25,7 @@ To test the source code:
 
 .. code-block::
 
+  (venv) $ cd pymesync   # pymesync subdirectory holds the source code
   (venv) $ make test
   (venv) $ make flake    # Runs flake8 on pymesync.py and tests.py
 
