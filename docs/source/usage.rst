@@ -636,7 +636,7 @@ TimeSync.\ **update_project(project, slug)**
       ...    "name": "pymesync",
       ...}
       >>> ts.update_project(project=project, slug="ps")
-      {u'users': {u'tschuy': {u'member': True, u'spectator': True, u'manager': True}, u'patcht': {u'member': True, u'spectator': False, u'manager': False}}, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'name': u'pymesync', u'updated_at': u'2014-04-18', u'created_at': u'2014-04-16', u'deleted_at': None, u'revision': 2, u'uri': u'https://code.osuosl.org/projects/timesync', u'slugs': [u'ps']}]
+      {u'users': {u'tschuy': {u'member': True, u'spectator': True, u'manager': True}, u'patcht': {u'member': True, u'spectator': False, u'manager': False}}, u'uuid': u'309eae69-21dc-4538-9fdc-e6892a9c4dd4', u'name': u'pymesync', u'updated_at': u'2014-04-18', u'created_at': u'2014-04-16', u'deleted_at': None, u'revision': 2, u'uri': u'https://code.osuosl.org/projects/timesync', u'slugs': [u'ps']}
       >>>
 
 ------------------------------------------
