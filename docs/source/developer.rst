@@ -30,10 +30,11 @@ described in the next section.
 Return Format
 -------------
 
-Pymesync (almost) **always** returns a list of one or more python dictionaries.
-
-This allows the user to access information using array notation for every
-method. Even error messages are returned in this manner.
+Pymesync usually returns a dictionary or a list of zero or more python
+dictionaries (in the case of get methods). The return format is decided by the
+information that will be returned by TimeSync. If TimeSync could return
+multiple objects, Pymesync returns the dicts in a list, even if zero or one
+object is returned.
 
 Following this format, the user can use the same logic and syntax to process a
 ``get_<endpoint>()`` method that returns one object as they do for a
@@ -42,18 +43,20 @@ filtering parameters can be passed to those methods that will get an unknown
 number of objects from TimeSync.
 
 The exception to this rule is for simple data returns like
-``token_expiration_time()``, which returns a python datetime, or
-``project_users()``, which return a python dictionary.
+``token_expiration_time()``, which returns a python datetime. 
 
 Error Messages
 --------------
 
-As mentioned above, local pymesync error messages should be returned as a
-python dictionary within a list. The key for the error message is set as a class
-variable in the ``pymesync.TimeSync`` class constructor. This class variable is
-called ``error`` and sets the key name throughout the module, including in the
-tests. The value stored at the key location must be descriptive enough to help
-the user debug their issue.
+Local pymesync error messages and TimeSync error messages returned from the API
+should be returned in the same format as their parent method. Simple data
+returns such as ``token_expiration_time()`` should return a python dictionary.
+
+The key for the error message is set as a class variable in the
+``pymesync.TimeSync`` class constructor. This class variable is called
+``error`` and sets the key name throughout the module, including in the tests.
+The value stored at the key location must be descriptive enough to help the
+user debug their issue.
 
 The TimeSync API also returns its own errors in a different format, like so:
 
