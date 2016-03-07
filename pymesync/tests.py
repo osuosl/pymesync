@@ -2404,8 +2404,7 @@ G       methods"""
                           expected_result_admin)
 
     def test_sitewide_users_bad_permission(self):
-        """Test project_users method with an error object returned from
-        TimeSync"""
+        """Test sitewide_users method with a bad permission argument"""
         self.assertEquals(self.ts.sitewide_users(permission="wat"),
                          {self.ts.error: u"invalid permission: wat"})
 
