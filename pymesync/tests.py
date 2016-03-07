@@ -2292,6 +2292,122 @@ G       methods"""
                           {self.ts.error: "Missing project slug, please "
                                           "include in method call"})
 
+    def test_sitewide_users_valid(self):
+        """Test sitewide_users method with a valid user object list returned
+        from TimeSync. No parameters passed returns all users with sitewide
+        permissions"""
+        response = resp()
+        response.status_code = 200
+        response.text = json.dumps([
+            {
+                "display_name": "User One",
+                "username": "user1",
+                "email": "user1@example.org",
+                "site_spectator": True,
+                "site_manager": False,
+                "site_admin": False,
+                "created_at": "2016-02-15",
+                "updated_at": "2016-02-15",
+                "deleted_at": None,
+                "active": True,
+                "meta": "extra metadata about user"
+           },
+           {
+                "display_name": "User Two",
+                "username": "user2",
+                "email": "user2@example.org",
+                "site_spectator": False,
+                "site_manager": True,
+                "site_admin": False,
+                "created_at": "2016-02-15",
+                "updated_at": "2016-02-15",
+                "deleted_at": None,
+                "active": True,
+                "meta": "extra metadata about user"
+           },
+           {
+                "display_name": "User Three",
+                "username": "user3",
+                "email": "user3@example.org",
+                "site_spectator": False,
+                "site_manager": False,
+                "site_admin": True,
+                "created_at": "2016-02-15",
+                "updated_at": "2016-02-15",
+                "deleted_at": None,
+                "active": True,
+                "meta": "extra metadata about user"
+           },
+           {
+                "display_name": "User Four",
+                "username": "user4",
+                "email": "user4@example.org",
+                "site_spectator": True,
+                "site_manager": True,
+                "site_admin": False,
+                "created_at": "2016-02-15",
+                "updated_at": "2016-02-15",
+                "deleted_at": None,
+                "active": True,
+                "meta": "extra metadata about user"
+           },
+           {
+                "display_name": "User Five",
+                "username": "user5",
+                "email": "user5@example.org",
+                "site_spectator": False,
+                "site_manager": False,
+                "site_admin": False,
+                "created_at": "2016-02-15",
+                "updated_at": "2016-02-15",
+                "deleted_at": None,
+                "active": True,
+                "meta": "extra metadata about user"
+           },
+           
+        ])
+        expected_result = {
+            u'user1': [u'site_spectator'],
+            u'user2': [u'site_manager'],
+            u'user3': [u'site_admin'],
+            u'user4': [u'site_spectator', u'site_manager'],
+        }
+        expected_result_spectator = {
+            u'user1': [u'site_spectator'],
+            u'user4': [u'site_spectator', u'site_manager'],
+        }
+        expected_result_manager = {
+            u'user2': [u'site_manager'],
+            u'user4': [u'site_spectator', u'site_manager'],
+        }
+        expected_result_admin = {
+            u'user3': [u'site_admin'],
+        }
+
+        # Mock requests.get so it doesn't actually post to TimeSync
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        self.assertEquals(self.ts.sitewide_users(),
+                          expected_result)
+        self.assertEquals(self.ts.sitewide_users(permission="spectator"),
+                          expected_result_spectator)
+        self.assertEquals(self.ts.sitewide_users(permission="site_spectator"),
+                          expected_result_spectator)
+        self.assertEquals(self.ts.sitewide_users(permission="manager"),
+                          expected_result_manager)
+        self.assertEquals(self.ts.sitewide_users(permission="site_manager"),
+                          expected_result_manager)
+        self.assertEquals(self.ts.sitewide_users(permission="admin"),
+                          expected_result_admin)
+        self.assertEquals(self.ts.sitewide_users(permission="site_admin"),
+                          expected_result_admin)
+
+    def test_sitewide_users_bad_permission(self):
+        """Test sitewide_users method with a bad permission argument"""
+        self.assertEquals(self.ts.sitewide_users(permission="wat"),
+                         {self.ts.error: u"invalid permission: wat"})
+
 if __name__ == "__main__":
     # Save these for resetting mocked methods
     actual_post = requests.post
