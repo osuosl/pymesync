@@ -1,7 +1,7 @@
 import datetime
 
 def authenticate():
-    return [{"token": "TESTTOKEN"}]
+    return {"token": "TESTTOKEN"}
 
 
 def token_expiration_time():
@@ -17,7 +17,7 @@ def create_time(p_dict):
     p_dict["revision"] = 1
     p_dict["notes"] = p_dict["notes"] if p_dict["notes"] else None
     p_dict["issue_uri"] = p_dict["issue_uri"] if p_dict["issue_uri"] else None
-    return [p_dict]
+    return p_dict
 
 
 def update_time(p_dict, uuid):
@@ -39,30 +39,22 @@ def update_time(p_dict, uuid):
         "uuid": uuid,
         "revision": 2
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_project(p_dict):
     """Creates project"""
     p_dict["users"] = {
-        "members": [
-            "patcht",
-            "tschuy"
-        ],
-        "spectators": [
-            "tschuy"
-        ],
-        "managers": [
-            "tschuy"
-        ]
-    }
+        "mrsj": {"member": True, "spectator": True, "manager": True},
+        "tschuy": {"member": True, "spectator": False, "manager": False}
+    } if "users" not in p_dict else p_dict["users"]
     p_dict["uuid"] = "309eae69-21dc-4538-9fdc-e6892a9c4dd4"
     p_dict["revision"] = 1
     p_dict["created_at"] = "2015-05-23"
     p_dict["updated_at"] = None
     p_dict["deleted_at"] = None
     p_dict["uri"] = p_dict["uri"] if "uri" in p_dict else None
-    return [p_dict]
+    return p_dict
 
 
 def update_project(p_dict, slug):
@@ -89,7 +81,7 @@ def update_project(p_dict, slug):
             ]
         }
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_activity(p_dict):
@@ -99,7 +91,7 @@ def create_activity(p_dict):
     p_dict["updated_at"] = None
     p_dict["deleted_at"] = None
     p_dict["revision"] = 1
-    return [p_dict]
+    return p_dict
 
 
 def update_activity(p_dict, slug):
@@ -113,7 +105,7 @@ def update_activity(p_dict, slug):
         "deleted_at": None,
         "revision": 2
     }
-    return [updated_param]
+    return updated_param
 
 
 def create_user(p_dict):
@@ -123,7 +115,7 @@ def create_user(p_dict):
     p_dict["created_at"] = "2015-05-23"
     p_dict["deleted_at"] = None
     del(p_dict["password"])
-    return [p_dict]
+    return p_dict
 
 
 def update_user(p_dict, username):
@@ -139,7 +131,7 @@ def update_user(p_dict, username):
         "created_at": "2015-02-29",
         "deleted_at": None
     }
-    return [updated_param]
+    return updated_param
 
 
 def get_times(uuid):
@@ -379,3 +371,20 @@ def get_users(username):
 def delete_object():
     """Delete an object from TimeSync"""
     return [{"status": 200}]
+
+
+def project_users():
+    """Return list of users and permissions from TimeSync"""
+    users = {
+        u'malcolm': [u'member', u'manager'],
+        u'jayne':   [u'member'],
+        u'kaylee':  [u'member'],
+        u'zoe':     [u'member'],
+        u'hoban':   [u'member'],
+        u'simon':   [u'spectator'],
+        u'river':   [u'spectator'],
+        u'derrial': [u'spectator'],
+        u'inara':   [u'spectator']
+    }
+
+    return users

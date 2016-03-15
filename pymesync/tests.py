@@ -30,6 +30,7 @@ class TestPymesync(unittest.TestCase):
         del(self.ts)
         requests.post = actual_post
         requests.delete = actual_delete
+        requests.get = actual_get
 
     def test_instantiate_with_token(self):
         """Test that instantiating pymesync with a token sets the token
@@ -156,8 +157,8 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
-                          [{self.ts.error:
-                            "time object: invalid field: bad"}])
+                          {self.ts.error:
+                           "time object: invalid field: bad"})
 
     def test_create_or_update_create_time_two_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create time with
@@ -173,9 +174,9 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
-                          [{self.ts.error:
-                            "time object: missing required field(s): "
-                            "project, activities"}])
+                          {self.ts.error:
+                           "time object: missing required field(s): "
+                           "project, activities"})
 
     def test_create_or_update_create_time_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update to create time with
@@ -195,8 +196,8 @@ class TestPymesync(unittest.TestCase):
             del(time_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
                               time_to_test, None, "time", "times"),
-                              [{self.ts.error: "time object: "
-                                "missing required field(s): {}".format(key)}])
+                              {self.ts.error: "time object: "
+                               "missing required field(s): {}".format(key)})
             time_to_test = dict(time)
 
     def test_create_or_update_create_time_type_error(self):
@@ -210,8 +211,8 @@ class TestPymesync(unittest.TestCase):
                                                                   None,
                                                                   "time",
                                                                   "times"),
-                              [{self.ts.error:
-                                "time object: must be python dictionary"}])
+                              {self.ts.error:
+                               "time object: must be python dictionary"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_time_catch_request_error(self, m):
@@ -340,8 +341,8 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._TimeSync__create_or_update(user, None,
                                                               "user", "users"),
-                          [{self.ts.error:
-                            "user object: invalid field: bad"}])
+                          {self.ts.error:
+                           "user object: invalid field: bad"})
 
     def test_create_or_update_create_user_two_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create user with missing
@@ -354,9 +355,9 @@ class TestPymesync(unittest.TestCase):
 
         self.assertEquals(self.ts._TimeSync__create_or_update(user, None,
                                                               "user", "users"),
-                          [{self.ts.error:
-                            "user object: missing required field(s): "
-                            "username, password"}])
+                          {self.ts.error:
+                           "user object: missing required field(s): "
+                           "username, password"})
 
     def test_create_or_update_create_user_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update to create user with
@@ -373,8 +374,8 @@ class TestPymesync(unittest.TestCase):
             del(user_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
                               user_to_test, None, "user", "users"),
-                              [{self.ts.error: "user object: "
-                                "missing required field(s): {}".format(key)}])
+                              {self.ts.error: "user object: "
+                               "missing required field(s): {}".format(key)})
             user_to_test = dict(user)
 
     def test_create_or_update_create_user_type_error(self):
@@ -388,8 +389,8 @@ class TestPymesync(unittest.TestCase):
                                                                   None,
                                                                   "user",
                                                                   "users"),
-                              [{self.ts.error:
-                                "user object: must be python dictionary"}])
+                              {self.ts.error:
+                               "user object: must be python dictionary"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_user_catch_request_error(self, m):
@@ -419,6 +420,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
         # Format content for assert_called_with test
@@ -447,6 +452,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
         # Format content for assert_called_with test
@@ -503,6 +512,10 @@ class TestPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            },
             "bad": "field"
         }
 
@@ -510,8 +523,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "project",
                                                               "projects"),
-                          [{self.ts.error:
-                            "project object: invalid field: bad"}])
+                          {self.ts.error:
+                           "project object: invalid field: bad"})
 
     def test_create_or_update_create_project_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create project with
@@ -525,8 +538,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "project",
                                                               "project"),
-                          [{self.ts.error: "project object: "
-                            "missing required field(s): name"}])
+                          {self.ts.error: "project object: "
+                           "missing required field(s): name"})
 
     def test_create_or_update_create_project_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create project with
@@ -543,8 +556,8 @@ class TestPymesync(unittest.TestCase):
             del(project_to_test[key])
             self.assertEquals(self.ts._TimeSync__create_or_update(
                               project_to_test, None, "project", "projects"),
-                              [{self.ts.error: "project object: "
-                                "missing required field(s): {}".format(key)}])
+                              {self.ts.error: "project object: "
+                               "missing required field(s): {}".format(key)})
             project_to_test = dict(project)
 
     def test_create_or_update_create_project_type_error(self):
@@ -558,8 +571,8 @@ class TestPymesync(unittest.TestCase):
                                                                   None,
                                                                   "project",
                                                                   "projects"),
-                              [{self.ts.error:
-                                "project object: must be python dictionary"}])
+                              {self.ts.error:
+                               "project object: must be python dictionary"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_activity_valid(self, m_resp_python):
@@ -658,8 +671,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "activity",
                                                               "activites"),
-                          [{self.ts.error:
-                            "activity object: invalid field: bad"}])
+                          {self.ts.error:
+                           "activity object: invalid field: bad"})
 
     def test_create_or_update_create_activity_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
@@ -673,8 +686,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "activity",
                                                               "activities"),
-                          [{self.ts.error: "activity object: "
-                            "missing required field(s): slug"}])
+                          {self.ts.error: "activity object: "
+                           "missing required field(s): slug"})
 
     def test_create_or_update_create_activity_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update for create activity with
@@ -692,8 +705,8 @@ class TestPymesync(unittest.TestCase):
             self.assertEquals(self.ts._TimeSync__create_or_update(
                               activity_to_test, None,
                               "activity", "activities"),
-                              [{self.ts.error: "activity object: "
-                                "missing required field(s): {}".format(key)}])
+                              {self.ts.error: "activity object: "
+                               "missing required field(s): {}".format(key)})
             activity_to_test = dict(activity)
 
     def test_create_or_update_create_activity_type_error(self):
@@ -705,8 +718,8 @@ class TestPymesync(unittest.TestCase):
         for param in param_list:
             self.assertEquals(self.ts._TimeSync__create_or_update(param,
                               None, "activity", "activities"),
-                              [{self.ts.error:
-                                "activity object: must be python dictionary"}])
+                              {self.ts.error:
+                               "activity object: must be python dictionary"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_time_no_auth(self, m_resp_python):
@@ -728,8 +741,8 @@ class TestPymesync(unittest.TestCase):
         # Send it
         self.assertEquals(self.ts._TimeSync__create_or_update(time, None,
                                                               "time", "times"),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_project_no_auth(self, m_resp_python):
@@ -749,8 +762,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "project",
                                                               "projects"),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_activity_no_auth(self, m_resp_python):
@@ -769,8 +782,8 @@ class TestPymesync(unittest.TestCase):
                                                               None,
                                                               "activity",
                                                               "activities"),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_update_time_no_auth(self, m_resp_python):
@@ -795,8 +808,8 @@ class TestPymesync(unittest.TestCase):
                                                               "time",
                                                               "times",
                                                               False),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_update_project_no_auth(self, m_resp_python):
@@ -817,8 +830,8 @@ class TestPymesync(unittest.TestCase):
                                                               "project",
                                                               "project",
                                                               False),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_update_activity_no_auth(self, m_resp_python):
@@ -838,8 +851,8 @@ class TestPymesync(unittest.TestCase):
                                                               "activity",
                                                               "activities",
                                                               False),
-                          [{self.ts.error: "Not authenticated with "
-                            "TimeSync, call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with "
+                           "TimeSync, call self.authenticate() first"})
 
     def test_auth(self):
         """Tests TimeSync._TimeSync__auth function"""
@@ -1422,19 +1435,17 @@ class TestPymesync(unittest.TestCase):
             "updated_at": "2014-07-20"\
         }'
 
-        python_object = [
-            {
-                u"uuid": u"a034806c-00db-4fe1-8de8-514575f31bfb",
-                u"updated_at": u"2014-07-20",
-                u"created_at": u"2014-07-17",
-                u"uri": u"https://code.osuosl.org/projects/ganeti-webmgr",
-                u"name": u"Ganeti Web Manager",
-                u"owner": u"example-user",
-                u"deleted_at": None,
-                u"slugs": [u"ganeti", u"gwm"],
-                u"revision": 4
-            }
-        ]
+        python_object = {
+            u"uuid": u"a034806c-00db-4fe1-8de8-514575f31bfb",
+            u"updated_at": u"2014-07-20",
+            u"created_at": u"2014-07-17",
+            u"uri": u"https://code.osuosl.org/projects/ganeti-webmgr",
+            u"name": u"Ganeti Web Manager",
+            u"owner": u"example-user",
+            u"deleted_at": None,
+            u"slugs": [u"ganeti", u"gwm"],
+            u"revision": 4
+        }
 
         response = resp()
         response.text = json_object
@@ -1513,12 +1524,12 @@ class TestPymesync(unittest.TestCase):
 
     def test_response_to_python_empty_response(self):
         """Check that __response_to_python returns correctly for delete_*
-        methods"""
+G       methods"""
         response = resp()
         response.text = ""
         response.status_code = 200
         self.assertEquals(self.ts._TimeSync__response_to_python(response),
-                          [{"status": 200}])
+                          {"status": 200})
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_time(self, mock_create_or_update):
@@ -1571,8 +1582,8 @@ class TestPymesync(unittest.TestCase):
         }
 
         self.assertEquals(self.ts.create_time(time),
-                          [{self.ts.error:
-                            "time object: duration cannot be negative"}])
+                          {self.ts.error:
+                           "time object: duration cannot be negative"})
 
     def test_update_time_with_negative_duration(self):
         """Tests that TimeSync.update_time will return an error if a negative
@@ -1588,8 +1599,8 @@ class TestPymesync(unittest.TestCase):
         }
 
         self.assertEquals(self.ts.update_time(time, "uuid"),
-                          [{self.ts.error:
-                            "time object: duration cannot be negative"}])
+                          {self.ts.error:
+                           "time object: duration cannot be negative"})
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_create_time_with_string_duration(self, mock_create_or_update):
@@ -1787,6 +1798,46 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(user, None, "user", "users")
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_create_user_valid_perms(self, mock_create_or_update):
+        """Tests that TimeSync.create_user calls _create_or_update with correct
+        parameters and valid permission fields"""
+        user = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+            "admin": False,
+            "spectator": False,
+            "manager": True,
+        }
+
+        self.ts.create_user(user)
+
+        mock_create_or_update.assert_called_with(user, None, "user", "users")
+
+    def test_create_user_invalid_admin(self):
+        """Tests that TimeSync.create_user returns error with invalid perm
+        field"""
+        user = {
+            "username": "example-user",
+            "password": "password",
+            "displayname": "Example User",
+            "email": "example.user@example.com",
+            "admin": True,
+            "spectator": False,
+            "manager": True,
+            "active": True,
+        }
+
+        user_to_test = dict(user)
+        for perm in ["admin", "spectator", "manager", "active"]:
+            user_to_test = dict(user)
+            user_to_test[perm] = "invalid"
+            self.assertEquals(self.ts.create_user(user_to_test),
+                              {self.ts.error: "user object: {} must be "
+                                              "True or False".format(perm)})
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_user(self, mock_create_or_update):
         """Tests that TimeSync.update_user calls _create_or_update with correct
         parameters"""
@@ -1834,8 +1885,8 @@ class TestPymesync(unittest.TestCase):
                                           "password",
                                           "password")
 
-        self.assertEquals(auth_block[0]["token"], self.ts.token, "sometoken")
-        self.assertEquals(auth_block, [{"token": "sometoken"}])
+        self.assertEquals(auth_block["token"], self.ts.token, "sometoken")
+        self.assertEquals(auth_block, {"token": "sometoken"})
 
     def test_authentication_return_error(self):
         """Tests authenticate method with an error return"""
@@ -1853,55 +1904,55 @@ class TestPymesync(unittest.TestCase):
                                           "password",
                                           "password")
 
-        self.assertEquals(auth_block, [{"status": 401,
-                                        "error": "Authentication failure",
-                                        "text": "Invalid username or "
-                                        "password"}])
+        self.assertEquals(auth_block, {"status": 401,
+                                       "error": "Authentication failure",
+                                       "text": "Invalid username or "
+                                       "password"})
 
     def test_authentication_no_username(self):
         """Tests authenticate method with no username in call"""
         self.assertEquals(self.ts.authenticate(password="password",
                                                auth_type="password"),
-                          [{self.ts.error: "Missing username; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing username; "
+                           "please add to method call"})
 
     def test_authentication_no_password(self):
         """Tests authenticate method with no password in call"""
         self.assertEquals(self.ts.authenticate(username="username",
                                                auth_type="password"),
-                          [{self.ts.error: "Missing password; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing password; "
+                           "please add to method call"})
 
     def test_authentication_no_auth_type(self):
         """Tests authenticate method with no auth_type in call"""
         self.assertEquals(self.ts.authenticate(password="password",
                                                username="username"),
-                          [{self.ts.error: "Missing auth_type; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing auth_type; "
+                           "please add to method call"})
 
     def test_authentication_no_username_or_password(self):
         """Tests authenticate method with no username or password in call"""
         self.assertEquals(self.ts.authenticate(auth_type="password"),
-                          [{self.ts.error: "Missing username, password; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing username, password; "
+                           "please add to method call"})
 
     def test_authentication_no_username_or_auth_type(self):
         """Tests authenticate method with no username or auth_type in call"""
         self.assertEquals(self.ts.authenticate(password="password"),
-                          [{self.ts.error: "Missing username, auth_type; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing username, auth_type; "
+                           "please add to method call"})
 
     def test_authentication_no_password_or_auth_type(self):
         """Tests authenticate method with no username or auth_type in call"""
         self.assertEquals(self.ts.authenticate(username="username"),
-                          [{self.ts.error: "Missing password, auth_type; "
-                            "please add to method call"}])
+                          {self.ts.error: "Missing password, auth_type; "
+                           "please add to method call"})
 
     def test_authentication_no_arguments(self):
         """Tests authenticate method with no arguments in call"""
         self.assertEquals(self.ts.authenticate(),
-                          [{self.ts.error: "Missing username, password, "
-                            "auth_type; please add to method call"}])
+                          {self.ts.error: "Missing username, password, "
+                           "auth_type; please add to method call"})
 
     def test_authentication_no_token_in_response(self):
         """Tests authenticate method with no token in response"""
@@ -1915,10 +1966,10 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.authenticate(username="username",
                                                password="password",
                                                auth_type="password"),
-                          [{self.ts.error:
-                            "connection to TimeSync failed at baseurl "
-                            "http://ts.example.com/v1 - "
-                            "response status was 502"}])
+                          {self.ts.error:
+                           "connection to TimeSync failed at baseurl "
+                           "http://ts.example.com/v1 - "
+                           "response status was 502"})
 
     def test_local_auth_error_with_token(self):
         """Test internal local_auth_error method with token"""
@@ -1938,10 +1989,10 @@ class TestPymesync(unittest.TestCase):
         response.status_code = 502
 
         self.assertEquals(self.ts._TimeSync__response_to_python(response),
-                          [{self.ts.error:
-                            "connection to TimeSync failed at baseurl "
-                            "http://ts.example.com/v1 - "
-                            "response status was 502"}])
+                          {self.ts.error:
+                           "connection to TimeSync failed at baseurl "
+                           "http://ts.example.com/v1 - "
+                           "response status was 502"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_delete_object_time(self, m_resp_python):
@@ -1994,15 +2045,15 @@ class TestPymesync(unittest.TestCase):
         failure"""
         self.ts.token = None
         self.assertEquals(self.ts.delete_time("abcd-3453-3de3-99sh"),
-                          [{"pymesync error":
-                            "Not authenticated with TimeSync, "
-                            "call self.authenticate() first"}])
+                          {"pymesync error":
+                           "Not authenticated with TimeSync, "
+                           "call self.authenticate() first"})
 
     def test_delete_time_no_uuid(self):
         """Test that delete_time returns proper error when uuid not provided"""
         self.assertEquals(self.ts.delete_time(),
-                          [{"pymesync error":
-                            "missing uuid; please add to method call"}])
+                          {"pymesync error":
+                           "missing uuid; please add to method call"})
 
     @patch("pymesync.TimeSync._TimeSync__delete_object")
     def test_delete_project(self, m_delete_object):
@@ -2015,16 +2066,16 @@ class TestPymesync(unittest.TestCase):
         failure"""
         self.ts.token = None
         self.assertEquals(self.ts.delete_project("ts"),
-                          [{"pymesync error":
-                            "Not authenticated with TimeSync, "
-                            "call self.authenticate() first"}])
+                          {"pymesync error":
+                           "Not authenticated with TimeSync, "
+                           "call self.authenticate() first"})
 
     def test_delete_project_no_slug(self):
         """Test that delete_project returns proper error when slug not
         provided"""
         self.assertEquals(self.ts.delete_project(),
-                          [{"pymesync error":
-                            "missing slug; please add to method call"}])
+                          {"pymesync error":
+                           "missing slug; please add to method call"})
 
     @patch("pymesync.TimeSync._TimeSync__delete_object")
     def test_delete_activity(self, m_delete_object):
@@ -2037,16 +2088,16 @@ class TestPymesync(unittest.TestCase):
         failure"""
         self.ts.token = None
         self.assertEquals(self.ts.delete_activity("code"),
-                          [{"pymesync error":
-                            "Not authenticated with TimeSync, "
-                            "call self.authenticate() first"}])
+                          {"pymesync error":
+                           "Not authenticated with TimeSync, "
+                           "call self.authenticate() first"})
 
     def test_delete_activity_no_slug(self):
         """Test that delete_activity returns proper error when slug not
         provided"""
         self.assertEquals(self.ts.delete_activity(),
-                          [{"pymesync error":
-                            "missing slug; please add to method call"}])
+                          {"pymesync error":
+                           "missing slug; please add to method call"})
 
     @patch("pymesync.TimeSync._TimeSync__delete_object")
     def test_delete_user(self, m_delete_object):
@@ -2059,16 +2110,16 @@ class TestPymesync(unittest.TestCase):
         failure"""
         self.ts.token = None
         self.assertEquals(self.ts.delete_user("example-user"),
-                          [{"pymesync error":
-                            "Not authenticated with TimeSync, "
-                            "call self.authenticate() first"}])
+                          {"pymesync error":
+                           "Not authenticated with TimeSync, "
+                           "call self.authenticate() first"})
 
     def test_delete_user_no_username(self):
         """Test that delete_user returns proper error when username not
         provided"""
         self.assertEquals(self.ts.delete_user(),
-                          [{"pymesync error":
-                            "missing username; please add to method call"}])
+                          {"pymesync error":
+                           "missing username; please add to method call"})
 
     def test_token_expiration_valid(self):
         """Test that token_expiration_time returns valid date from a valid
@@ -2090,15 +2141,15 @@ class TestPymesync(unittest.TestCase):
         """Test that token_expiration_time returns correct from an invalid
         token"""
         self.assertEquals(self.ts.token_expiration_time(),
-                          [{self.ts.error: "improperly encoded token"}])
+                          {self.ts.error: "improperly encoded token"})
 
     def test_token_expiration_no_auth(self):
         """Test that token_expiration_time returns correct error when user is
         not authenticated"""
         self.ts.token = None
         self.assertEquals(self.ts.token_expiration_time(),
-                          [{self.ts.error: "Not authenticated with TimeSync, "
-                                           "call self.authenticate() first"}])
+                          {self.ts.error: "Not authenticated with TimeSync, "
+                                          "call self.authenticate() first"})
 
     def test_duration_to_seconds(self):
         """Tests that when a string duration is entered, it is converted to an
@@ -2148,10 +2199,102 @@ class TestPymesync(unittest.TestCase):
         }
 
         self.assertEquals(self.ts.create_time(time),
-                          [{self.ts.error:
-                            "time object: duration cannot be negative"}])
+                          {self.ts.error:
+                           "time object: duration cannot be negative"})
+
+    def test_project_users_valid(self):
+        """Test project_users method with a valid project object returned from
+        TimeSync"""
+        project = "pyme"
+        response = resp()
+        response.status_code = 200
+        response.text = json.dumps({
+            "uri": "https://github.com/osuosl/pymesync",
+            "name": "pymesync",
+            "slugs": ["pyme", "ps", "pymesync"],
+            "uuid": "a034806c-00db-4fe1-8de8-514575f31bfb",
+            "revision": 4,
+            "created_at": "2014-07-17",
+            "deleted_at": None,
+            "updated_at": "2014-07-20",
+            "users": {
+                "malcolm": {"member": True,
+                            "manager": True,
+                            "spectator": True},
+                "jayne":   {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "kaylee":  {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "zoe":     {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "hoban":   {"member": True,
+                            "manager": False,
+                            "spectator": False},
+                "simon":   {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "river":   {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "derrial": {"member": False,
+                            "manager": False,
+                            "spectator": True},
+                "inara":   {"member": False,
+                            "manager": False,
+                            "spectator": True}
+            }
+        })
+        expected_result = {
+            u'malcolm': [u'member', u'manager', u'spectator'],
+            u'jayne':   [u'member'],
+            u'kaylee':  [u'member'],
+            u'zoe':     [u'member'],
+            u'hoban':   [u'member'],
+            u'simon':   [u'spectator'],
+            u'river':   [u'spectator'],
+            u'derrial': [u'spectator'],
+            u'inara':   [u'spectator']
+        }
+
+        # Mock requests.get so it doesn't actually post to TimeSync
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        self.assertEquals(self.ts.project_users(project=project),
+                          expected_result)
+
+    def test_project_users_error_response(self):
+        """Test project_users method with an error object returned from
+        TimeSync"""
+        proj = "pymes"
+        response = resp()
+        response.status_code = 404
+        response.text = json.dumps({
+            "error": "Object not found",
+            "text": "Nonexistent project"
+        })
+
+        # Mock requests.get so it doesn't actually post to TimeSync
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        self.assertEquals(self.ts.project_users(project=proj),
+                          {u"error": u"Object not found",
+                           u"text": u"Nonexistent project"})
+
+    def test_project_users_no_project_parameter(self):
+        """Test project_users method with no project object passed as a
+        parameter, should return an error"""
+        self.assertEquals(self.ts.project_users(),
+                          {self.ts.error: "Missing project slug, please "
+                                          "include in method call"})
 
 if __name__ == "__main__":
-    actual_post = requests.post  # Save this for testing exceptions
+    # Save these for resetting mocked methods
+    actual_post = requests.post
     actual_delete = requests.delete
+    actual_get = requests.get
     unittest.main()

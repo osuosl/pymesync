@@ -16,7 +16,7 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_authenticate(self):
         self.ts.token = None
         self.assertEquals(self.ts.authenticate("example", "ex", "password"),
-                          [{"token": "TESTTOKEN"}])
+                          {"token": "TESTTOKEN"})
         self.assertEquals(self.ts.token, "TESTTOKEN")
 
     def test_mock_token_expiration_time(self):
@@ -34,7 +34,7 @@ class TestMockPymesync(unittest.TestCase):
             "date_worked": "2014-04-17"
         }
 
-        expected_result = [{
+        expected_result = {
             "duration": 12,
             "user": "example-2",
             "project": "ganeti_web_manager",
@@ -47,7 +47,7 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "uuid": "838853e3-3635-4076-a26f-7efr4e60981f",
             "revision": 1
-        }]
+        }
         self.assertEquals(self.ts.create_time(parameter_dict), expected_result)
 
     def test_mock_update_time(self):
@@ -56,7 +56,7 @@ class TestMockPymesync(unittest.TestCase):
             "user": "red-leader",
             "activities": ["hello", "world"],
         }
-        updated_param = [{
+        updated_param = {
             "duration": 19,
             "user": "red-leader",
             "activities": ["hello", "world"],
@@ -69,7 +69,7 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "uuid": "fake-uuid",
             "revision": 2
-        }]
+        }
         self.assertEquals(self.ts.update_time(parameter_dict, "fake-uuid"),
                           updated_param)
 
@@ -84,7 +84,7 @@ class TestMockPymesync(unittest.TestCase):
             "date_worked": "2014-04-17"
         }
 
-        expected_result = [{
+        expected_result = {
             "duration": 12600,
             "user": "example-2",
             "project": "ganeti_web_manager",
@@ -97,7 +97,7 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "uuid": "838853e3-3635-4076-a26f-7efr4e60981f",
             "revision": 1
-        }]
+        }
         self.assertEquals(self.ts.create_time(parameter_dict), expected_result)
 
     def test_mock_update_time_with_string_duration(self):
@@ -106,7 +106,7 @@ class TestMockPymesync(unittest.TestCase):
             "user": "red-leader",
             "activities": ["hello", "world"],
         }
-        updated_param = [{
+        updated_param = {
             "duration": 12900,
             "user": "red-leader",
             "activities": ["hello", "world"],
@@ -119,7 +119,7 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "uuid": "fake-uuid",
             "revision": 2
-        }]
+        }
         self.assertEquals(self.ts.update_time(parameter_dict, "fake-uuid"),
                           updated_param)
 
@@ -128,9 +128,13 @@ class TestMockPymesync(unittest.TestCase):
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
+            "users": {
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
+            }
         }
 
-        expected_result = [{
+        expected_result = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "TimeSync API",
             "slugs": ["timesync", "time"],
@@ -140,18 +144,10 @@ class TestMockPymesync(unittest.TestCase):
             "deleted_at": None,
             "revision": 1,
             "users": {
-                "members": [
-                    "patcht",
-                    "tschuy"
-                ],
-                "spectators": [
-                    "tschuy"
-                ],
-                "managers": [
-                    "tschuy"
-                ]
+                "mrsj": {"member": True, "spectator": True, "manager": True},
+                "thai": {"member": True, "spectator": False, "manager": False}
             }
-        }]
+        }
 
         self.assertEquals(self.ts.create_project(parameter_dict),
                           expected_result)
@@ -162,7 +158,7 @@ class TestMockPymesync(unittest.TestCase):
             "name": "pymesync",
         }
 
-        expected_result = [{
+        expected_result = {
             "uri": "https://code.osuosl.org/projects/timesync",
             "name": "pymesync",
             "slugs": ["ps"],
@@ -183,7 +179,7 @@ class TestMockPymesync(unittest.TestCase):
                     "tschuy"
                 ]
             }
-        }]
+        }
 
         self.assertEquals(self.ts.update_project(parameter_dict, "ps"),
                           expected_result)
@@ -194,7 +190,7 @@ class TestMockPymesync(unittest.TestCase):
             "slug": "qa"
         }
 
-        expected_result = [{
+        expected_result = {
             "name": "Quality Assurance/Testing",
             "slug": "qa",
             "uuid": "cfa07a4f-d446-4078-8d73-2f77560c35c0",
@@ -202,7 +198,7 @@ class TestMockPymesync(unittest.TestCase):
             "updated_at": None,
             "deleted_at": None,
             "revision": 1
-        }]
+        }
 
         self.assertEquals(self.ts.create_activity(parameter_dict),
                           expected_result)
@@ -210,7 +206,7 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_update_activity(self):
         parameter_dict = {"name": "Code in the wild"}
 
-        expected_result = [{
+        expected_result = {
             "name": "Code in the wild",
             "slug": "ciw",
             "uuid": "3cf78d25-411c-4d1f-80c8-a09e5e12cae3",
@@ -218,7 +214,7 @@ class TestMockPymesync(unittest.TestCase):
             "updated_at": "2014-04-17",
             "deleted_at": None,
             "revision": 2
-        }]
+        }
 
         self.assertEquals(self.ts.update_activity(parameter_dict, "ciw"),
                           expected_result)
@@ -231,7 +227,7 @@ class TestMockPymesync(unittest.TestCase):
             "email": "example@example.com"
         }
 
-        expected_result = [{
+        expected_result = {
             "username": "example",
             "displayname": "X. Ample User",
             "email": "example@example.com",
@@ -239,7 +235,7 @@ class TestMockPymesync(unittest.TestCase):
             "admin": False,
             "created_at": "2015-05-23",
             "deleted_at": None
-        }]
+        }
 
         self.assertEquals(self.ts.create_user(parameter_dict), expected_result)
 
@@ -249,7 +245,7 @@ class TestMockPymesync(unittest.TestCase):
             "email": "red-leader@yavin.com"
         }
 
-        expected_result = [{
+        expected_result = {
             "username": "red-leader",
             "displayname": "Mr. Example",
             "email": "red-leader@yavin.com",
@@ -257,7 +253,7 @@ class TestMockPymesync(unittest.TestCase):
             "admin": False,
             "created_at": "2015-02-29",
             "deleted_at": None
-        }]
+        }
 
         self.assertEquals(self.ts.update_user(parameter_dict, "example"),
                           expected_result)
@@ -541,6 +537,26 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.delete_project("junk"), [{"status": 200}])
         self.assertEquals(self.ts.delete_activity("junk"), [{"status": 200}])
         self.assertEquals(self.ts.delete_user("junk"), [{"status": 200}])
+
+    def test_mock_project_users(self):
+        expected_result = {
+            u'malcolm': [u'member', u'manager'],
+            u'jayne':   [u'member'],
+            u'kaylee':  [u'member'],
+            u'zoe':     [u'member'],
+            u'hoban':   [u'member'],
+            u'simon':   [u'spectator'],
+            u'river':   [u'spectator'],
+            u'derrial': [u'spectator'],
+            u'inara':   [u'spectator']
+        }
+
+        self.assertEquals(self.ts.project_users(project="ff"), expected_result)
+
+    def test_mock_project_users_no_slug(self):
+        expected_result = {self.ts.error: "Missing project slug, please "
+                                          "include in method call"}
+        self.assertEquals(self.ts.project_users(), expected_result)
 
 
 if __name__ == "__main__":
