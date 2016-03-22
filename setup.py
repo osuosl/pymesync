@@ -12,7 +12,7 @@ dependencies = [
 
 setup(
     name='pymesync',
-    version='0.1.0',
+    version='0.1.1',
     install_requires=dependencies,
     author='OSU Open Source Lab',
     author_email='support@osuosl.org',
