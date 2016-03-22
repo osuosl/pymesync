@@ -493,6 +493,9 @@ class TimeSync(object):
         url = "{0}/users/{1}".format(self.baseurl, username) if username else (
               "{}/users".format(self.baseurl))
 
+        # The url should always end with a token
+        url += "?token={}".format(self.token)
+
         # Test mode, return one user object if username is passed else return
         # several user objects
         if self.test:
