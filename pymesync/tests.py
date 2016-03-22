@@ -1390,7 +1390,7 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{}/users".format(self.ts.baseurl)
+        url = "{0}/users?token={1}".format(self.ts.baseurl, self.ts.token)
 
         # Send it
         self.ts.get_users()
@@ -1404,7 +1404,9 @@ class TestPymesync(unittest.TestCase):
         # Mock requests.get
         requests.get = mock.Mock("requests.get")
 
-        url = "{0}/users/{1}".format(self.ts.baseurl, "example-user")
+        url = "{0}/users/{1}?token={2}".format(self.ts.baseurl,
+                                               "example-user",
+                                               self.ts.token)
 
         # Send it
         self.ts.get_users("example-user")
