@@ -329,7 +329,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -397,7 +397,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -465,7 +465,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -506,7 +506,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
