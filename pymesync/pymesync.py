@@ -55,7 +55,7 @@ class TimeSync(object):
             "time":     ["notes", "issue_uri"],
             "project":  ["uri", "users", "default_activity"],
             "activity": [],
-            "user":     ["display_name", "email", "site_admin", 
+            "user":     ["display_name", "email", "site_admin",
                          "site_spectator", "site_manager", "meta", "active"],
         }
 
