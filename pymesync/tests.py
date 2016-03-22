@@ -243,7 +243,7 @@ class TestPymesync(unittest.TestCase):
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 
@@ -271,7 +271,7 @@ class TestPymesync(unittest.TestCase):
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 
@@ -299,11 +299,11 @@ class TestPymesync(unittest.TestCase):
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_update_user_valid_less_fields(self,
                                                             m_resp_python):
-        """Tests TimeSync._TimeSync__create_or_update for update user with one valid
-        parameter"""
+        """Tests TimeSync._TimeSync__create_or_update for update user with one
+        valid parameter"""
         # Parameters to be sent to TimeSync
         user = {
-            "displayname": "Example User",
+            "display_name": "Example User",
         }
 
         # Test baseurl and uuid
@@ -334,7 +334,7 @@ class TestPymesync(unittest.TestCase):
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
             "bad": "field",
         }
@@ -349,7 +349,7 @@ class TestPymesync(unittest.TestCase):
         required fields"""
         # Parameters to be sent to TimeSync
         user = {
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 
@@ -399,7 +399,7 @@ class TestPymesync(unittest.TestCase):
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 
@@ -1791,7 +1791,7 @@ G       methods"""
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 
@@ -1806,11 +1806,11 @@ G       methods"""
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
-            "admin": False,
-            "spectator": False,
-            "manager": True,
+            "site_admin": False,
+            "site_spectator": False,
+            "site_manager": True,
         }
 
         self.ts.create_user(user)
@@ -1823,16 +1823,16 @@ G       methods"""
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
-            "admin": True,
-            "spectator": False,
-            "manager": True,
+            "site_admin": True,
+            "site_spectator": False,
+            "site_manager": True,
             "active": True,
         }
 
         user_to_test = dict(user)
-        for perm in ["admin", "spectator", "manager", "active"]:
+        for perm in ["site_admin", "site_spectator", "site_manager", "active"]:
             user_to_test = dict(user)
             user_to_test[perm] = "invalid"
             self.assertEquals(self.ts.create_user(user_to_test),
@@ -1846,7 +1846,7 @@ G       methods"""
         user = {
             "username": "example-user",
             "password": "password",
-            "displayname": "Example User",
+            "display_name": "Example User",
             "email": "example.user@example.com",
         }
 

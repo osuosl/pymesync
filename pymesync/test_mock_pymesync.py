@@ -223,16 +223,18 @@ class TestMockPymesync(unittest.TestCase):
         parameter_dict = {
             "username": "example",
             "password": "password",
-            "displayname": "X. Ample User",
+            "display_name": "X. Ample User",
             "email": "example@example.com"
         }
 
         expected_result = {
             "username": "example",
-            "displayname": "X. Ample User",
+            "display_name": "X. Ample User",
             "email": "example@example.com",
             "active": True,
-            "admin": False,
+            "site_admin": False,
+            "site_manager": False,
+            "site_spectator": False,
             "created_at": "2015-05-23",
             "deleted_at": None
         }
@@ -242,15 +244,18 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_update_user(self):
         parameter_dict = {
             "username": "red-leader",
-            "email": "red-leader@yavin.com"
+            "email": "red-leader@yavin.com",
+            "site_spectator": True
         }
 
         expected_result = {
             "username": "red-leader",
-            "displayname": "Mr. Example",
+            "display_name": "Mr. Example",
             "email": "red-leader@yavin.com",
             "active": True,
-            "admin": False,
+            "site_admin": False,
+            "site_manager": False,
+            "site_spectator": True,
             "created_at": "2015-02-29",
             "deleted_at": None
         }
@@ -480,10 +485,12 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_get_users_with_username(self):
         expected_result = [{
             "username": "example-user",
-            "displayname": "X. Ample User",
+            "display_name": "X. Ample User",
             "email": "example@example.com",
             "active": True,
-            "admin": False,
+            "site_admin": False,
+            "site_manager": False,
+            "site_spectator": False,
             "created_at": "2015-02-29",
             "deleted_at": None
         }]
@@ -494,37 +501,45 @@ class TestMockPymesync(unittest.TestCase):
         expected_result = [
             {
                 "username": "userone",
-                "displayname": "One Is The Loneliest Number",
+                "display_name": "One Is The Loneliest Number",
                 "email": "exampleone@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "usertwo",
-                "displayname": "Two Can Be As Bad As One",
+                "display_name": "Two Can Be As Bad As One",
                 "email": "exampletwo@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "userthree",
-                "displayname": "Yes It's The Saddest Experience",
+                "display_name": "Yes It's The Saddest Experience",
                 "email": "examplethree@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "userfour",
-                "displayname": "You'll Ever Do",
+                "display_name": "You'll Ever Do",
                 "email": "examplefour@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             }

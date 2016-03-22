@@ -111,7 +111,12 @@ def update_activity(p_dict, slug):
 def create_user(p_dict):
     """Creates a user"""
     p_dict["active"] = True
-    p_dict["admin"] = False
+    p_dict["site_admin"] = False if "site_admin" not in p_dict else (
+            p_dict["site_admin"])
+    p_dict["site_manager"] = False if "site_manager" not in p_dict else (
+            p_dict["site_manager"])
+    p_dict["site_spectator"] = False if "site_spectator" not in p_dict else (
+            p_dict["site_spectator"])
     p_dict["created_at"] = "2015-05-23"
     p_dict["deleted_at"] = None
     del(p_dict["password"])
@@ -122,12 +127,17 @@ def update_user(p_dict, username):
     """Updates user by username"""
     updated_param = {
         "username": p_dict["username"] if "username" in p_dict else username,
-        "displayname": p_dict["displayname"] if "displayname" in p_dict else (
+        "display_name": p_dict["display_name"] if "display_name" in p_dict else (
             "Mr. Example"),
         "email": p_dict["email"] if "email" in p_dict else (
             "examplej@example.com"),
         "active": True,
-        "admin": False,
+        "site_admin": False if "site_admin" not in p_dict else (
+            p_dict["site_admin"]),
+        "site_manager": False if "site_manager" not in p_dict else (
+            p_dict["site_manager"]),
+        "site_spectator": False if "site_spectator" not in p_dict else (
+            p_dict["site_spectator"]),
         "created_at": "2015-02-29",
         "deleted_at": None
     }
@@ -319,10 +329,12 @@ def get_users(username):
     if username:
         p_dict = [{
             "username": username,
-            "displayname": "X. Ample User",
+            "display_name": "X. Ample User",
             "email": "example@example.com",
             "active": True,
-            "admin": False,
+            "site_admin": False,
+            "site_spectator": False,
+            "site_manager": False,
             "created_at": "2015-02-29",
             "deleted_at": None
         }]
@@ -330,37 +342,45 @@ def get_users(username):
         p_dict = [
             {
                 "username": "userone",
-                "displayname": "One Is The Loneliest Number",
+                "display_name": "One Is The Loneliest Number",
                 "email": "exampleone@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "usertwo",
-                "displayname": "Two Can Be As Bad As One",
+                "display_name": "Two Can Be As Bad As One",
                 "email": "exampletwo@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,    
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "userthree",
-                "displayname": "Yes It's The Saddest Experience",
+                "display_name": "Yes It's The Saddest Experience",
                 "email": "examplethree@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,    
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
             {
                 "username": "userfour",
-                "displayname": "You'll Ever Do",
+                "display_name": "You'll Ever Do",
                 "email": "examplefour@example.com",
                 "active": True,
-                "admin": False,
+                "site_admin": False,
+                "site_manager": False,
+                "site_spectator": False,    
                 "created_at": "2015-02-29",
                 "deleted_at": None
             }
