@@ -45,18 +45,18 @@ class TimeSync(object):
                                   "start", "end", "include_revisions",
                                   "include_deleted", "uuid"]
         self.required_params = {
-            "time": ["duration", "project", "user",
-                     "activities", "date_worked"],
-            "project": ["name", "slugs"],
+            "time":     ["duration", "project", "user",
+                         "activities", "date_worked"],
+            "project":  ["name", "slugs"],
             "activity": ["name", "slug"],
-            "user": ["username", "password"],
+            "user":     ["username", "password"],
         }
         self.optional_params = {
-            "time": ["notes", "issue_uri"],
-            "project": ["uri", "users"],
+            "time":     ["notes", "issue_uri"],
+            "project":  ["uri", "users", "default_activity"],
             "activity": [],
-            "user": ["displayname", "email", "admin", "spectator",
-                     "manager", "admin", "meta", "active"],
+            "user":     ["display_name", "email", "site_admin",
+                         "site_spectator", "site_manager", "meta", "active"],
         }
 
     def authenticate(self, username=None, password=None, auth_type=None):
@@ -253,7 +253,7 @@ class TimeSync(object):
         ``user`` is a python dictionary containing the user information to send
         to TimeSync.
         """
-        for perm in ["admin", "manager", "spectator", "active"]:
+        for perm in ["site_admin", "site_manager", "site_spectator", "active"]:
             if perm in user and not isinstance(user[perm], bool):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
@@ -329,7 +329,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -397,7 +397,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -465,7 +465,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -506,7 +506,7 @@ class TimeSync(object):
         try:
             # Success!
             response = requests.get(url)
-            return [self.__response_to_python(response)]
+            return self.__response_to_python(response)
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
