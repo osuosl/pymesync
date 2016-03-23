@@ -265,7 +265,8 @@ class TimeSync(object):
         if "password" in user:
             # Hash the password
             password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
             user["password"] = hashed
 
         return self.__create_or_update(user, None, "user", "users")
@@ -295,7 +296,8 @@ class TimeSync(object):
         if "password" in user:
             # Hash the password
             password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
             user["password"] = hashed
 
         return self.__create_or_update(user, username, "user", "users", False)
