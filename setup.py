@@ -8,6 +8,7 @@ dependencies = [
     'requests==2.8.1',
     'six==1.10.0',
     'wsgiref==0.1.2',
+    'bcrypt==2.0.0',
 ]
 
 setup(

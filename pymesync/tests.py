@@ -7,6 +7,7 @@ import json
 import base64
 import ast
 import datetime
+import bcrypt
 
 
 class resp(object):
@@ -1886,6 +1887,8 @@ G       methods"""
         self.ts.create_user(user)
 
         mock_create_or_update.assert_called_with(user, None, "user", "users")
+        self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
 
     def test_create_user_invalid_admin(self):
         """Tests that TimeSync.create_user returns error with invalid perm
@@ -1923,6 +1926,8 @@ G       methods"""
         self.ts.update_user(user, "example")
         mock_create_or_update.assert_called_with(user, "example", "user",
                                                  "users", False)
+        self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_authentication(self, mock_response_to_python):

@@ -29,6 +29,7 @@ import ast
 import datetime
 import mock_pymesync
 import time
+import bcrypt
 
 
 class TimeSync(object):
@@ -258,6 +259,15 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # Hash the password
+            password = user["password"]
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+            user["password"] = hashed
+
         return self.__create_or_update(user, None, "user", "users")
 
     def update_user(self, user, username):
@@ -274,6 +284,20 @@ class TimeSync(object):
         to TimeSync.
         ``username`` contains the username for a user to update.
         """
+        for perm in ["site_admin", "site_manager", "site_spectator", "active"]:
+            if perm in user and not isinstance(user[perm], bool):
+                return {self.error: "user object: "
+                        "{} must be True or False".format(perm)}
+
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # Hash the password
+            password = user["password"]
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+            user["password"] = hashed
+
         return self.__create_or_update(user, username, "user", "users", False)
 
     def get_times(self, query_parameters=None):
