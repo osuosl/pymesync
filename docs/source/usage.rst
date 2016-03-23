@@ -546,7 +546,7 @@ TimeSync.\ **get_users(username=None)**
     .. code-block:: python
 
       >>> ts.get_users()
-      [{u'username': u'userone', u'displayname': u'One Is The Loneliest Number', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'displayname': u'Two Can Be As Bad As One', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'displayname': u'Yes Its The Saddest Experience', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'displayname': u'Youll Ever Do', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
+      [{u'username': u'userone', u'display_name': u'One Is The Loneliest Number', u'site_admin': False, u'site_spectator': False, u'site_spectator': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'display_name': u'Two Can Be As Bad As One', u'site_admin': False, u'site_spectator': False, u'site_manager': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'display_name': u'Yes Its The Saddest Experience', u'site_admin': False, u'site_spectator': False, u'site_manager': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'display_name': u'Youll Ever Do', u'site_admin': False, u'site_manager': False, u'site_spectator': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
       >>>
 
 ------------------------------------------
@@ -760,11 +760,11 @@ TimeSync.\ **create_user(user)**
 
     Additionally, the following parameters may be optionally included:
 
-    * ``"displayname"``
+    * ``"display_name"``
     * ``"email"``
-    * ``"admin"`` - sitewide permission, must be a boolean
-    * ``"spectator"`` - sitewide permission , must be a boolean
-    * ``"manager"`` - sitewide permission, must be a boolean
+    * ``"site_admin"`` - sitewide permission, must be a boolean
+    * ``"site_spectator"`` - sitewide permission , must be a boolean
+    * ``"site_manager"`` - sitewide permission, must be a boolean
     * ``"active"`` - user status, usually set internally, must be a boolean
 
     Example usage:
@@ -774,11 +774,11 @@ TimeSync.\ **create_user(user)**
       >>> user = {
       ...    "username": "example",
       ...    "password": "password",
-      ...    "displayname": "X. Ample User",
+      ...    "display_name": "X. Ample User",
       ...    "email": "example@example.com"
       ...}
       >>> ts.create_user(user=user)
-      {u'username': u'example', u'deleted_at': None, u'displayname': u'X. Ample User', u'admin': False, u'created_at': u'2015-05-23', u'active': True, u'email': u'example@example.com'}
+      {u'username': u'example', u'deleted_at': None, u'display_name': u'X. Ample User', u'site_admin': False, u'site_manager': False, u'site_spectator': False, u'created_at': u'2015-05-23', u'active': True, u'email': u'example@example.com'}
       >>>
 
 ------------------------------------------
@@ -802,8 +802,11 @@ TimeSync.\ **update_user(user, username)**
 
     * ``"username"``
     * ``"password"``
-    * ``"displayname"``
+    * ``"display_name"``
     * ``"email"``
+    * ``"site_admin"``
+    * ``"site_manager"``
+    * ``"site_spectator"``
 
     Example usage:
 
@@ -814,7 +817,7 @@ TimeSync.\ **update_user(user, username)**
       ...    "email": "red-leader@yavin.com"
       ...}
       >>> ts.update_user(user=user, username="example")
-      {u'username': u'red-leader', u'displayname': u'Mr. Example', u'admin': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'red-leader@yavin.com'}
+      {u'username': u'red-leader', u'display_name': u'Mr. Example', u'site_admin': False, u'site_spectator': False, u'site_manager': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'red-leader@yavin.com'}
       >>>
 
 ------------------------------------------
