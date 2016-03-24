@@ -2374,6 +2374,11 @@ G       methods"""
         self.ts = pymesync.TimeSync("http://ts.example.com/v1/")
         self.assertEquals(self.ts.baseurl, "http://ts.example.com/v1")
 
+    def test_baseurl_without_trailing_slash(self):
+        """Test that the trailing slash in the baseurl is removed"""
+        self.ts = pymesync.TimeSync("http://ts.example.com/v1")
+        self.assertEquals(self.ts.baseurl, "http://ts.example.com/v1")
+
 if __name__ == "__main__":
     # Save these for resetting mocked methods
     actual_post = requests.post
