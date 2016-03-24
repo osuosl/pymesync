@@ -35,7 +35,7 @@ import bcrypt
 class TimeSync(object):
 
     def __init__(self, baseurl, token=None, test=False):
-        self.baseurl = baseurl
+        self.baseurl = baseurl[:-1] if baseurl.endswith("/") else baseurl
         self.user = None
         self.password = None
         self.auth_type = None
