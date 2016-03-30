@@ -46,14 +46,13 @@ class TimeSync(object):
                                   "start", "end", "include_revisions",
                                   "include_deleted", "uuid"]
         self.required_params = {
-            "time":     ["duration", "project", "user",
-                         "activities", "date_worked"],
+            "time":     ["duration", "project", "user", "date_worked"],
             "project":  ["name", "slugs"],
             "activity": ["name", "slug"],
             "user":     ["username", "password"],
         }
         self.optional_params = {
-            "time":     ["notes", "issue_uri"],
+            "time":     ["notes", "issue_uri", "activities"],
             "project":  ["uri", "users", "default_activity"],
             "activity": [],
             "user":     ["display_name", "email", "site_admin",
