@@ -166,7 +166,6 @@ class TestPymesync(unittest.TestCase):
         missing required fields"""
         # Parameters to be sent to TimeSync
         time = {
-            "duration": 12,
             "user": "example-user",
             "notes": "Worked on docs",
             "issue_uri": "https://github.com/",
@@ -177,7 +176,7 @@ class TestPymesync(unittest.TestCase):
                                                               "time", "times"),
                           {self.ts.error:
                            "time object: missing required field(s): "
-                           "project, activities"})
+                           "duration, project"})
 
     def test_create_or_update_create_time_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update to create time with
@@ -187,7 +186,6 @@ class TestPymesync(unittest.TestCase):
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
-            "activities": ["documenting"],
             "date_worked": "2014-04-17",
         }
 
