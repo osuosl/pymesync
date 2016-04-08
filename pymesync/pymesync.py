@@ -735,7 +735,7 @@ class TimeSync(object):
         # and we got a ValueError, we know we are having trouble connecting to
         # TimeSync because we are not getting a return from TimeSync.
         try:
-            python_object = json.loads(str(response.text))
+            python_object = json.loads(unicode(response.text))
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
