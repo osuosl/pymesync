@@ -7,6 +7,7 @@ import json
 import base64
 import ast
 import datetime
+import bcrypt
 
 
 class resp(object):
@@ -165,7 +166,6 @@ class TestPymesync(unittest.TestCase):
         missing required fields"""
         # Parameters to be sent to TimeSync
         time = {
-            "duration": 12,
             "user": "example-user",
             "notes": "Worked on docs",
             "issue_uri": "https://github.com/",
@@ -176,7 +176,7 @@ class TestPymesync(unittest.TestCase):
                                                               "time", "times"),
                           {self.ts.error:
                            "time object: missing required field(s): "
-                           "project, activities"})
+                           "duration, project"})
 
     def test_create_or_update_create_time_each_required_missing(self):
         """Tests TimeSync._TimeSync__create_or_update to create time with
@@ -186,7 +186,6 @@ class TestPymesync(unittest.TestCase):
             "duration": 12,
             "project": "ganeti-web-manager",
             "user": "example-user",
-            "activities": ["documenting"],
             "date_worked": "2014-04-17",
         }
 
@@ -1886,6 +1885,8 @@ G       methods"""
         self.ts.create_user(user)
 
         mock_create_or_update.assert_called_with(user, None, "user", "users")
+        self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
 
     def test_create_user_invalid_admin(self):
         """Tests that TimeSync.create_user returns error with invalid perm
@@ -1923,6 +1924,8 @@ G       methods"""
         self.ts.update_user(user, "example")
         mock_create_or_update.assert_called_with(user, "example", "user",
                                                  "users", False)
+        self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_authentication(self, mock_response_to_python):
@@ -2363,6 +2366,16 @@ G       methods"""
         self.assertEquals(self.ts.project_users(),
                           {self.ts.error: "Missing project slug, please "
                                           "include in method call"})
+
+    def test_baseurl_with_trailing_slash(self):
+        """Test that the trailing slash in the baseurl is removed"""
+        self.ts = pymesync.TimeSync("http://ts.example.com/v1/")
+        self.assertEquals(self.ts.baseurl, "http://ts.example.com/v1")
+
+    def test_baseurl_without_trailing_slash(self):
+        """Test that the trailing slash in the baseurl is removed"""
+        self.ts = pymesync.TimeSync("http://ts.example.com/v1")
+        self.assertEquals(self.ts.baseurl, "http://ts.example.com/v1")
 
 if __name__ == "__main__":
     # Save these for resetting mocked methods

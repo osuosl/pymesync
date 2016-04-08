@@ -249,8 +249,6 @@ TimeSync.\ **create_time(time)**
     * ``"project"`` - slug of project worked on
     * ``"user"`` - username of user that did the work, must match ``user``
       specified in instantiation
-    * ``"activities"`` - list of slugs identifying the activies worked on for
-      this time entry
     * ``"date_worked"`` - date worked for this time entry in the form
       ``"yyyy-mm-dd"``
 
@@ -258,6 +256,10 @@ TimeSync.\ **create_time(time)**
 
     * ``"notes"`` - optional notes about this time entry
     * ``"issue_uri"`` - optional uri to issue worked on
+    * ``"activities"`` - list of slugs identifying the activies worked on for
+      this time entry. If this is not provided and the ``project`` submitted
+      has no ``default_activity`` defined by TimeSync, an error will be
+      returned informing the user to include an activity.
 
     Example usage:
 

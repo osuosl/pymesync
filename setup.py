@@ -8,11 +8,12 @@ dependencies = [
     'requests==2.8.1',
     'six==1.10.0',
     'wsgiref==0.1.2',
+    'bcrypt==2.0.0',
 ]
 
 setup(
     name='pymesync',
-    version='0.1.2',
+    version='0.1.3',
     install_requires=dependencies,
     author='OSU Open Source Lab',
     author_email='support@osuosl.org',

@@ -29,12 +29,13 @@ import ast
 import datetime
 import mock_pymesync
 import time
+import bcrypt
 
 
 class TimeSync(object):
 
     def __init__(self, baseurl, token=None, test=False):
-        self.baseurl = baseurl
+        self.baseurl = baseurl[:-1] if baseurl.endswith("/") else baseurl
         self.user = None
         self.password = None
         self.auth_type = None
@@ -45,14 +46,13 @@ class TimeSync(object):
                                   "start", "end", "include_revisions",
                                   "include_deleted", "uuid"]
         self.required_params = {
-            "time":     ["duration", "project", "user",
-                         "activities", "date_worked"],
+            "time":     ["duration", "project", "user", "date_worked"],
             "project":  ["name", "slugs"],
             "activity": ["name", "slug"],
             "user":     ["username", "password"],
         }
         self.optional_params = {
-            "time":     ["notes", "issue_uri"],
+            "time":     ["notes", "issue_uri", "activities"],
             "project":  ["uri", "users", "default_activity"],
             "activity": [],
             "user":     ["display_name", "email", "site_admin",
@@ -258,6 +258,16 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # Hash the password
+            password = user["password"]
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
+            user["password"] = hashed
+
         return self.__create_or_update(user, None, "user", "users")
 
     def update_user(self, user, username):
@@ -274,6 +284,21 @@ class TimeSync(object):
         to TimeSync.
         ``username`` contains the username for a user to update.
         """
+        for perm in ["site_admin", "site_manager", "site_spectator", "active"]:
+            if perm in user and not isinstance(user[perm], bool):
+                return {self.error: "user object: "
+                        "{} must be True or False".format(perm)}
+
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # Hash the password
+            password = user["password"]
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
+            user["password"] = hashed
+
         return self.__create_or_update(user, username, "user", "users", False)
 
     def get_times(self, query_parameters=None):
@@ -710,7 +735,7 @@ class TimeSync(object):
         # and we got a ValueError, we know we are having trouble connecting to
         # TimeSync because we are not getting a return from TimeSync.
         try:
-            python_object = json.loads(str(response.text))
+            python_object = json.loads(unicode(response.text))
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
