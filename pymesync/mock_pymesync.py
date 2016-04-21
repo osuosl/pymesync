@@ -327,7 +327,7 @@ def get_activities(slug):
 def get_users(username):
     """Get user information from TimeSync"""
     if username:
-        p_dict = [{
+        p_dict = {
             "username": username,
             "display_name": "X. Ample User",
             "email": "example@example.com",
@@ -337,7 +337,7 @@ def get_users(username):
             "site_manager": False,
             "created_at": "2015-02-29",
             "deleted_at": None
-        }]
+        }
     else:
         p_dict = [
             {
@@ -358,7 +358,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -369,7 +369,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -380,7 +380,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             }

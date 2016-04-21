@@ -483,7 +483,7 @@ class TestMockPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_activities(), expected_result)
 
     def test_mock_get_users_with_username(self):
-        expected_result = [{
+        expected_result = {
             "username": "example-user",
             "display_name": "X. Ample User",
             "email": "example@example.com",
@@ -493,7 +493,7 @@ class TestMockPymesync(unittest.TestCase):
             "site_spectator": False,
             "created_at": "2015-02-29",
             "deleted_at": None
-        }]
+        }
 
         self.assertEquals(self.ts.get_users("example-user"), expected_result)
 
