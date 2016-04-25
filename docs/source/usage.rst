@@ -355,7 +355,8 @@ TimeSync.\ **get_times(query_parameters=None)**
     provided when instantiating the TimeSync object. The time entries are
     filtered by parameters passed in ``query_parameters``. Returns a list of
     python dictionaries containing the time information returned by TimeSync or
-    an error message if unsuccessful.
+    an error message if unsuccessful. This method always returns a list, even
+    if the list contains zero or one time object.
 
     ``query_parameters`` is a python dictionary containing the optional query
     parameters described in the `TimeSync documentation`_. If
@@ -411,6 +412,8 @@ TimeSync.\ **get_times(query_parameters=None)**
 
       >>> ts.get_times()
       [{u'activities': [u'docs', u'planning'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'userone', u'duration': 1200, u'deleted_at': None, u'uuid': u'c3706e79-1c9a-4765-8d7f-89b4544cad56', u'notes': u'Worked on documentation.', u'project': [u'ganeti-webmgr', u'gwm'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr', u'created_at': u'2014-04-17', u'revision': 1}, {u'activities': [u'code', u'planning'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'usertwo', u'duration': 1300, u'deleted_at': None, u'uuid': u'12345676-1c9a-rrrr-bbbb-89b4544cad56', u'notes': u'Worked on coding', u'project': [u'ganeti-webmgr', u'gwm'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr', u'created_at': u'2014-04-17', u'revision': 1}, {u'activities': [u'code'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'userthree', u'duration': 1400, u'deleted_at': None, u'uuid': u'12345676-1c9a-ssss-cccc-89b4544cad56', u'notes': u'Worked on coding', u'project': [u'timesync', u'ts'], u'issue_uri': u'https://github.com/osuosl/timesync', u'created_at': u'2014-04-17', u'revision': 1}]
+      >>> ts.get_times({"uuid": "c3706e79-1c9a-4765-8d7f-89b4544cad56"})
+      [{u'activities': [u'docs', u'planning'], u'date_worked': u'2014-04-17', u'updated_at': None, u'user': u'userone', u'duration': 1200, u'deleted_at': None, u'uuid': u'c3706e79-1c9a-4765-8d7f-89b4544cad56', u'notes': u'Worked on documentation.', u'project': [u'ganeti-webmgr', u'gwm'], u'issue_uri': u'https://github.com/osuosl/ganeti_webmgr', u'created_at': u'2014-04-17', u'revision': 1}]
       >>>
 
     .. warning::
@@ -448,7 +451,8 @@ TimeSync.\ **get_projects(query_parameters=None)**
     provided when instantiating the TimeSync object. The project entries are
     filtered by parameters passed in ``query_parameters``. Returns a list of
     python dictionaries containing the project information returned by TimeSync
-    or an error message if unsuccessful.
+    or an error message if unsuccessful. This method always returns a list,
+    even if the list contains one project object.
 
     ``query_parameters`` is a dict containing the optional query parameters
     described in the `TimeSync documentation`_. If ``query_parameters`` is
@@ -478,6 +482,8 @@ TimeSync.\ **get_projects(query_parameters=None)**
 
       >>> ts.get_projects()
       [{u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': false}, u'mrsj': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'uuid': u'a034806c-00db-4fe1-8de8-514575f31bfb', u'deleted_at': None, u'name': u'Ganeti Web Manager', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 4, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'slugs': [u'gwm']}, {u'users': {u'managers': [u'tschuy'], u'spectators': [u'tschuy', u'mrsj'], u'members': [u'patcht', u'tschuy', u'mrsj']}, u'uuid': u'a034806c-rrrr-bbbb-8de8-514575f31bfb', u'deleted_at': None, u'name': u'TimeSync', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 2, u'uri': u'https://code.osuosl.org/projects/timesync', u'slugs': [u'timesync', u'ts']}, {u'users': {u'managers': [u'mrsj'], u'spectators': [u'tschuy', u'mrsj'], u'members': [u'patcht', u'tschuy', u'mrsj', u'MaraJade', u'thai']}, u'uuid': u'a034806c-ssss-cccc-8de8-514575f31bfb', u'deleted_at': None, u'name': u'pymesync', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 1, u'uri': u'https://code.osuosl.org/projects/pymesync', u'slugs': [u'pymesync', u'ps']}]
+      >>> ts.get_projects({"slug": "gwm"})
+      [{u'users': {u'tschuy': {u'member': true, u'spectator': false, u'manager': false}, u'mrsj': {u'member': true, u'spectator': false, u'manager': true}, u'oz': {u'member': false, u'spectator': true, u'manager': false}}, u'uuid': u'a034806c-00db-4fe1-8de8-514575f31bfb', u'deleted_at': None, u'name': u'Ganeti Web Manager', u'updated_at': u'2014-07-20', u'created_at': u'2014-07-17', u'revision': 4, u'uri': u'https://code.osuosl.org/projects/ganeti-webmgr', u'slugs': [u'gwm']}]
       >>>
 
     .. warning::
@@ -493,7 +499,8 @@ TimeSync.\ **get_activities(query_parameters=None)**
     provided when instantiating the TimeSync object. The activity entries are
     filtered by parameters passed in ``query_parameters``. Returns a list of
     python dictionaries containing the activity information returned by TimeSync
-    or an error message if unsuccessful.
+    or an error message if unsuccessful. This method always returns a list, even
+    if the list contains one activity object.
 
     ``query_parameters`` contains the optional query parameters described in the
     `TimeSync documentation`_. If ``query_parameters`` is empty,
@@ -523,6 +530,8 @@ TimeSync.\ **get_activities(query_parameters=None)**
 
       >>> ts.get_activities()
       [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slugs': [u'docs'], u'revision': 5}, {u'uuid': u'adf036f5-3d49-bbbb-rrrr-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Coding', u'deleted_at': None, u'slugs': [u'code', u'dev'], u'revision': 1}, {u'uuid': u'adf036f5-3d49-cccc-ssss-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Planning', u'deleted_at': None, u'slugs': [u'plan', u'prep'], u'revision': 1}]
+      >>> ts.get_activities({"slug": "docs"})
+      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slugs': [u'docs'], u'revision': 5}]
       >>>
 
     .. warning::
@@ -537,7 +546,8 @@ TimeSync.\ **get_users(username=None)**
     Request user entities from the TimeSync instance specified by the baseurl
     provided when instantiating the TimeSync object. Returns a list of python
     dictionaries containing the user information returned by TimeSync or an
-    error message if unsuccessful.
+    error message if unsuccessful. This method always returns a list, even if
+    the list contains one user object.
 
     ``username`` is an optional parameter containing a string of the specific
     username to be retrieved. If ``username`` is not provided, a list containing
@@ -549,6 +559,8 @@ TimeSync.\ **get_users(username=None)**
 
       >>> ts.get_users()
       [{u'username': u'userone', u'display_name': u'One Is The Loneliest Number', u'site_admin': False, u'site_spectator': False, u'site_spectator': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}, {u'username': u'usertwo', u'display_name': u'Two Can Be As Bad As One', u'site_admin': False, u'site_spectator': False, u'site_manager': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampletwo@example.com'}, {u'username': u'userthree', u'display_name': u'Yes Its The Saddest Experience', u'site_admin': False, u'site_spectator': False, u'site_manager': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplethree@example.com'}, {u'username': u'userfour', u'display_name': u'Youll Ever Do', u'site_admin': False, u'site_manager': False, u'site_spectator': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'examplefour@example.com'}]
+      >>> ts.get_users(username="userone")
+      [{u'username': u'userone', u'display_name': u'One Is The Loneliest Number', u'site_admin': False, u'site_spectator': False, u'site_spectator': False, u'created_at': u'2015-02-29', u'active': True, u'deleted_at': None, u'email': u'exampleone@example.com'}]
       >>>
 
 ------------------------------------------
