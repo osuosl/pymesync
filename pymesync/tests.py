@@ -2205,7 +2205,7 @@ G       methods"""
                          "4N30=.QP2FbiY3I6e2eN436hpdjoBFbW9NdrRUHbkJ+wr9GK9mMW"
                          "7/oC/oKnutCwwzMCwjzEx6hlxnGo6/LiGyPBcm3w==")
 
-        decoded_payload = base64.b64decode(self.ts.token.split(".", 1)[1])
+        decoded_payload = base64.b64decode(self.ts.token.split(".")[1])
         exp_int = ast.literal_eval(decoded_payload)['exp'] / 1000
         exp_datetime = datetime.datetime.fromtimestamp(exp_int)
 
