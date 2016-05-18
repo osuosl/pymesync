@@ -356,7 +356,7 @@ class TimeSync(object):
             response = requests.get(url)
             res_dict = self.__response_to_python(response)
 
-            return [res_dict] if type(res_dict) is dict else res_dict
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -426,7 +426,7 @@ class TimeSync(object):
             response = requests.get(url)
             res_dict = self.__response_to_python(response)
 
-            return [res_dict] if type(res_dict) is dict else res_dict
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -496,7 +496,7 @@ class TimeSync(object):
             response = requests.get(url)
             res_dict = self.__response_to_python(response)
 
-            return [res_dict] if type(res_dict) is dict else res_dict
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -539,7 +539,7 @@ class TimeSync(object):
             response = requests.get(url)
             res_dict = self.__response_to_python(response)
 
-            return [res_dict] if username else res_dict
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
