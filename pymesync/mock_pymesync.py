@@ -332,9 +332,9 @@ def get_users(username):
             "display_name": "X. Ample User",
             "email": "example@example.com",
             "active": True,
-            "site_admin": False,
-            "site_spectator": False,
-            "site_manager": False,
+            "site_admin": True if username == "admin" else False,
+            "site_spectator": True if username == "spectator" else False,
+            "site_manager": True if username == "manager" else False,
             "created_at": "2015-02-29",
             "deleted_at": None
         }]
@@ -358,7 +358,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -369,7 +369,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -380,7 +380,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             }
