@@ -148,6 +148,15 @@ An (almost) exhaustive example of test mode:
   >>> ts.get_users()
   [{'username': 'userone', 'display_name': 'One Is The Loneliest Number', 'site_manager': False, 'site_admin': False, 'site_spectator': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampleone@example.com'}, {'username': 'usertwo', 'display_name': 'Two Can Be As Bad As One', 'site_admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'exampletwo@example.com'}, {'username': 'userthree', 'display_name': "Yes It's The Saddest Experience", 'site_admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplethree@example.com'}, {'username': 'userfour', 'display_name': "You'll Ever Do", 'site_admin': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'examplefour@example.com'}]
   >>>
+  >>> ts.get_users("admin")
+  [{'username': 'admin', 'display_name': 'X. Ample User', 'site_manager': False, 'site_admin': True, 'site_spectator': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'example@example.com'}]
+  >>>
+  >>> ts.get_users("manager")
+  [{'username': 'admin', 'display_name': 'X. Ample User', 'site_manager': True, 'site_admin': False, 'site_spectator': False, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'example@example.com'}]
+  >>>
+  >>> ts.get_users("spectator")
+  [{'username': 'spectator', 'display_name': 'X. Ample User', 'site_manager': False, 'site_admin': False, 'site_spectator': True, 'created_at': '2015-02-29', 'active': True, 'deleted_at': None, 'email': 'example@example.com'}]
+  >>>
   >>> ts.get_times({"uuid": "some-uuid"})
   [{'activities': ['docs', 'planning'], 'date_worked': '2014-04-17', 'updated_at': None, 'user': 'userone', 'duration': 12, 'deleted_at': None, 'uuid': 'some-uuid', 'notes': 'Worked on documentation.', 'project': ['ganeti-webmgr', 'gwm'], 'issue_uri': 'https://github.com/osuosl/ganeti_webmgr', 'created_at': '2014-04-17', 'revision': 1}]
   >>>
