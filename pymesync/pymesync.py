@@ -350,11 +350,13 @@ class TimeSync(object):
                 return mock_pymesync.get_times(None)
 
         # Attempt to GET times, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -418,11 +420,13 @@ class TimeSync(object):
             return mock_pymesync.get_projects(slug)
 
         # Attempt to GET projects, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -486,11 +490,13 @@ class TimeSync(object):
             return mock_pymesync.get_activities(slug)
 
         # Attempt to GET activities, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -527,11 +533,13 @@ class TimeSync(object):
             return mock_pymesync.get_users(username)
 
         # Attempt to GET users, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
