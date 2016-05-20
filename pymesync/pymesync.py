@@ -164,16 +164,17 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        if time['duration'] < 0:
-            return {self.error: "time object: duration cannot be negative"}
+        if 'duration' in time:
+            if time['duration'] < 0:
+                return {self.error: "time object: duration cannot be negative"}
 
-        if not isinstance(time['duration'], int):
-            duration = self.__duration_to_seconds(time['duration'])
-            time['duration'] = duration
-
-            # Duration at this point contains an error_msg if it's not an int
             if not isinstance(time['duration'], int):
-                return duration
+                duration = self.__duration_to_seconds(time['duration'])
+                time['duration'] = duration
+
+                # Duration at this point contains an error_msg if it's not an int
+                if not isinstance(time['duration'], int):
+                    return duration
 
         return self.__create_or_update(time, uuid, "time", "times", False)
 
