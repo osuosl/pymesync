@@ -172,7 +172,7 @@ class TimeSync(object):
                 duration = self.__duration_to_seconds(time['duration'])
                 time['duration'] = duration
 
-                # Duration at this point contains an error_msg if it's not an int
+                # Duration at this point contains an error_msg if not an int
                 if not isinstance(time['duration'], int):
                     return duration
 
