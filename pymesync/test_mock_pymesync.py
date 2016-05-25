@@ -438,7 +438,7 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_get_activities_with_slug(self):
         expected_result = [{
             "name": "Documentation",
-            "slugs": ["docudocs"],
+            "slug": "docudocs",
             "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
             "revision": 5,
             "created_at": "2014-04-17",
@@ -453,7 +453,7 @@ class TestMockPymesync(unittest.TestCase):
         expected_result = [
             {
                 "name": "Documentation",
-                "slugs": ["docs"],
+                "slug": "docs",
                 "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
                 "revision": 5,
                 "created_at": "2014-04-17",
@@ -462,7 +462,7 @@ class TestMockPymesync(unittest.TestCase):
             },
             {
                 "name": "Coding",
-                "slugs": ["code", "dev"],
+                "slug": "dev",
                 "uuid": "adf036f5-3d49-bbbb-rrrr-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -471,7 +471,7 @@ class TestMockPymesync(unittest.TestCase):
             },
             {
                 "name": "Planning",
-                "slugs": ["plan", "prep"],
+                "slug": "plan",
                 "uuid": "adf036f5-3d49-cccc-ssss-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
