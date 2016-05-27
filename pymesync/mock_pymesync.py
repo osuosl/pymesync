@@ -289,7 +289,7 @@ def get_activities(slug):
     p_list = [
         {
             "name": "Documentation",
-            "slugs": [slug if slug else "docs"],
+            "slug": slug if slug else "docs",
             "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
             "revision": 5,
             "created_at": "2014-04-17",
@@ -301,7 +301,7 @@ def get_activities(slug):
         p_list.append(
             {
                 "name": "Coding",
-                "slugs": ["code", "dev"],
+                "slug": "dev",
                 "uuid": "adf036f5-3d49-bbbb-rrrr-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -313,7 +313,7 @@ def get_activities(slug):
         p_list.append(
             {
                 "name": "Planning",
-                "slugs": ["plan", "prep"],
+                "slug": "plan",
                 "uuid": "adf036f5-3d49-cccc-ssss-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
