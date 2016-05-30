@@ -2266,23 +2266,6 @@ G       methods"""
                           [{self.ts.error:
                             "time object: invalid duration string"}])
 
-    def test_duration_invalid(self):
-        """Tests for duration validity - if the duration given is a negative
-        int, an error message is returned"""
-        time = {
-            "duration": -12600,
-            "project": "ganeti-web-manager",
-            "user": "example-user",
-            "activities": ["documenting"],
-            "notes": "Worked on docs",
-            "issue_uri": "https://github.com/",
-            "date_worked": "2014-04-17",
-        }
-
-        self.assertEquals(self.ts.create_time(time),
-                          {self.ts.error:
-                           "time object: duration cannot be negative"})
-
     def test_project_users_valid(self):
         """Test project_users method with a valid project object returned from
         TimeSync"""
