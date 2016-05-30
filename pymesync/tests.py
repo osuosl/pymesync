@@ -40,7 +40,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(ts.token, "TOKENTOCHECK")
 
     def test_instantiate_without_token(self):
-        """Test that instantiating pymesync without a token does not se the
+        """Test that instantiating pymesync without a token does not set the
         token variable"""
         ts = pymesync.TimeSync("baseurl")
         self.assertIsNone(ts.token)
