@@ -214,27 +214,6 @@ class TestPymesync(unittest.TestCase):
                                "time object: must be python dictionary"})
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
-    def test_create_or_update_create_time_catch_request_error(self, m):
-        """Tests TimeSync._TimeSync__create_or_update for create time with
-        request error"""
-        time = {
-            "duration": 12,
-            "project": "ganet_web_manager",
-            "user": "example-user",
-            "activities": ["documenting"],
-            "notes": "Worked on docs",
-            "issue_uri": "https://github.com/",
-            "date_worked": "2014-04-17",
-        }
-
-        # To test that the exception is being caught with a bad baseurl,
-        # we need to use the actual post method
-        requests.post = actual_post
-
-        self.assertRaises(Exception, self.ts._TimeSync__create_or_update(
-            time, None, "time", "times"))
-
-    @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_user_valid(self, m_resp_python):
         """Tests TimeSync._TimeSync__create_or_update for create user with
         valid data"""
@@ -390,25 +369,6 @@ class TestPymesync(unittest.TestCase):
                                                                   "users"),
                               {self.ts.error:
                                "user object: must be python dictionary"})
-
-    @patch("pymesync.TimeSync._TimeSync__response_to_python")
-    def test_create_or_update_create_user_catch_request_error(self, m):
-        """Tests TimeSync._TimeSync__create_or_update for create user with
-        request error"""
-        user = {
-            "username": "example-user",
-            "password": "password",
-            "display_name": "Example User",
-            "email": "example.user@example.com",
-        }
-
-        # To test that the exception is being caught with a bad baseurl,
-        # we need to use the actual post method
-        requests.post = actual_post
-
-        self.assertRaises(Exception,
-                          self.ts._TimeSync__create_or_update(
-                              user, None, "user", "users"))
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
     def test_create_or_update_create_project_valid(self, m_resp_python):
