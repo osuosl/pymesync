@@ -262,12 +262,13 @@ class TimeSync(object):
         # Don't error out here so that internal methods can catch all missing
         # fields later on and return a more meaningful error if necessary.
         if "password" in user:
-            # Hash the password
+            # If the password is a unicode object, encode it first
             if isinstance(user["password"], unicode):
                 password = user["password"].encode("utf-8")
             else:
                 password = user["password"]
 
+            # Hash the password
             hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
                                                             rounds=10))
             user["password"] = hashed
@@ -297,12 +298,13 @@ class TimeSync(object):
         # Don't error out here so that internal methods can catch all missing
         # fields later on and return a more meaningful error if necessary.
         if "password" in user:
-            # Hash the password
+            # If the password is a unicode object, encode it first
             if isinstance(user["password"], unicode):
                 password = user["password"].encode("utf-8")
             else:
                 password = user["password"]
 
+            # Hash the password
             hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
                                                             rounds=10))
             user["password"] = hashed

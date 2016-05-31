@@ -1917,6 +1917,28 @@ G       methods"""
                                               "True or False".format(perm)})
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_create_user_unicode_password(self, mock_create_or_update):
+        """Tests that unicode password objects get encoded to UTF-8 before
+        being hashed"""
+        user = {
+            "username": "example-user",
+            "password": u"password",
+            "display_name": "Example User",
+            "email": "example.user@example.com",
+            "site_admin": True,
+            "site_spectator": False,
+            "site_manager": True,
+            "active": True,
+        }
+
+        encoded_password = user["password"].encode("utf-8")
+
+        self.ts.create_user(user)
+
+        self.assertEquals(bcrypt.hashpw(encoded_password, user["password"]),
+                          user["password"])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_user(self, mock_create_or_update):
         """Tests that TimeSync.update_user calls _create_or_update with correct
         parameters"""
@@ -1931,6 +1953,28 @@ G       methods"""
         mock_create_or_update.assert_called_with(user, "example", "user",
                                                  "users", False)
         self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_update_user_unicode_password(self, mock_create_or_update):
+        """Tests that unicode password objects get encoded to UTF-8 before
+        being hashed"""
+        user = {
+            "username": "example-user",
+            "password": u"password",
+            "display_name": "Example User",
+            "email": "example.user@example.com",
+            "site_admin": True,
+            "site_spectator": False,
+            "site_manager": True,
+            "active": True,
+        }
+
+        encoded_password = user["password"].encode("utf-8")
+
+        self.ts.update_user(user, user["username"])
+
+        self.assertEquals(bcrypt.hashpw(encoded_password, user["password"]),
                           user["password"])
 
     @patch("pymesync.TimeSync._TimeSync__response_to_python")
