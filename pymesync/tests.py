@@ -1861,6 +1861,28 @@ class TestPymesync(unittest.TestCase):
                                               "True or False".format(perm)})
 
     @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_create_user_unicode_password(self, mock_create_or_update):
+        """Tests that unicode password objects get encoded to UTF-8 before
+        being hashed"""
+        user = {
+            "username": "example-user",
+            "password": u"password",
+            "display_name": "Example User",
+            "email": "example.user@example.com",
+            "site_admin": True,
+            "site_spectator": False,
+            "site_manager": True,
+            "active": True,
+        }
+
+        encoded_password = user["password"].encode("utf-8")
+
+        self.ts.create_user(user)
+
+        self.assertEquals(bcrypt.hashpw(encoded_password, user["password"]),
+                          user["password"])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
     def test_update_user(self, mock_create_or_update):
         """Tests that TimeSync.update_user calls _create_or_update with correct
         parameters"""
@@ -1875,6 +1897,28 @@ class TestPymesync(unittest.TestCase):
         mock_create_or_update.assert_called_with(user, "example", "user",
                                                  "users", False)
         self.assertEquals(bcrypt.hashpw("password", user["password"]),
+                          user["password"])
+
+    @patch("pymesync.TimeSync._TimeSync__create_or_update")
+    def test_update_user_unicode_password(self, mock_create_or_update):
+        """Tests that unicode password objects get encoded to UTF-8 before
+        being hashed"""
+        user = {
+            "username": "example-user",
+            "password": u"password",
+            "display_name": "Example User",
+            "email": "example.user@example.com",
+            "site_admin": True,
+            "site_spectator": False,
+            "site_manager": True,
+            "active": True,
+        }
+
+        encoded_password = user["password"].encode("utf-8")
+
+        self.ts.update_user(user, user["username"])
+
+        self.assertEquals(bcrypt.hashpw(encoded_password, user["password"]),
                           user["password"])
 
     def test_authentication(self):
@@ -2204,6 +2248,51 @@ class TestPymesync(unittest.TestCase):
                           (time['duration']),
                           [{self.ts.error:
                             "time object: invalid duration string"}])
+
+    def test_hash_user_password_unicode(self):
+        """Tests that unicode passwords are hashed correctly"""
+        user = {
+            u"username": u"user",
+            u"password": u"pass"
+        }
+
+        encoded_password = user["password"].encode("utf-8")
+
+        self.ts._TimeSync__hash_user_password(user)
+
+        self.assertEquals(bcrypt.hashpw(encoded_password, user["password"]),
+                          user["password"])
+
+    def test_hash_user_password_nonunicode(self):
+        """Tests that non-unicode passwords are hashed correctly"""
+        user = {
+            "username": "user",
+            "password": "pass"
+        }
+
+        password = user["password"]
+
+        self.ts._TimeSync__hash_user_password(user)
+
+        self.assertEquals(bcrypt.hashpw(password, user["password"]),
+                          user["password"])
+
+    def test_duration_invalid(self):
+        """Tests for duration validity - if the duration given is a negative
+        int, an error message is returned"""
+        time = {
+            "duration": -12600,
+            "project": "ganeti-web-manager",
+            "user": "example-user",
+            "activities": ["documenting"],
+            "notes": "Worked on docs",
+            "issue_uri": "https://github.com/",
+            "date_worked": "2014-04-17",
+        }
+
+        self.assertEquals(self.ts.create_time(time),
+                          {self.ts.error:
+                           "time object: duration cannot be negative"})
 
     def test_project_users_valid(self):
         """Test project_users method with a valid project object returned from

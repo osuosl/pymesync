@@ -259,15 +259,7 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
-        # Only hash password if it is present
-        # Don't error out here so that internal methods can catch all missing
-        # fields later on and return a more meaningful error if necessary.
-        if "password" in user:
-            # Hash the password
-            password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
-                                                            rounds=10))
-            user["password"] = hashed
+        self.__hash_user_password(user)
 
         return self.__create_or_update(user, None, "user", "users")
 
@@ -290,15 +282,7 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
-        # Only hash password if it is present
-        # Don't error out here so that internal methods can catch all missing
-        # fields later on and return a more meaningful error if necessary.
-        if "password" in user:
-            # Hash the password
-            password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
-                                                            rounds=10))
-            user["password"] = hashed
+        self.__hash_user_password(user)
 
         return self.__create_or_update(user, username, "user", "users", False)
 
@@ -928,6 +912,24 @@ class TimeSync(object):
         except:
             error_msg = [{self.error: "time object: invalid duration string"}]
             return error_msg
+
+    def __hash_user_password(self, user):
+        """Hashes the password field in a user object. If the password is
+        Unicode, encode it to UTF-8 first"""
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # If the password is a unicode object, encode it first
+            if isinstance(user["password"], unicode):
+                password = user["password"].encode("utf-8")
+            else:
+                password = user["password"]
+
+            # Hash the password
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
+            user["password"] = hashed
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""
