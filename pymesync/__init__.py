@@ -1,1 +1,1 @@
-from pymesync import TimeSync
+from .pymesync import TimeSync

@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 dependencies = [
     'argparse==1.2.1',
@@ -7,7 +10,7 @@ dependencies = [
     'pbr==1.8.1',
     'requests==2.8.1',
     'six==1.10.0',
-    'wsgiref==0.1.2',
+    'wsgiref==0.1.2 ; python_version < \'3.2\'',
     'bcrypt==2.0.0',
 ]
 

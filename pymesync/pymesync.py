@@ -21,15 +21,19 @@ Allows for interactions with the TimeSync API
 Supported TimeSync versions:
 v1
 """
+
+from __future__ import unicode_literals
+
 import json
 import requests
 import operator
 import base64
 import ast
 import datetime
-import mock_pymesync
 import time
 import bcrypt
+
+from . import mock_pymesync
 
 
 class TimeSync(object):
@@ -729,6 +733,10 @@ class TimeSync(object):
         # TimeSync because we are not getting a return from TimeSync.
         try:
             python_object = json.loads(unicode(response.text))
+        except NameError:
+            # If we get a NameError, that means we're running Python 3 and
+            # the 'unicode' function doesn't exist
+            python_object = json.loads(str(response.text))
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
