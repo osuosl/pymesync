@@ -9,6 +9,8 @@ This module provides an interface to communicate with an implementation of the
 `OSU Open Source Lab`_'s `TimeSync API`_. An implementation of the TimeSync API,
 built in Node.js, can be found at `github.com/osuosl/timesync-node`_.
 
+Pymesync is supported for Python versions 2.7 and 3.3+
+
 This module allows users to
 
 * Authenticate a pymesync object with a TimeSync implementation

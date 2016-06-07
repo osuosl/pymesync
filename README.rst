@@ -1,7 +1,10 @@
 pymesync
 ========
 
-Python module for TimeSync
+.. image:: https://travis-ci.org/osuosl/pymesync.svg?branch=master
+    :target: https://travis-ci.org/osuosl/pymesync
+
+Python module for TimeSync. Compatible with Python versions 2.7 and 3.3+
 
 Pymesync documentation can be found on `readthedocs`_
 
@@ -25,7 +28,13 @@ To test the source code:
 
 .. code-block::
 
-  (venv) $ nosetests
-  (venv) $ flake8 pymesync tests  # Runs flake8 on pymesync and tests
+  (venv) $ make test
+  (venv) $ make flake
+
+or
+
+.. code-block::
+
+  (venv) $ make verify
 
 .. _readthedocs: http://pymesync.readthedocs.org/en/latest/
