@@ -68,7 +68,8 @@ python dictionaries in the case of the ``get_*`` methods).
 Install pymesync
 ----------------
 
-Pymesync is on PyPi, so you can simply ``pip install pymesync``. We recommend
+Pymesync is on PyPi for both Python 2 and 3, so you can simply
+``pip install pymesync`` in either Python environment. We recommend that
 you use `virtualenv`_, like so:
 
 .. code-block:: none
