@@ -631,6 +631,3 @@ class TestMockPymesync(unittest.TestCase):
         }]
 
         self.assertEquals(self.ts.get_users("spectator"), expected_result)
-
-if __name__ == "__main__":
-    unittest.main()
