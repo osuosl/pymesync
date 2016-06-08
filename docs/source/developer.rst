@@ -135,14 +135,18 @@ mode docs. Follow the format for already-existing methods.
 Uploading to PyPi
 -----------------
 
-When new features are added or bugs are fixed it is necessary to push those
-changes to `PyPi`_ so users can ``pip install`` those changes. This can only be
-done by owners and maintainers of Pymesync, listed below. Contact one of them
-if you believe a new version is warranted.
+When new features are added or bugs are fixed it is necessary to push Pymesync
+to `PyPi`_ so users can ``pip install`` those changes. This can only be done by
+owners and maintainers of Pymesync, listed below. Email support@osuosl.org if
+you believe a new version is warranted.
 
-* Matthew Johnson (mrsj) - mrsj(at)osuosl(dot)org    - Owner
-* Ken Lett (kennric)     - kennric(at)osuosl(dot)org - Owner
-* Alex Taylor (subnomo)  - subnomo(at)osuosl(dot)org - Maintainer
+====================== ==========
+Developer              Role
+====================== ==========
+Matthew Johnson (mrsj) Owner
+Ken Lett (kennric)     Owner
+Alex Taylor (subnomo)  Maintainer
+====================== ==========
 
 There are several steps that a developer must take before submitting Pymesync
 to PyPi:
@@ -153,11 +157,12 @@ to PyPi:
 #. Open a PR and merge the ``develop`` branch into ``master``. This should be
    reviewed by an owner or maintainer to ensure the update is necessary.
 
-#. Directly on the ``master`` branch, bump the ``version`` in ``setup.py``
-   following the `Semantic Versioning Specification`_ (SemVer).
-   `Tag that commit`_ with the version number.
+#. Directly on the ``master`` branch, an owner or maintainer should bump the
+   ``version`` in ``setup.py`` following the
+   `Semantic Versioning Specification`_ (SemVer). `Tag that commit`_ with the
+   version number.
 
-#. Upload Pymesync to `PyPi Test` first to make sure that everything is
+#. Upload Pymesync to `PyPi Test`_ first to make sure that everything is
    working.
 
    ::
@@ -183,17 +188,18 @@ to PyPi:
      (venv) $ python setup.py sdist upload -r pypi
      [... upload to pypi success ...]
 
-  .. note::
+   .. note::
 
-    ``pypi`` is a configuration set in ``.pypirc`` from step 1.
+     ``pypi`` is a configuration set in ``.pypirc`` from step 1.
 
-  Now visit https://pypi.python.org/pypi to make sure the version is up to
-  date.
+   Now visit https://pypi.python.org/pypi to make sure the version is up to
+   date.
 
-#. Inform your users that Pymesync has been updated
+#. Inform your users that Pymesync has been updated.
 
 
 .. _PyPi: https://pypi.python.org
 .. _How to submit a package to PyPi: http://peterdowns.com/posts/first-time-with-pypi.html
 .. _Semantic Versioning Specification: http://semver.org
 .. _Tag that commit: https://git-scm.com/book/en/v2/Git-Basics-Tagging
+.. _PyPi Test: https://testpypi.python.org/pypi
