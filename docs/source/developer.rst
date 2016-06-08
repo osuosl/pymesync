@@ -131,3 +131,69 @@ Documenting Changes
 
 When you add a public method, please document it in the usage docs and the test
 mode docs. Follow the format for already-existing methods.
+
+Uploading to PyPi
+-----------------
+
+When new features are added or bugs are fixed it is necessary to push those
+changes to `PyPi`_ so users can ``pip install`` those changes. This can only be
+done by owners and maintainers of Pymesync, listed below. Contact one of them
+if you believe a new version is warranted.
+
+* Matthew Johnson (mrsj) - mrsj(at)osuosl(dot)org    - Owner
+* Ken Lett (kennric)     - kennric(at)osuosl(dot)org - Owner
+* Alex Taylor (subnomo)  - subnomo(at)osuosl(dot)org - Maintainer
+
+There are several steps that a developer must take before submitting Pymesync
+to PyPi:
+
+#. Follow the article `How to submit a package to PyPi`_ by Peter Downs to
+   create accounts and set up your local configuration file.
+
+#. Open a PR and merge the ``develop`` branch into ``master``. This should be
+   reviewed by an owner or maintainer to ensure the update is necessary.
+
+#. Directly on the ``master`` branch, bump the ``version`` in ``setup.py``
+   following the `Semantic Versioning Specification`_ (SemVer).
+   `Tag that commit`_ with the version number.
+
+#. Upload Pymesync to `PyPi Test` first to make sure that everything is
+   working.
+
+   ::
+
+     (venv) $ python setup.py register -r pypitest
+     [... register to pypitest success ...]
+     (venv) $ python setup.py sdist upload -r pypitest
+     [... upload to pypitest success ...]
+
+   .. note::
+
+     ``pypitest`` is a configuration set in ``.pypirc`` from step 1.
+
+   Now visit https://testpypi.python.org/pypi, search for ``pymesync``, and
+   make sure the version is up to date.
+
+#. Upload Pymesync to PyPi.
+
+   ::
+
+     (venv) $ python setup.py register -r pypi
+     [... register to pypi success ...]
+     (venv) $ python setup.py sdist upload -r pypi
+     [... upload to pypi success ...]
+
+  .. note::
+
+    ``pypi`` is a configuration set in ``.pypirc`` from step 1.
+
+  Now visit https://pypi.python.org/pypi to make sure the version is up to
+  date.
+
+#. Inform your users that Pymesync has been updated
+
+
+.. _PyPi: https://pypi.python.org
+.. _How to submit a package to PyPi: http://peterdowns.com/posts/first-time-with-pypi.html
+.. _Semantic Versioning Specification: http://semver.org
+.. _Tag that commit: https://git-scm.com/book/en/v2/Git-Basics-Tagging
