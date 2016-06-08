@@ -137,16 +137,16 @@ Uploading to PyPi
 
 When new features are added or bugs are fixed it is necessary to push Pymesync
 to `PyPi`_ so users can ``pip install`` those changes. This can only be done by
-owners and maintainers of Pymesync, listed below. Email support@osuosl.org if
-you believe a new version is warranted.
+owners and maintainers of Pymesync, listed below. Email support@osuosl.org or
+visit us at #osuosl on freenode if you believe a new version is warranted.
 
-====================== ==========
-Developer              Role
-====================== ==========
-Matthew Johnson (mrsj) Owner
-Ken Lett (kennric)     Owner
-Alex Taylor (subnomo)  Maintainer
-====================== ==========
+====================== ======== ==========
+Developer              IRC nick Role
+====================== ======== ==========
+Matthew Johnson        mrsj     Owner
+Ken Lett               kennric  Owner
+Alex Taylor            subnomo  Maintainer
+====================== ======== ==========
 
 There are several steps that a developer must take before submitting Pymesync
 to PyPi:
@@ -195,7 +195,8 @@ to PyPi:
    Now visit https://pypi.python.org/pypi to make sure the version is up to
    date.
 
-#. Inform your users that Pymesync has been updated.
+#. Inform Pymesync users there has been an update in whatever way is standard
+   for your community.
 
 
 .. _PyPi: https://pypi.python.org
