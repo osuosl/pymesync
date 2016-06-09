@@ -289,7 +289,7 @@ def get_activities(slug):
     p_list = [
         {
             "name": "Documentation",
-            "slugs": [slug if slug else "docs"],
+            "slug": slug if slug else "docs",
             "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
             "revision": 5,
             "created_at": "2014-04-17",
@@ -301,7 +301,7 @@ def get_activities(slug):
         p_list.append(
             {
                 "name": "Coding",
-                "slugs": ["code", "dev"],
+                "slug": "dev",
                 "uuid": "adf036f5-3d49-bbbb-rrrr-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -313,7 +313,7 @@ def get_activities(slug):
         p_list.append(
             {
                 "name": "Planning",
-                "slugs": ["plan", "prep"],
+                "slug": "plan",
                 "uuid": "adf036f5-3d49-cccc-ssss-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -332,9 +332,9 @@ def get_users(username):
             "display_name": "X. Ample User",
             "email": "example@example.com",
             "active": True,
-            "site_admin": False,
-            "site_spectator": False,
-            "site_manager": False,
+            "site_admin": True if username == "admin" else False,
+            "site_spectator": True if username == "spectator" else False,
+            "site_manager": True if username == "manager" else False,
             "created_at": "2015-02-29",
             "deleted_at": None
         }]
@@ -358,7 +358,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -369,7 +369,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             },
@@ -380,7 +380,7 @@ def get_users(username):
                 "active": True,
                 "site_admin": False,
                 "site_manager": False,
-                "site_spectator": False,    
+                "site_spectator": False,
                 "created_at": "2015-02-29",
                 "deleted_at": None
             }

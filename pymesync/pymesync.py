@@ -164,16 +164,17 @@ class TimeSync(object):
         to TimeSync.
         ``uuid`` contains the uuid for a time entry to update.
         """
-        if time['duration'] < 0:
-            return {self.error: "time object: duration cannot be negative"}
+        if 'duration' in time:
+            if time['duration'] < 0:
+                return {self.error: "time object: duration cannot be negative"}
 
-        if not isinstance(time['duration'], int):
-            duration = self.__duration_to_seconds(time['duration'])
-            time['duration'] = duration
-
-            # Duration at this point contains an error_msg if it's not an int
             if not isinstance(time['duration'], int):
-                return duration
+                duration = self.__duration_to_seconds(time['duration'])
+                time['duration'] = duration
+
+                # Duration at this point contains an error_msg if not an int
+                if not isinstance(time['duration'], int):
+                    return duration
 
         return self.__create_or_update(time, uuid, "time", "times", False)
 
@@ -258,15 +259,7 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
-        # Only hash password if it is present
-        # Don't error out here so that internal methods can catch all missing
-        # fields later on and return a more meaningful error if necessary.
-        if "password" in user:
-            # Hash the password
-            password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
-                                                            rounds=10))
-            user["password"] = hashed
+        self.__hash_user_password(user)
 
         return self.__create_or_update(user, None, "user", "users")
 
@@ -289,15 +282,7 @@ class TimeSync(object):
                 return {self.error: "user object: "
                         "{} must be True or False".format(perm)}
 
-        # Only hash password if it is present
-        # Don't error out here so that internal methods can catch all missing
-        # fields later on and return a more meaningful error if necessary.
-        if "password" in user:
-            # Hash the password
-            password = user["password"]
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
-                                                            rounds=10))
-            user["password"] = hashed
+        self.__hash_user_password(user)
 
         return self.__create_or_update(user, username, "user", "users", False)
 
@@ -350,11 +335,13 @@ class TimeSync(object):
                 return mock_pymesync.get_times(None)
 
         # Attempt to GET times, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -418,11 +405,13 @@ class TimeSync(object):
             return mock_pymesync.get_projects(slug)
 
         # Attempt to GET projects, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -486,11 +475,13 @@ class TimeSync(object):
             return mock_pymesync.get_activities(slug)
 
         # Attempt to GET activities, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -527,11 +518,13 @@ class TimeSync(object):
             return mock_pymesync.get_users(username)
 
         # Attempt to GET users, then convert the response to a python
-        # dictionary
+        # dictionary. Always returns a list.
         try:
             # Success!
             response = requests.get(url)
-            return self.__response_to_python(response)
+            res_dict = self.__response_to_python(response)
+
+            return [res_dict] if type(res_dict) is not list else res_dict
         except requests.exceptions.RequestException as e:
             # Request Error
             return [{self.error: e}]
@@ -919,6 +912,24 @@ class TimeSync(object):
         except:
             error_msg = [{self.error: "time object: invalid duration string"}]
             return error_msg
+
+    def __hash_user_password(self, user):
+        """Hashes the password field in a user object. If the password is
+        Unicode, encode it to UTF-8 first"""
+        # Only hash password if it is present
+        # Don't error out here so that internal methods can catch all missing
+        # fields later on and return a more meaningful error if necessary.
+        if "password" in user:
+            # If the password is a unicode object, encode it first
+            if isinstance(user["password"], unicode):
+                password = user["password"].encode("utf-8")
+            else:
+                password = user["password"]
+
+            # Hash the password
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a",
+                                                            rounds=10))
+            user["password"] = hashed
 
     def __delete_object(self, endpoint, identifier):
         """Deletes object at ``endpoint`` identified by ``identifier``"""

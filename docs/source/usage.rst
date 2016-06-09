@@ -529,9 +529,9 @@ TimeSync.\ **get_activities(query_parameters=None)**
     .. code-block:: python
 
       >>> ts.get_activities()
-      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slugs': [u'docs'], u'revision': 5}, {u'uuid': u'adf036f5-3d49-bbbb-rrrr-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Coding', u'deleted_at': None, u'slugs': [u'code', u'dev'], u'revision': 1}, {u'uuid': u'adf036f5-3d49-cccc-ssss-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Planning', u'deleted_at': None, u'slugs': [u'plan', u'prep'], u'revision': 1}]
+      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slug': u'docs', u'revision': 5}, {u'uuid': u'adf036f5-3d49-bbbb-rrrr-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Coding', u'deleted_at': None, u'slug': u'dev', u'revision': 1}, {u'uuid': u'adf036f5-3d49-cccc-ssss-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Planning', u'deleted_at': None, u'slug': u'plan', u'revision': 1}]
       >>> ts.get_activities({"slug": "docs"})
-      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slugs': [u'docs'], u'revision': 5}]
+      [{u'uuid': u'adf036f5-3d49-4a84-bef9-062b46380bbf', u'created_at': u'2014-04-17', u'updated_at': None, u'name': u'Documentation', u'deleted_at': None, u'slug': u'docs', u'revision': 5}]
       >>>
 
     .. warning::

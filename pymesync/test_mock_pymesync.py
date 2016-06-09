@@ -438,7 +438,7 @@ class TestMockPymesync(unittest.TestCase):
     def test_mock_get_activities_with_slug(self):
         expected_result = [{
             "name": "Documentation",
-            "slugs": ["docudocs"],
+            "slug": "docudocs",
             "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
             "revision": 5,
             "created_at": "2014-04-17",
@@ -453,7 +453,7 @@ class TestMockPymesync(unittest.TestCase):
         expected_result = [
             {
                 "name": "Documentation",
-                "slugs": ["docs"],
+                "slug": "docs",
                 "uuid": "adf036f5-3d49-4a84-bef9-062b46380bbf",
                 "revision": 5,
                 "created_at": "2014-04-17",
@@ -462,7 +462,7 @@ class TestMockPymesync(unittest.TestCase):
             },
             {
                 "name": "Coding",
-                "slugs": ["code", "dev"],
+                "slug": "dev",
                 "uuid": "adf036f5-3d49-bbbb-rrrr-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -471,7 +471,7 @@ class TestMockPymesync(unittest.TestCase):
             },
             {
                 "name": "Planning",
-                "slugs": ["plan", "prep"],
+                "slug": "plan",
                 "uuid": "adf036f5-3d49-cccc-ssss-062b46380bbf",
                 "revision": 1,
                 "created_at": "2014-04-17",
@@ -573,6 +573,50 @@ class TestMockPymesync(unittest.TestCase):
                                           "include in method call"}
         self.assertEquals(self.ts.project_users(), expected_result)
 
+    def test_get_users_with_admin(self):
+        expected_result = [{
+            "username": "admin",
+            "display_name": "X. Ample User",
+            "email": "example@example.com",
+            "active": True,
+            "site_admin": True,
+            "site_manager": False,
+            "site_spectator": False,
+            "created_at": "2015-02-29",
+            "deleted_at": None
+        }]
+
+        self.assertEquals(self.ts.get_users("admin"), expected_result)
+
+    def test_get_users_with_manager(self):
+        expected_result = [{
+            "username": "manager",
+            "display_name": "X. Ample User",
+            "email": "example@example.com",
+            "active": True,
+            "site_admin": False,
+            "site_manager": True,
+            "site_spectator": False,
+            "created_at": "2015-02-29",
+            "deleted_at": None
+        }]
+
+        self.assertEquals(self.ts.get_users("manager"), expected_result)
+
+    def test_get_users_with_spectator(self):
+        expected_result = [{
+            "username": "spectator",
+            "display_name": "X. Ample User",
+            "email": "example@example.com",
+            "active": True,
+            "site_admin": False,
+            "site_manager": False,
+            "site_spectator": True,
+            "created_at": "2015-02-29",
+            "deleted_at": None
+        }]
+
+        self.assertEquals(self.ts.get_users("spectator"), expected_result)
 
 if __name__ == "__main__":
     unittest.main()
