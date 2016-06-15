@@ -68,17 +68,17 @@ def update_project(p_dict, slug):
         "deleted_at": None,
         "uuid": "309eae69-21dc-4538-9fdc-e6892a9c4dd4",
         "revision": 2,
-        "users": {
-            "members": [
-                "patcht",
-                "tschuy"
-            ],
-            "spectators": [
-                "tschuy"
-            ],
-            "managers": [
-                "tschuy"
-            ]
+        "users": p_dict["users"] if "users" in p_dict else {
+            "patcht": {
+                "member": True,
+                "spectator": False,
+                "manager": False
+            },
+            "tschuy": {
+                "member": True,
+                "spectator": True,
+                "manager": True
+            }
         }
     }
     return updated_param
@@ -212,16 +212,16 @@ def get_projects(slug):
             "deleted_at": None,
             "updated_at": "2014-07-20",
             "users": {
-                "members": [
-                    "patcht",
-                    "tschuy"
-                ],
-                "spectators": [
-                    "tschuy"
-                ],
-                "managers": [
-                    "tschuy"
-                ]
+                "patcht": {
+                    "member": True,
+                    "spectator": False,
+                    "manager": False
+                },
+                "tschuy": {
+                    "member": True,
+                    "spectator": True,
+                    "manager": True
+                }
             }
         }
     ]
@@ -237,18 +237,21 @@ def get_projects(slug):
                 "deleted_at": None,
                 "updated_at": "2014-07-20",
                 "users": {
-                    "members": [
-                        "patcht",
-                        "tschuy",
-                        "mrsj"
-                    ],
-                    "spectators": [
-                        "tschuy",
-                        "mrsj"
-                    ],
-                    "managers": [
-                        "tschuy"
-                    ]
+                    "patcht": {
+                        "member": True,
+                        "spectator": False,
+                        "manager": False
+                    },
+                    "mrsj": {
+                        "member": True,
+                        "spectator": True,
+                        "manager": False
+                    },
+                    "tschuy": {
+                        "member": True,
+                        "spectator": True,
+                        "manager": True
+                    }
                 }
             }
         )
@@ -264,20 +267,31 @@ def get_projects(slug):
                 "deleted_at": None,
                 "updated_at": "2014-07-20",
                 "users": {
-                    "members": [
-                        "patcht",
-                        "tschuy",
-                        "mrsj",
-                        "MaraJade",
-                        "thai"
-                    ],
-                    "spectators": [
-                        "tschuy",
-                        "mrsj"
-                    ],
-                    "managers": [
-                        "mrsj"
-                    ]
+                    "patcht": {
+                        "member": True,
+                        "spectator": False,
+                        "manager": False
+                    },
+                    "tschuy": {
+                        "member": True,
+                        "spectator": True,
+                        "manager": False
+                    },
+                    "mrsj": {
+                        "member": True,
+                        "spectator": True,
+                        "manager": True
+                    },
+                    "MaraJade": {
+                        "member": True,
+                        "spectator": False,
+                        "manager": False
+                    },
+                    "thai": {
+                        "member": True,
+                        "spectator": False,
+                        "manager": False
+                    }
                 }
             }
         )
