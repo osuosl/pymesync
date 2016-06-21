@@ -753,6 +753,14 @@ class TimeSync(object):
             query_string = "/{}?".format(queries["slug"])
             del(queries["slug"])
 
+        # Check for the "user" field for a get_projects query
+        if "user" in queries:
+            for user in queries["user"]:
+                query_list.append("{0}={1}".format("user", user))
+
+            # Delete "user" so the code below doesn't try to use it
+            del(queries["user"])
+
         # Convert True and False booleans to TimeSync compatible strings
         for k, v in sorted(queries.items(), key=operator.itemgetter(0)):
             queries[k] = "true" if v else "false"
