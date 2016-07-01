@@ -11,12 +11,12 @@ help:
 				@echo '                                                              '
 
 clean:
-	      rm *.pyc
+	      rm pymesync/*.pyc tests/*.pyc
 
 test:
-	      $(PY) tests.py && $(PY) test_mock_pymesync.py
+		  nosetests
 
 flake:
-	      flake8 pymesync.py tests.py test_mock_pymesync.py
+	      flake8 pymesync/pymesync.py
 
 verify: test flake

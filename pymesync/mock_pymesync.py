@@ -1,5 +1,6 @@
 import datetime
 
+
 def authenticate():
     return {"token": "TESTTOKEN"}
 
@@ -112,11 +113,11 @@ def create_user(p_dict):
     """Creates a user"""
     p_dict["active"] = True
     p_dict["site_admin"] = False if "site_admin" not in p_dict else (
-            p_dict["site_admin"])
+        p_dict["site_admin"])
     p_dict["site_manager"] = False if "site_manager" not in p_dict else (
-            p_dict["site_manager"])
+        p_dict["site_manager"])
     p_dict["site_spectator"] = False if "site_spectator" not in p_dict else (
-            p_dict["site_spectator"])
+        p_dict["site_spectator"])
     p_dict["created_at"] = "2015-05-23"
     p_dict["deleted_at"] = None
     del(p_dict["password"])
@@ -127,8 +128,7 @@ def update_user(p_dict, username):
     """Updates user by username"""
     updated_param = {
         "username": p_dict["username"] if "username" in p_dict else username,
-        "display_name": p_dict["display_name"] if "display_name" in p_dict else (
-            "Mr. Example"),
+        "display_name": p_dict["display_name"] if "display_name" in p_dict else "Mr. Example",
         "email": p_dict["email"] if "email" in p_dict else (
             "examplej@example.com"),
         "active": True,

@@ -2,7 +2,6 @@ import unittest
 import pymesync
 import mock
 from mock import patch
-import requests
 import json
 import base64
 import ast
@@ -17,6 +16,18 @@ class resp(object):
         self.status_code = None
 
 
+class pymesync_test():
+
+    def __init__(self):
+        pass
+
+    def __call__(self, test):
+        def wrapped_test(testcase):
+            pass
+
+        return wrapped_test
+
+
 class TestPymesync(unittest.TestCase):
 
     def setUp(self):
@@ -27,11 +38,10 @@ class TestPymesync(unittest.TestCase):
         self.ts.auth_type = "password"
         self.ts.token = "TESTTOKEN"
 
-    def tearDown(self):
-        del(self.ts)
-        requests.post = actual_post
-        requests.delete = actual_delete
-        requests.get = actual_get
+        requests_patcher = patch("pymesync.pymesync.requests")
+        self.mock_requests = requests_patcher.start()
+
+        self.addCleanup(requests_patcher.stop)
 
     def test_instantiate_with_token(self):
         """Test that instantiating pymesync with a token sets the token
@@ -65,14 +75,11 @@ class TestPymesync(unittest.TestCase):
             "object": time,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(time, None, "time", "times")
 
         # Test it
-        requests.post.assert_called_with("http://ts.example.com/v1/times",
+        self.mock_requests.post.assert_called_with("http://ts.example.com/v1/times",
                                          json=content)
 
     def test_create_or_update_update_time_valid(self):
@@ -98,14 +105,11 @@ class TestPymesync(unittest.TestCase):
             'object': time,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(time, uuid, "time", "times")
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/times/{}".format(uuid),
             json=content)
 
@@ -126,14 +130,11 @@ class TestPymesync(unittest.TestCase):
             'object': time,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(time, uuid, "time", "times", False)
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/times/{}".format(uuid),
             json=content)
 
@@ -226,14 +227,11 @@ class TestPymesync(unittest.TestCase):
             "object": user,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(user, None, "user", "users")
 
         # Test it
-        requests.post.assert_called_with("http://ts.example.com/v1/users",
+        self.mock_requests.post.assert_called_with("http://ts.example.com/v1/users",
                                          json=content)
 
     def test_create_or_update_update_user_valid(self):
@@ -256,15 +254,12 @@ class TestPymesync(unittest.TestCase):
             'object': user,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(user, username, "user",
                                             "users", False)
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/users/{}".format(username),
             json=content)
 
@@ -285,15 +280,12 @@ class TestPymesync(unittest.TestCase):
             'object': user,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(user, username, "user",
                                             "users", False)
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/users/{}".format(username),
             json=content)
 
@@ -382,15 +374,12 @@ class TestPymesync(unittest.TestCase):
             "object": project,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(project, None,
                                             "project", "projects")
 
         # Test it
-        requests.post.assert_called_with("http://ts.example.com/v1/projects",
+        self.mock_requests.post.assert_called_with("http://ts.example.com/v1/projects",
                                          json=content)
 
     def test_create_or_update_update_project_valid(self):
@@ -413,15 +402,12 @@ class TestPymesync(unittest.TestCase):
             "object": project,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(project, "slug",
                                             "project", "projects")
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/projects/slug",
             json=content)
 
@@ -439,15 +425,12 @@ class TestPymesync(unittest.TestCase):
             "object": project,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(project, "slug", "project",
                                             "projects", False)
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/projects/slug",
             json=content)
 
@@ -536,15 +519,12 @@ class TestPymesync(unittest.TestCase):
             "object": project,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(project, None,
                                             "activity", "activities")
 
         # Test it
-        requests.post.assert_called_with("http://ts.example.com/v1/activities",
+        self.mock_requests.post.assert_called_with("http://ts.example.com/v1/activities",
                                          json=content)
 
     def test_create_or_update_update_activity_valid(self):
@@ -562,15 +542,12 @@ class TestPymesync(unittest.TestCase):
             "object": activity,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(activity, "slug",
                                             "activity", "activities")
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/activities/slug",
             json=content)
 
@@ -588,15 +565,12 @@ class TestPymesync(unittest.TestCase):
             "object": activity,
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         # Send it
         self.ts._TimeSync__create_or_update(activity, "slug", "activity",
                                             "activities", False)
 
         # Test it
-        requests.post.assert_called_with(
+        self.mock_requests.post.assert_called_with(
             "http://ts.example.com/v1/activities/slug",
             json=content)
 
@@ -811,9 +785,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?user=example-user&token={1}".format(self.ts.baseurl,
                                                              self.ts.token)
@@ -821,16 +793,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"user": [self.ts.user]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_proj(self):
         """Tests TimeSync.get_times with project query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?project=gwm&token={1}".format(self.ts.baseurl,
                                                        self.ts.token)
@@ -838,16 +808,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"project": ["gwm"]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_activity(self):
         """Tests TimeSync.get_times with activity query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?activity=dev&token={1}".format(self.ts.baseurl,
                                                         self.ts.token)
@@ -855,16 +823,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"activity": ["dev"]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_start_date(self):
         """Tests TimeSync.get_times with start date query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?start=2015-07-23&token={1}".format(self.ts.baseurl,
                                                             self.ts.token)
@@ -872,16 +838,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"start": ["2015-07-23"]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_end_date(self):
         """Tests TimeSync.get_times with end date query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?end=2015-07-23&token={1}".format(self.ts.baseurl,
                                                           self.ts.token)
@@ -889,16 +853,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"end": ["2015-07-23"]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_include_revisions(self):
         """Tests TimeSync.get_times with include_revisions query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -906,7 +868,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"include_revisions": True}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_include_revisions_false(self):
         """Tests TimeSync.get_times with include_revisions False query
@@ -914,9 +876,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?include_revisions=false&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -924,16 +884,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"include_revisions": False}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_include_deleted(self):
         """Tests TimeSync.get_times with include_deleted query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?include_deleted=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -941,7 +899,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"include_deleted": True}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_include_deleted_false(self):
         """Tests TimeSync.get_times with include_revisions False query
@@ -949,9 +907,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?include_deleted=false&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -959,7 +915,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"include_deleted": False}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_proj_and_activity(self):
         """Tests TimeSync.get_times with project and activity query
@@ -967,9 +923,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?activity=dev&project=gwm&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -979,7 +933,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEqual(self.ts.get_times({"project": ["gwm"],
                                             "activity": ["dev"]}),
                          [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_for_activity_x3(self):
         """Tests TimeSync.get_times with project and activity query
@@ -987,9 +941,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         token_string = "&token={}".format(self.ts.token)
 
@@ -1002,16 +954,14 @@ class TestPymesync(unittest.TestCase):
                                                           "rev",
                                                           "hd"]}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_with_uuid(self):
         """Tests TimeSync.get_times with uuid query parameter"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times/sadfasdg432?token={1}".format(self.ts.baseurl,
                                                        self.ts.token)
@@ -1019,16 +969,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEquals(self.ts.get_times({"uuid": "sadfasdg432"}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_with_uuid_and_activity(self):
         """Tests TimeSync.get_times with uuid and activity query parameters"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times/sadfasdg432?token={1}".format(self.ts.baseurl,
                                                        self.ts.token)
@@ -1037,7 +985,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_times({"uuid": "sadfasdg432",
                                              "activity": ["dev"]}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_with_uuid_and_include_revisions(self):
         """Tests TimeSync.get_times with uuid and include_revisions query
@@ -1045,9 +993,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times/sadfasdg432?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1056,7 +1002,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_times({"uuid": "sadfasdg432",
                                              "include_revisions": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_with_uuid_and_include_deleted(self):
         """Tests TimeSync.get_times with uuid and include_deleted query
@@ -1064,9 +1010,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times/sadfasdg432?include_deleted=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1075,7 +1019,7 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_times({"uuid": "sadfasdg432",
                                              "include_deleted": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_time_with_uuid_include_deleted_and_revisions(self):
         """Tests TimeSync.get_times with uuid and include_deleted query
@@ -1083,9 +1027,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         # Please forgive me for this. I blame the PEP8 line length rule
         endpoint = "times"
@@ -1100,16 +1042,14 @@ class TestPymesync(unittest.TestCase):
                                              "include_revisions": True,
                                              "include_deleted": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_all_times(self):
         """Tests TimeSync.get_times with no parameters"""
         response = resp()
         response.text = json.dumps([{"this": "should be in a list"}])
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/times?token={1}".format(self.ts.baseurl,
                                            self.ts.token)
@@ -1117,7 +1057,7 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEquals(self.ts.get_times(),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_times_bad_query(self):
         """Tests TimeSync.get_times with an invalid query parameter"""
@@ -1130,9 +1070,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps([{"this": "should be in a list"}])
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/projects?token={1}".format(self.ts.baseurl,
                                               self.ts.token)
@@ -1140,16 +1078,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_projects(),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_projects_slug(self):
         """Tests TimeSync.get_projects with slug"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/projects/gwm?token={1}".format(self.ts.baseurl,
                                                   self.ts.token)
@@ -1157,16 +1093,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_projects({"slug": "gwm"}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_projects_include_revisions(self):
         """Tests TimeSync.get_projects with include_revisions query"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/projects?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1174,16 +1108,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_projects({"include_revisions": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_projects_slug_include_revisions(self):
         """Tests TimeSync.get_projects with include_revisions query and slug"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/projects/gwm?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1194,16 +1126,14 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_projects({"slug": "gwm",
                                                 "include_revisions": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_projects_include_deleted(self):
         """Tests TimeSync.get_projects with include_deleted query"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/projects?include_deleted=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1211,13 +1141,11 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_projects({"include_deleted": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_projects_include_deleted_with_slug(self):
         """Tests TimeSync.get_projects with include_deleted query and slug,
         which is not allowed"""
-        # Mock requests.get
-        requests.get = mock.Mock("requests.get")
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
@@ -1232,9 +1160,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         token_string = "&token={}".format(self.ts.token)
         endpoint = "/projects"
@@ -1245,32 +1171,28 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_projects({"include_revisions": True,
                                                 "include_deleted": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities(self):
         """Tests TimeSync.get_activities"""
         response = resp()
         response.text = json.dumps([{"this": "should be in a list"}])
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/activities?token={1}".format(self.ts.baseurl, self.ts.token)
 
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_activities(),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities_slug(self):
         """Tests TimeSync.get_activities with slug"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/activities/code?token={1}".format(self.ts.baseurl,
                                                      self.ts.token)
@@ -1278,16 +1200,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_activities({"slug": "code"}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities_include_revisions(self):
         """Tests TimeSync.get_activities with include_revisions query"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/activities?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1295,16 +1215,14 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_activities({"include_revisions": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities_slug_include_revisions(self):
         """Tests TimeSync.get_projects with include_revisions query and slug"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/activities/code?include_revisions=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1313,16 +1231,14 @@ class TestPymesync(unittest.TestCase):
         self.assertEquals(self.ts.get_activities({"slug": "code",
                                                   "include_revisions": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities_include_deleted(self):
         """Tests TimeSync.get_activities with include_deleted query"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         url = "{0}/activities?include_deleted=true&token={1}".format(
             self.ts.baseurl, self.ts.token)
@@ -1332,13 +1248,11 @@ class TestPymesync(unittest.TestCase):
         # Test that requests.get was called correctly
         self.assertEquals(self.ts.get_activities({"include_deleted": True}),
                           [{"this": "should be in a list"}])
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_activities_include_deleted_with_slug(self):
         """Tests TimeSync.get_activities with include_deleted query and slug,
         which is not allowed"""
-        # Mock requests.get
-        requests.get = mock.Mock("requests.get")
 
         # Test that error message is returned, can't combine slug and
         # include_deleted
@@ -1353,9 +1267,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         token_string = "&token={}".format(self.ts.token)
         endpoint = "/activities"
@@ -1368,7 +1280,7 @@ class TestPymesync(unittest.TestCase):
                           [{"this": "should be in a list"}])
 
         # Test that requests.get was called with correct parameters
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_times_no_auth(self):
         """Test that get_times() returns error message when auth not set"""
@@ -1400,38 +1312,34 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps([{"this": "should be in a list"}])
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
-
         url = "{0}/users?token={1}".format(self.ts.baseurl, self.ts.token)
+
+        self.mock_requests.get.return_value = response
 
         # Send it
         self.assertEquals(self.ts.get_users(),
                           [{"this": "should be in a list"}])
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_users_username(self):
         """Tests TimeSync.get_users with username"""
         response = resp()
         response.text = json.dumps({"this": "should be in a list"})
 
-        # Mock requests.get
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
-
         url = "{0}/users/{1}?token={2}".format(self.ts.baseurl,
                                                "example-user",
                                                self.ts.token)
+
+        self.mock_requests.get.return_value = response
 
         # Send it
         self.assertEquals(self.ts.get_users("example-user"),
                           [{"this": "should be in a list"}])
 
         # Test that requests.get was called correctly
-        requests.get.assert_called_with(url)
+        self.mock_requests.get.assert_called_with(url)
 
     def test_get_users_no_auth(self):
         """Test that get_users() returns error message when auth not set"""
@@ -1931,13 +1839,10 @@ class TestPymesync(unittest.TestCase):
             }
         }
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post)
-
         self.ts.authenticate("example-user", "password", "password")
 
-        requests.post.assert_called_with("http://ts.example.com/v1/login",
-                                         json=auth)
+        self.mock_requests.post.assert_called_with("http://ts.example.com/v1/login",
+                                                   json=auth)
 
     def test_authentication_return_success(self):
         """Tests authenticate method with a token return"""
@@ -1945,9 +1850,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.text = json.dumps({"token": "sometoken"})
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post,
-                                             return_value=response)
+        self.mock_requests.post.return_value = response
 
         auth_block = self.ts.authenticate("example-user",
                                           "password",
@@ -1964,9 +1867,7 @@ class TestPymesync(unittest.TestCase):
                                     "error": "Authentication failure",
                                     "text": "Invalid username or password"})
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post,
-                                             return_value=response)
+        self.mock_requests.post.return_value = response
 
         auth_block = self.ts.authenticate("example-user",
                                           "password",
@@ -2027,9 +1928,7 @@ class TestPymesync(unittest.TestCase):
         response = resp()
         response.status_code = 502
 
-        # Mock requests.post so it doesn't actually post to TimeSync
-        requests.post = mock.create_autospec(requests.post,
-                                             return_value=response)
+        self.mock_requests.post.return_value = response
 
         self.assertEquals(self.ts.authenticate(username="username",
                                                password="password",
@@ -2065,38 +1964,34 @@ class TestPymesync(unittest.TestCase):
     def test_delete_object_time(self):
         """Test that _delete_object calls requests.delete with the correct
         url"""
-        requests.delete = mock.create_autospec(requests.delete)
         url = "{0}/times/abcd-3453-3de3-99sh?token={1}".format(self.ts.baseurl,
                                                                self.ts.token)
         self.ts._TimeSync__delete_object("times", "abcd-3453-3de3-99sh")
-        requests.delete.assert_called_with(url)
+        self.mock_requests.delete.assert_called_with(url)
 
     def test_delete_object_project(self):
         """Test that _delete_object calls requests.delete with the correct
         url"""
-        requests.delete = mock.create_autospec(requests.delete)
         url = "{0}/projects/ts?token={1}".format(self.ts.baseurl,
                                                  self.ts.token)
         self.ts._TimeSync__delete_object("projects", "ts")
-        requests.delete.assert_called_with(url)
+        self.mock_requests.delete.assert_called_with(url)
 
     def test_delete_object_activity(self):
         """Test that _delete_object calls requests.delete with the correct
         url"""
-        requests.delete = mock.create_autospec(requests.delete)
         url = "{0}/activities/code?token={1}".format(self.ts.baseurl,
                                                      self.ts.token)
         self.ts._TimeSync__delete_object("activities", "code")
-        requests.delete.assert_called_with(url)
+        self.mock_requests.delete.assert_called_with(url)
 
     def test_delete_object_user(self):
         """Test that _delete_object calls requests.delete with the correct
         url"""
-        requests.delete = mock.create_autospec(requests.delete)
         url = "{0}/users/example-user?token={1}".format(self.ts.baseurl,
                                                         self.ts.token)
         self.ts._TimeSync__delete_object("users", "example-user")
-        requests.delete.assert_called_with(url)
+        self.mock_requests.delete.assert_called_with(url)
 
     @patch("pymesync.TimeSync._TimeSync__delete_object")
     def test_delete_time(self, m_delete_object):
@@ -2339,6 +2234,9 @@ class TestPymesync(unittest.TestCase):
                             "spectator": True}
             }
         })
+
+        self.mock_requests.get.return_value = response
+
         expected_result = {
             u'malcolm': [u'member', u'manager', u'spectator'],
             u'jayne':   [u'member'],
@@ -2350,10 +2248,6 @@ class TestPymesync(unittest.TestCase):
             u'derrial': [u'spectator'],
             u'inara':   [u'spectator']
         }
-
-        # Mock requests.get so it doesn't actually post to TimeSync
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
 
         self.assertEquals(self.ts.project_users(project=project),
                           expected_result)
@@ -2369,9 +2263,7 @@ class TestPymesync(unittest.TestCase):
             "text": "Nonexistent project"
         })
 
-        # Mock requests.get so it doesn't actually post to TimeSync
-        requests.get = mock.create_autospec(requests.get,
-                                            return_value=response)
+        self.mock_requests.get.return_value = response
 
         self.assertEquals(self.ts.project_users(project=proj),
                           {u"error": u"Object not found",
@@ -2393,10 +2285,3 @@ class TestPymesync(unittest.TestCase):
         """Test that the trailing slash in the baseurl is removed"""
         self.ts = pymesync.TimeSync("http://ts.example.com/v1")
         self.assertEquals(self.ts.baseurl, "http://ts.example.com/v1")
-
-if __name__ == "__main__":
-    # Save these for resetting mocked methods
-    actual_post = requests.post
-    actual_delete = requests.delete
-    actual_get = requests.get
-    unittest.main()
