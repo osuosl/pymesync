@@ -799,6 +799,13 @@ class TimeSync(object):
 
         # Everthing is a list now, so iterate through and append
         else:
+            # Put "start" and "end" queries into lists for below code
+            if "start" in queries and isinstance(queries["start"], str):
+                queries["start"] = [queries["start"]]
+
+            if "end" in queries and isinstance(queries["end"], str):
+                queries["end"] = [queries["end"]]
+
             # Sort them into an alphabetized list for easier testing
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:
