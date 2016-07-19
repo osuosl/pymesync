@@ -1247,6 +1247,39 @@ class TestPymesync(unittest.TestCase):
                           [{"this": "should be in a list"}])
         requests.get.assert_called_with(url)
 
+    def test_get_projects_user(self):
+        """Tests TimeSync.get_projects with user query"""
+        response = resp()
+        response.text = json.dumps({"this": "should be in a list"})
+
+        # Mock requests.get
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        url = "{0}/projects?user=userone&token={1}".format(self.ts.baseurl,
+                                                           self.ts.token)
+
+        self.assertEquals(self.ts.get_projects({"user": ["userone"]}),
+                          [{"this": "should be in a list"}])
+        requests.get.assert_called_with(url)
+
+    def test_get_projects_user_include_deleted(self):
+        """Tests TimeSync.get_projects with user and include_deleted queries"""
+        response = resp()
+        response.text = json.dumps({"this": "should be in a list"})
+
+        # Mock requests.get
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        url = "{0}/projects?user=userone&include_deleted=true&token={1}" \
+            .format(self.ts.baseurl, self.ts.token)
+
+        self.assertEquals(self.ts.get_projects({"user": ["userone"],
+                                                "include_deleted": True}),
+                          [{"this": "should be in a list"}])
+        requests.get.assert_called_with(url)
+
     def test_get_activities(self):
         """Tests TimeSync.get_activities"""
         response = resp()

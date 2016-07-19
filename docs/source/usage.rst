@@ -466,6 +466,10 @@ TimeSync.\ **get_projects(query_parameters=None)**
 
       - example: ``{"slug": "gwm"}``
 
+    * ``user`` - filter project request by one or more users
+
+      - example: ``{"user": ["userone", "usertwo"]}``
+
     * ``include_deleted`` - tell TimeSync whether to include deleted projects in
       request. Default is ``False`` and cannot be combined with a ``slug``.
 
