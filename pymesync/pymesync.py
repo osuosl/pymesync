@@ -684,7 +684,7 @@ class TimeSync(object):
             return project_object
 
         # Get the user object from the project
-        users = project_object["users"]
+        users = project_object.setdefault("users", {})
 
         # Convert the nested permissions dict to a list containing only
         # relevant (true) permissions
