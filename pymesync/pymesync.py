@@ -21,15 +21,20 @@ Allows for interactions with the TimeSync API
 Supported TimeSync versions:
 v1
 """
+
+from __future__ import unicode_literals
+
 import json
 import requests
 import operator
 import base64
 import ast
 import datetime
-import mock_pymesync
 import time
 import bcrypt
+import six
+
+from . import mock_pymesync
 
 
 class TimeSync(object):
@@ -137,15 +142,15 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
-        if time['duration'] < 0:
+        if isinstance(time["duration"], int) and time["duration"] < 0:
             return {self.error: "time object: duration cannot be negative"}
 
-        if not isinstance(time['duration'], int):
-            duration = self.__duration_to_seconds(time['duration'])
-            time['duration'] = duration
+        if not isinstance(time["duration"], int):
+            duration = self.__duration_to_seconds(time["duration"])
+            time["duration"] = duration
 
-            # Duration at this point contains an error_msg if it's not an int
-            if not isinstance(time['duration'], int):
+            # Duration at this point contains an error_msg if not an int
+            if not isinstance(time["duration"], int):
                 return duration
 
         return self.__create_or_update(time, None, "time", "times")
@@ -165,15 +170,15 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         if 'duration' in time:
-            if time['duration'] < 0:
+            if isinstance(time["duration"], int) and time["duration"] < 0:
                 return {self.error: "time object: duration cannot be negative"}
 
-            if not isinstance(time['duration'], int):
-                duration = self.__duration_to_seconds(time['duration'])
-                time['duration'] = duration
+            if not isinstance(time["duration"], int):
+                duration = self.__duration_to_seconds(time["duration"])
+                time["duration"] = duration
 
                 # Duration at this point contains an error_msg if not an int
-                if not isinstance(time['duration'], int):
+                if not isinstance(time["duration"], int):
                     return duration
 
         return self.__create_or_update(time, uuid, "time", "times", False)
@@ -627,7 +632,8 @@ class TimeSync(object):
         # Decode the token, then get the second dict (payload) from the
         # resulting string. The payload contains the expiration time.
         try:
-            decoded_payload = base64.b64decode(self.token.split(".")[1])
+            decoded_payload = base64.b64decode(self.token.split(".")[1])\
+                .decode("utf-8")
         except:
             return {self.error: "improperly encoded token"}
 
@@ -728,7 +734,11 @@ class TimeSync(object):
         # and we got a ValueError, we know we are having trouble connecting to
         # TimeSync because we are not getting a return from TimeSync.
         try:
-            python_object = json.loads(unicode(response.text))
+            python_object = json.loads(six.text_type(response.text))
+        except NameError:
+            # If we get a NameError, that means we're running Python 3 and
+            # the 'unicode' function doesn't exist
+            python_object = json.loads(str(response.text))
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
@@ -929,7 +939,7 @@ class TimeSync(object):
         # fields later on and return a more meaningful error if necessary.
         if "password" in user:
             # If the password is a unicode object, encode it first
-            if isinstance(user["password"], unicode):
+            if isinstance(user["password"], six.text_type):
                 password = user["password"].encode("utf-8")
             else:
                 password = user["password"]
