@@ -874,6 +874,23 @@ class TestPymesync(unittest.TestCase):
                          [{"this": "should be in a list"}])
         requests.get.assert_called_with(url)
 
+    def test_get_time_for_start_date_string(self):
+        """Tests TimeSync.get_times with start date query parameter"""
+        response = resp()
+        response.text = json.dumps({"this": "should be in a list"})
+
+        # Mock requests.get
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        url = "{0}/times?start=2015-07-23&token={1}".format(self.ts.baseurl,
+                                                            self.ts.token)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        self.assertEqual(self.ts.get_times({"start": "2015-07-23"}),
+                         [{"this": "should be in a list"}])
+        requests.get.assert_called_with(url)
+
     def test_get_time_for_end_date(self):
         """Tests TimeSync.get_times with end date query parameter"""
         response = resp()
@@ -888,6 +905,23 @@ class TestPymesync(unittest.TestCase):
 
         # Test that requests.get was called with baseurl and correct parameter
         self.assertEqual(self.ts.get_times({"end": ["2015-07-23"]}),
+                         [{"this": "should be in a list"}])
+        requests.get.assert_called_with(url)
+
+    def test_get_time_for_end_date_string(self):
+        """Tests TimeSync.get_times with end date query parameter"""
+        response = resp()
+        response.text = json.dumps({"this": "should be in a list"})
+
+        # Mock requests.get
+        requests.get = mock.create_autospec(requests.get,
+                                            return_value=response)
+
+        url = "{0}/times?end=2015-07-23&token={1}".format(self.ts.baseurl,
+                                                          self.ts.token)
+
+        # Test that requests.get was called with baseurl and correct parameter
+        self.assertEqual(self.ts.get_times({"end": "2015-07-23"}),
                          [{"this": "should be in a list"}])
         requests.get.assert_called_with(url)
 
