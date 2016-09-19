@@ -817,11 +817,13 @@ class TimeSync(object):
 
         # Everthing is a list now, so iterate through and append
         else:
-            # Put "start" and "end" queries into lists
-            if "start" in queries and isinstance(queries["start"], str):
+            # If "start" or "end" parameters are strings, convert them to
+            # single-item lists internally so the query string construction
+            # below can process them
+            if "start" in queries and isinstance(queries["start"], basestring):
                 queries["start"] = [queries["start"]]
 
-            if "end" in queries and isinstance(queries["end"], str):
+            if "end" in queries and isinstance(queries["end"], basestring):
                 queries["end"] = [queries["end"]]
 
             # Sort them into an alphabetized list for easier testing
