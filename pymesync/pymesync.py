@@ -33,8 +33,13 @@ import datetime
 import time
 import bcrypt
 import six
+import sys
 
 from . import mock_pymesync
+
+
+if sys.version_info[0] >= 3:
+    basestring = (str, bytes)
 
 
 class TimeSync(object):
