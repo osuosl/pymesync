@@ -33,8 +33,13 @@ import datetime
 import time
 import bcrypt
 import six
+import sys
 
 from . import mock_pymesync
+
+
+if sys.version_info[0] >= 3:
+    basestring = (str, bytes)
 
 
 class TimeSync(object):
@@ -817,6 +822,15 @@ class TimeSync(object):
 
         # Everthing is a list now, so iterate through and append
         else:
+            # If "start" or "end" parameters are strings, convert them to
+            # single-item lists internally so the query string construction
+            # below can process them
+            if "start" in queries and isinstance(queries["start"], basestring):
+                queries["start"] = [queries["start"]]
+
+            if "end" in queries and isinstance(queries["end"], basestring):
+                queries["end"] = [queries["end"]]
+
             # Sort them into an alphabetized list for easier testing
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:

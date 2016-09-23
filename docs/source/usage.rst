@@ -366,9 +366,10 @@ TimeSync.\ **get_times(query_parameters=None)**
     ``query_parameters`` is missing, it defaults to ``None``, in which case
     ``get_times()`` will return all times the current user is authorized to see.
     The syntax for each argument is ``{"query": ["parameter1", "parameter2"]}``
-    except for the ``uuid`` parameter which is ``{"uuid": "uuid-as-string"}``
-    and the ``include_deleted`` and ``include_revisions`` parameters which
-    should be set to booleans.
+    except for the ``start`` and ``end`` parameters which are ISO 8601 date
+    strings, the ``uuid`` parameter which is ``{"uuid": "uuid-as-string"}``, and
+    the ``include_deleted`` and ``include_revisions`` parameters which should be
+    set to booleans.
 
     Currently the valid queries allowed by pymesync are:
 
@@ -386,11 +387,11 @@ TimeSync.\ **get_times(query_parameters=None)**
 
     * ``start`` - filter time request by start date
 
-      - example: ``{"start": ["2014-07-23"]}``
+      - example: ``{"start": "2014-07-23"}``
 
     * ``end`` - filter time request by end date
 
-      - example: ``{"end": ["2015-07-23"]}``
+      - example: ``{"end": "2015-07-23"}``
 
     * ``include_revisions`` - either ``True`` or ``False`` to include
       revisions of times. Defaults to ``False``

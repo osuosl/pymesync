@@ -853,7 +853,7 @@ class TestPymesync(unittest.TestCase):
                                                             self.ts.token)
 
         # Test that requests.get was called with baseurl and correct parameter
-        self.assertEqual(self.ts.get_times({"start": ["2015-07-23"]}),
+        self.assertEqual(self.ts.get_times({"start": "2015-07-23"}),
                          [{"this": "should be in a list"}])
         requests.get.assert_called_with(url)
 
@@ -869,7 +869,7 @@ class TestPymesync(unittest.TestCase):
                                                           self.ts.token)
 
         # Test that requests.get was called with baseurl and correct parameter
-        self.assertEqual(self.ts.get_times({"end": ["2015-07-23"]}),
+        self.assertEqual(self.ts.get_times({"end": "2015-07-23"}),
                          [{"this": "should be in a list"}])
         requests.get.assert_called_with(url)
 
