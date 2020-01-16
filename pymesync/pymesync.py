@@ -21,15 +21,25 @@ Allows for interactions with the TimeSync API
 Supported TimeSync versions:
 v1
 """
+
+from __future__ import unicode_literals
+
 import json
 import requests
 import operator
 import base64
 import ast
 import datetime
-import mock_pymesync
 import time
 import bcrypt
+import six
+import sys
+
+from . import mock_pymesync
+
+
+if sys.version_info[0] >= 3:
+    basestring = (str, bytes)
 
 
 class TimeSync(object):
@@ -137,15 +147,15 @@ class TimeSync(object):
         ``time`` is a python dictionary containing the time information to send
         to TimeSync.
         """
-        if time['duration'] < 0:
+        if isinstance(time["duration"], int) and time["duration"] < 0:
             return {self.error: "time object: duration cannot be negative"}
 
-        if not isinstance(time['duration'], int):
-            duration = self.__duration_to_seconds(time['duration'])
-            time['duration'] = duration
+        if not isinstance(time["duration"], int):
+            duration = self.__duration_to_seconds(time["duration"])
+            time["duration"] = duration
 
-            # Duration at this point contains an error_msg if it's not an int
-            if not isinstance(time['duration'], int):
+            # Duration at this point contains an error_msg if not an int
+            if not isinstance(time["duration"], int):
                 return duration
 
         return self.__create_or_update(time, None, "time", "times")
@@ -165,15 +175,15 @@ class TimeSync(object):
         ``uuid`` contains the uuid for a time entry to update.
         """
         if 'duration' in time:
-            if time['duration'] < 0:
+            if isinstance(time["duration"], int) and time["duration"] < 0:
                 return {self.error: "time object: duration cannot be negative"}
 
-            if not isinstance(time['duration'], int):
-                duration = self.__duration_to_seconds(time['duration'])
-                time['duration'] = duration
+            if not isinstance(time["duration"], int):
+                duration = self.__duration_to_seconds(time["duration"])
+                time["duration"] = duration
 
                 # Duration at this point contains an error_msg if not an int
-                if not isinstance(time['duration'], int):
+                if not isinstance(time["duration"], int):
                     return duration
 
         return self.__create_or_update(time, uuid, "time", "times", False)
@@ -627,7 +637,8 @@ class TimeSync(object):
         # Decode the token, then get the second dict (payload) from the
         # resulting string. The payload contains the expiration time.
         try:
-            decoded_payload = base64.b64decode(self.token.split(".")[1])
+            decoded_payload = base64.b64decode(self.token.split(".")[1])\
+                .decode("utf-8")
         except:
             return {self.error: "improperly encoded token"}
 
@@ -684,7 +695,7 @@ class TimeSync(object):
             return project_object
 
         # Get the user object from the project
-        users = project_object["users"]
+        users = project_object.setdefault("users", {})
 
         # Convert the nested permissions dict to a list containing only
         # relevant (true) permissions
@@ -728,7 +739,11 @@ class TimeSync(object):
         # and we got a ValueError, we know we are having trouble connecting to
         # TimeSync because we are not getting a return from TimeSync.
         try:
-            python_object = json.loads(unicode(response.text))
+            python_object = json.loads(six.text_type(response.text))
+        except NameError:
+            # If we get a NameError, that means we're running Python 3 and
+            # the 'unicode' function doesn't exist
+            python_object = json.loads(str(response.text))
         except ValueError:
             # If we get a ValueError, response.text isn't a JSON object, and
             # therefore didn't come from a TimeSync connection.
@@ -752,6 +767,14 @@ class TimeSync(object):
         elif "slug" in queries:
             query_string = "/{}?".format(queries["slug"])
             del(queries["slug"])
+
+        # Check for the "user" field for a get_projects query
+        if "user" in queries:
+            for user in queries["user"]:
+                query_list.append("{0}={1}".format("user", user))
+
+            # Delete "user" so the code below doesn't try to use it
+            del(queries["user"])
 
         # Convert True and False booleans to TimeSync compatible strings
         for k, v in sorted(queries.items(), key=operator.itemgetter(0)):
@@ -799,6 +822,15 @@ class TimeSync(object):
 
         # Everthing is a list now, so iterate through and append
         else:
+            # If "start" or "end" parameters are strings, convert them to
+            # single-item lists internally so the query string construction
+            # below can process them
+            if "start" in queries and isinstance(queries["start"], basestring):
+                queries["start"] = [queries["start"]]
+
+            if "end" in queries and isinstance(queries["end"], basestring):
+                queries["end"] = [queries["end"]]
+
             # Sort them into an alphabetized list for easier testing
             sorted_qs = sorted(queries.items(), key=operator.itemgetter(0))
             for query, param in sorted_qs:
@@ -921,7 +953,7 @@ class TimeSync(object):
         # fields later on and return a more meaningful error if necessary.
         if "password" in user:
             # If the password is a unicode object, encode it first
-            if isinstance(user["password"], unicode):
+            if isinstance(user["password"], six.text_type):
                 password = user["password"].encode("utf-8")
             else:
                 password = user["password"]

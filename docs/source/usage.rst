@@ -9,6 +9,8 @@ This module provides an interface to communicate with an implementation of the
 `OSU Open Source Lab`_'s `TimeSync API`_. An implementation of the TimeSync API,
 built in Node.js, can be found at `github.com/osuosl/timesync-node`_.
 
+Pymesync is supported for Python versions 2.7 and 3.3+
+
 This module allows users to
 
 * Authenticate a pymesync object with a TimeSync implementation
@@ -68,7 +70,8 @@ python dictionaries in the case of the ``get_*`` methods).
 Install pymesync
 ----------------
 
-Pymesync is on PyPi, so you can simply ``pip install pymesync``. We recommend
+Pymesync is on PyPi for both Python 2 and 3, so you can simply
+``pip install pymesync`` in either Python environment. We recommend that
 you use `virtualenv`_, like so:
 
 .. code-block:: none
@@ -363,9 +366,10 @@ TimeSync.\ **get_times(query_parameters=None)**
     ``query_parameters`` is missing, it defaults to ``None``, in which case
     ``get_times()`` will return all times the current user is authorized to see.
     The syntax for each argument is ``{"query": ["parameter1", "parameter2"]}``
-    except for the ``uuid`` parameter which is ``{"uuid": "uuid-as-string"}``
-    and the ``include_deleted`` and ``include_revisions`` parameters which
-    should be set to booleans.
+    except for the ``start`` and ``end`` parameters which are ISO 8601 date
+    strings, the ``uuid`` parameter which is ``{"uuid": "uuid-as-string"}``, and
+    the ``include_deleted`` and ``include_revisions`` parameters which should be
+    set to booleans.
 
     Currently the valid queries allowed by pymesync are:
 
@@ -383,11 +387,11 @@ TimeSync.\ **get_times(query_parameters=None)**
 
     * ``start`` - filter time request by start date
 
-      - example: ``{"start": ["2014-07-23"]}``
+      - example: ``{"start": "2014-07-23"}``
 
     * ``end`` - filter time request by end date
 
-      - example: ``{"end": ["2015-07-23"]}``
+      - example: ``{"end": "2015-07-23"}``
 
     * ``include_revisions`` - either ``True`` or ``False`` to include
       revisions of times. Defaults to ``False``
@@ -465,6 +469,10 @@ TimeSync.\ **get_projects(query_parameters=None)**
     * ``slug`` - filter project request by project slug
 
       - example: ``{"slug": "gwm"}``
+
+    * ``user`` - filter project request by one or more users
+
+      - example: ``{"user": ["userone", "usertwo"]}``
 
     * ``include_deleted`` - tell TimeSync whether to include deleted projects in
       request. Default is ``False`` and cannot be combined with a ``slug``.

@@ -1,14 +1,15 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 dependencies = [
     'argparse==1.2.1',
     'funcsigs==0.4',
-    'mock==1.3.0',
     'pbr==1.8.1',
-    'requests==2.8.1',
+    'requests==2.20.0',
     'six==1.10.0',
-    'wsgiref==0.1.2',
-    'bcrypt==2.0.0',
+    'bcrypt==3.1.7',
 ]
 
 setup(

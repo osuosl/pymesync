@@ -1,7 +1,10 @@
 pymesync
 ========
 
-Python module for TimeSync
+.. image:: https://travis-ci.org/osuosl/pymesync.svg?branch=master
+    :target: https://travis-ci.org/osuosl/pymesync
+
+Python module for TimeSync. Compatible with Python versions 2.7 and 3.3+.
 
 Pymesync documentation can be found on `readthedocs`_
 
@@ -12,6 +15,13 @@ We use virtualenv for development and testing:
   $ virtualenv venv
   $ source venv/bin/activate
   (venv) $ pip install -r requirements.txt
+
+If you get an error when trying to run ``pip install``, make sure that you
+have an up-to-date version of pip
+
+.. code-block::
+
+    (venv) $ pip install --upgrade pip
 
 For usage documentation, build our docs:
 
@@ -25,15 +35,13 @@ To test the source code:
 
 .. code-block::
 
-  (venv) $ cd pymesync   # pymesync subdirectory holds the source code
   (venv) $ make test
-  (venv) $ make flake    # Runs flake8 on pymesync.py and tests.py
+  (venv) $ make flake
 
 or
 
 .. code-block::
 
-  (venv) $ make verify   # Runs tests and flake8
-
+  (venv) $ make verify
 
 .. _readthedocs: http://pymesync.readthedocs.org/en/latest/
