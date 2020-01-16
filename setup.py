@@ -9,7 +9,7 @@ dependencies = [
     'pbr==1.8.1',
     'requests==2.8.1',
     'six==1.10.0',
-    'bcrypt==2.0.0',
+    'bcrypt==3.1.7',
 ]
 
 setup(
