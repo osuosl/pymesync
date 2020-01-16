@@ -7,7 +7,7 @@ dependencies = [
     'argparse==1.2.1',
     'funcsigs==0.4',
     'pbr==1.8.1',
-    'requests==2.8.1',
+    'requests==2.20.0',
     'six==1.10.0',
     'bcrypt==3.1.7',
 ]
